@@ -1045,6 +1045,7 @@ function calcStep(query,decision,reason,confidence){
   return m;
 }
 
+
 function mergeMetrics(nm){
   const n=S.history.length+1;
   ['c','p','r','e','ef','cn'].forEach(k=>{S.metrics[k]=((S.metrics[k]*(n-1))+nm[k])/n;});
