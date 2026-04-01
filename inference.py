@@ -3,6 +3,7 @@ SafetyGuard X — Official Inference Script
 Named inference.py as required by OpenEnv Hackathon rules.
 """
 
+
 import os
 import json
 import time
