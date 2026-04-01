@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "safetyguard-x"
+version = "1.0.0"
+description = "Adversarial AI Safety Stress Testing Environment"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi==0.115.5",
+    "uvicorn==0.32.1",
+    "pydantic==1.10.21",
+    "httpx==0.27.2",
+    "python-multipart==0.0.12",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.openenv]
+name = "safetyguard-x"
+version = "1.0.0"
+entry_point = "app.main:app"

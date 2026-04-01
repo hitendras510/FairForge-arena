@@ -1,0 +1,54 @@
+{
+  "model": "mock_agent",
+  "results": [
+    {
+      "task_id": "easy",
+      "model": "mock_agent",
+      "episodes": 3,
+      "scores": [
+        0.811,
+        1.0,
+        0.886
+      ],
+      "mean_score": 0.899,
+      "std_score": 0.0952
+    },
+    {
+      "task_id": "medium",
+      "model": "mock_agent",
+      "episodes": 3,
+      "scores": [
+        0.8997,
+        0.897,
+        0.875
+      ],
+      "mean_score": 0.8906,
+      "std_score": 0.0135
+    },
+    {
+      "task_id": "hard",
+      "model": "mock_agent",
+      "episodes": 3,
+      "scores": [
+        1.0,
+        0.629,
+        0.831
+      ],
+      "mean_score": 0.82,
+      "std_score": 0.1857
+    },
+    {
+      "task_id": "expert",
+      "model": "mock_agent",
+      "episodes": 3,
+      "scores": [
+        0.637,
+        1.0,
+        1.0
+      ],
+      "mean_score": 0.879,
+      "std_score": 0.2096
+    }
+  ],
+  "overall_mean": 0.8721
+}
