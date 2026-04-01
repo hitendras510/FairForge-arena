@@ -4,6 +4,7 @@
 # All constants live here. Change once, affects everything.
 # ============================================================
 
+
 PROJECT_NAME    = "SafetyGuard X"
 VERSION         = "1.0.0"
 DESCRIPTION     = (
