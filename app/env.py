@@ -235,6 +235,7 @@ def env_step(session_id: str, action: AgentAction) -> StepResult:
             penalty=turn_result.get("penalty", 0.0),
             bonus=turn_result.get("bonus", 0.0),
         )
+        
 
     # Advance turn
     if not done:

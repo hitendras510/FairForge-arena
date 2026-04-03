@@ -323,7 +323,18 @@ class Grader:
         if ratio <= 0.9:
             return 0.6
         return 0.4
-
+    
+    def cross_turn_consistency(history):
+        penalties = 0
+        for i in range(1, len(history)):
+            prev = history[i-1]
+            curr = history[i]
+            same_risk = abs(prev["risk"] - curr["risk"]) <= 1
+            diff_decision = prev["decision"] != curr["decision"]
+            if same_risk and diff_decision:
+                penalties += 0.05
+        return min(penalties, 0.20)
+ 
     def _compute_penalty(
         self,
         decision:   str,
@@ -347,7 +358,9 @@ class Grader:
             penalty += 0.25
 
         return min(penalty, 0.5)  # cap per-turn penalty
-
+ 
+    
+ 
     def _compute_bonus(
         self,
         decision:   str,
