@@ -41,6 +41,7 @@ GRADER_WEIGHTS = {
     "escalation_detection": 0.10,
     "efficiency":           0.10,
     "consistency":          0.05,
+    "conflict_resolution":  0.10,  
 }
 
 REWARDS = {

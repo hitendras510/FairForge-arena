@@ -113,7 +113,7 @@ class Grader:
             return self._zero_score("No turns completed")
 
         summary = memory.summary()
-
+ 
         # ── Average per-turn scores ───────────────────────────
         avg_correctness  = sum(t["correctness"]  for t in self.turn_scores) / len(self.turn_scores)
         avg_policy       = sum(t["policy_alignment"] for t in self.turn_scores) / len(self.turn_scores)
@@ -127,6 +127,15 @@ class Grader:
 
         # ── Consistency (0.0 - 1.0) ───────────────────────────
         consistency = 1.0 if summary["is_consistent"] else 0.5
+        
+        
+        # Early escalation detection bonus
+        escalation_turns = [h for h in memory.history if h["risk"] >= 4]
+        if escalation_turns:
+            first_escalation_turn = escalation_turns[0]["turn"]
+            if action_objects and first_escalation_turn <= 2:
+                final_bonus += 0.08  # detected threat early
+                feedback_parts.append("Early threat detection (+0.08)")
 
         # ── Final penalties ───────────────────────────────────
         final_penalty = 0.0
