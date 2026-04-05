@@ -48,7 +48,7 @@ I focused on making the AI fully autonomous while keeping full transparency thro
 | 📋 Tasks List | https://abhishek0164-safetyguard-x.hf.space/tasks |
 | ✔️ Validate | https://abhishek0164-safetyguard-x.hf.space/validate |
 | 🏆 Leaderboard | https://abhishek0164-safetyguard-x.hf.space/leaderboard |
-| 💻 GitHub Repo | https://github.com/abhishek0164/safetyguard-x |
+| 💻 GitHub Repo | https://github.com/AbhishekGupta0164/Meta-AI-OpenEnv-SST-Project.git|
 
 [![OpenEnv](https://img.shields.io/badge/OpenEnv-1.0-blue)](https://openenv.dev)
 [![HuggingFace](https://img.shields.io/badge/🤗-Space-yellow)](https://huggingface.co/spaces)
