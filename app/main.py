@@ -48,21 +48,81 @@ class GraderRequest(BaseModel):
 
 # ── Root → redirect to UI ─────────────────────────────────────
 
+# @app.get("/", response_class=HTMLResponse, include_in_schema=False)
+# async def root():
+#     # Try multiple possible paths for HF Spaces compatibility
+#     possible_paths = [
+#         "app/static/index.html",
+#         "static/index.html", 
+#         os.path.join(os.path.dirname(__file__), "static", "index.html"),
+#     ]
+    
+#     for path in possible_paths:
+#         if os.path.exists(path):
+#             with open(path, "r", encoding="utf-8") as f:
+#                 return HTMLResponse(content=f.read())
+    
+#     # Final fallback — show working links
+#     return HTMLResponse(content="""
+# <!DOCTYPE html>
+# <html>
+# <head>
+# <title>SafetyGuard X</title>
+# <style>
+# body{background:#050b18;color:#e8f4fd;font-family:monospace;margin:0;padding:40px;text-align:center;}
+# h1{color:#00d4ff;font-size:2rem;margin-bottom:10px;}
+# p{color:#00ff88;margin-bottom:30px;}
+# .links{display:flex;flex-direction:column;gap:12px;max-width:500px;margin:0 auto;}
+# a{display:block;padding:12px 20px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:8px;color:#00d4ff;text-decoration:none;font-size:0.9rem;}
+# a:hover{background:rgba(0,212,255,0.2);}
+# </style>
+# </head>
+# <body>
+# <h1>🛡️ SafetyGuard X</h1>
+# <p>Adversarial AI Safety Stress Testing Environment</p>
+# <div class="links">
+# <a href="/ui">🎮 Open Interactive Dashboard</a>
+# <a href="/docs">📖 API Documentation</a>
+# <a href="/health">✅ Health Check</a>
+# <a href="/tasks">📋 Tasks List</a>
+# <a href="/validate">✔️ Validate</a>
+# <a href="/leaderboard">🏆 Leaderboard</a>
+# </div>
+# </body>
+# </html>
+# """)
+#  grok update 
+# ──────────────────────────────────────────────────────────────
+# CRITICAL: Mount static folder (fixes CSS/JS not loading)
+# ──────────────────────────────────────────────────────────────
+base_dir = os.path.dirname(os.path.abspath(__file__))   # folder containing main.py
+static_dir = os.path.join(base_dir, "static")
+
+# HF sometimes puts the app one level deeper — safety check
+if not os.path.exists(static_dir):
+    static_dir = os.path.join(os.path.dirname(base_dir), "static")
+
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+# ──────────────────────────────────────────────────────────────
+# ROOT ROUTE — serves real index.html + perfect fallback
+# ──────────────────────────────────────────────────────────────
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 async def root():
-    # Try multiple possible paths for HF Spaces compatibility
+    # All possible locations HF might place index.html
     possible_paths = [
+        os.path.join(static_dir, "index.html"),                    # Best on HF
+        os.path.join(base_dir, "static", "index.html"),
         "app/static/index.html",
-        "static/index.html", 
-        os.path.join(os.path.dirname(__file__), "static", "index.html"),
+        "static/index.html",
     ]
     
-    for path in possible_paths:
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
+    for file_path in possible_paths:
+        if os.path.exists(file_path):
+            with open(file_path, "r", encoding="utf-8") as f:
                 return HTMLResponse(content=f.read())
     
-    # Final fallback — show working links
+    # Final nice fallback (never blank page again)
     return HTMLResponse(content="""
 <!DOCTYPE html>
 <html>
