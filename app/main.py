@@ -92,26 +92,53 @@ class GraderRequest(BaseModel):
 # </html>
 # """)
 #  grok update 
+
 # ──────────────────────────────────────────────────────────────
-# CRITICAL: Mount static folder (fixes CSS/JS not loading)
+# CRITICAL: Mount static folder (CSS/JS will work in /ui)
 # ──────────────────────────────────────────────────────────────
-base_dir = os.path.dirname(os.path.abspath(__file__))   # folder containing main.py
+base_dir = os.path.dirname(os.path.abspath(__file__))
 static_dir = os.path.join(base_dir, "static")
 
-# HF sometimes puts the app one level deeper — safety check
 if not os.path.exists(static_dir):
     static_dir = os.path.join(os.path.dirname(base_dir), "static")
 
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # ──────────────────────────────────────────────────────────────
-# ROOT ROUTE — serves real index.html + perfect fallback
+# ROOT /  →  MUST return JSON for the judge (exactly as before)
 # ──────────────────────────────────────────────────────────────
-@app.get("/", response_class=HTMLResponse, include_in_schema=False)
+@app.get("/")
 async def root():
-    # All possible locations HF might place index.html
+    return {
+        "environment": "SafetyGuard X",
+        "version": "1.0.0",
+        "description": "Adversarial AI Safety Stress Testing Environment. Simulates real-world jailbreak attempts, policy conflicts, and multi-turn adversarial interactions.",
+        "tasks": [
+            "easy",
+            "medium",
+            "hard",
+            "expert"
+        ],
+        "endpoints": [
+            "/reset",
+            "/step",
+            "/state",
+            "/tasks",
+            "/grader",
+            "/baseline",
+            "/health",
+            "/ui"
+        ]
+    }
+
+# ──────────────────────────────────────────────────────────────
+# /ui  →  serves your full interactive dashboard (for humans/judges)
+# ──────────────────────────────────────────────────────────────
+@app.get("/ui", response_class=HTMLResponse, include_in_schema=False)
+async def ui_dashboard():
+    # Try all possible locations for index.html on HF
     possible_paths = [
-        os.path.join(static_dir, "index.html"),                    # Best on HF
+        os.path.join(static_dir, "index.html"),
         os.path.join(base_dir, "static", "index.html"),
         "app/static/index.html",
         "static/index.html",
@@ -122,35 +149,14 @@ async def root():
             with open(file_path, "r", encoding="utf-8") as f:
                 return HTMLResponse(content=f.read())
     
-    # Final nice fallback (never blank page again)
+    # Nice fallback if index.html is missing
     return HTMLResponse(content="""
-<!DOCTYPE html>
-<html>
-<head>
-<title>SafetyGuard X</title>
-<style>
-body{background:#050b18;color:#e8f4fd;font-family:monospace;margin:0;padding:40px;text-align:center;}
-h1{color:#00d4ff;font-size:2rem;margin-bottom:10px;}
-p{color:#00ff88;margin-bottom:30px;}
-.links{display:flex;flex-direction:column;gap:12px;max-width:500px;margin:0 auto;}
-a{display:block;padding:12px 20px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:8px;color:#00d4ff;text-decoration:none;font-size:0.9rem;}
-a:hover{background:rgba(0,212,255,0.2);}
-</style>
-</head>
-<body>
-<h1>🛡️ SafetyGuard X</h1>
-<p>Adversarial AI Safety Stress Testing Environment</p>
-<div class="links">
-<a href="/ui">🎮 Open Interactive Dashboard</a>
-<a href="/docs">📖 API Documentation</a>
-<a href="/health">✅ Health Check</a>
-<a href="/tasks">📋 Tasks List</a>
-<a href="/validate">✔️ Validate</a>
-<a href="/leaderboard">🏆 Leaderboard</a>
-</div>
-</body>
-</html>
-""")
+    <h1 style="color:#00d4ff;text-align:center;margin-top:100px;font-family:monospace;">
+        🛡️ SafetyGuard X Dashboard<br><br>
+        <a href="/docs">📖 View API Docs</a>
+    </h1>
+    """)
+
 
 @app.get("/health", tags=["meta"])
 def health():
