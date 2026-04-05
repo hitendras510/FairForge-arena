@@ -377,7 +377,7 @@ python baseline_inference.py
 MIT
 
 
-## ==================================================    
+## ==================================================   
 SafetyGuard X — Full System Test
 ==================================================    
 
@@ -422,3 +422,14 @@ ALL TESTS PASSED — Ready to deploy!
 ==================================================
 
 ## Deploy Done !!!! 
+
+
+=== LIVE DEPLOYMENT TEST ===
+1. health: ok
+2. validate: True
+3. tasks: 4
+4. leaderboard: 0
+5. reset OK: b4c43acc
+6. step score: 0.823
+7. grader score: 0.823
+=== ALL LIVE CHECKS DONE ===
