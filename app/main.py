@@ -108,6 +108,7 @@ async def step(request: Request):
     except Exception:
         body = {}    
         
+        
         if not session_id:
             raise HTTPException(status_code=422, detail="session_id required")
         
