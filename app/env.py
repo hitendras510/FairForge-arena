@@ -284,7 +284,7 @@ def env_grader(session_id: str) -> Dict[str, Any]:
         "breakdown":       result["breakdown"],
         "feedback":        result["feedback"],
         "turns_taken":     episode.turn_number,
-        "flags_triggered": episode._build_flags().dict(),
+        "flags_triggered": episode._build_flags().model_dump(),
     }
 
 

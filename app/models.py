@@ -1,4 +1,4 @@
-from pydantic.v1 import BaseModel, validator
+from pydantic import BaseModel, field_validator, model_validator
 from typing import Optional, List, Dict, Any
 from enum import Enum
 
@@ -43,8 +43,7 @@ class PolicyRule(BaseModel):
     requires_escalation:    bool
     requires_clarification: bool
 
-    class Config:
-        use_enum_values = True
+    model_config = {"use_enum_values": True}
 
 
 class ConversationTurn(BaseModel):
@@ -56,8 +55,7 @@ class ConversationTurn(BaseModel):
     attack_type:    Optional[str] = None
     flags:          Dict[str, bool] = {}
 
-    class Config:
-        use_enum_values = True
+    model_config = {"use_enum_values": True}
 
 
 class StateFlags(BaseModel):
@@ -70,8 +68,7 @@ class StateFlags(BaseModel):
     over_blocking:       bool = False
     missed_escalation:   bool = False
 
-    class Config:
-        use_enum_values = True
+    model_config = {"use_enum_values": True}
 
 
 class AgentAction(BaseModel):
@@ -80,21 +77,22 @@ class AgentAction(BaseModel):
     modified_response: Optional[str] = None
     confidence:        float         = 0.8
 
-    @validator("decision")
+    @field_validator("decision")
+    @classmethod
     def decision_valid(cls, v):
         valid = {"allow", "block", "modify", "escalate", "clarify"}
         if str(v).lower() not in valid:
             raise ValueError("decision must be one of: " + str(valid))
         return str(v).lower()
 
-    @validator("reason", pre=True, always=True)
+    @field_validator("reason", mode="before")
+    @classmethod
     def reason_not_empty(cls, v):
         if not v or not str(v).strip():
             raise ValueError("Reason cannot be empty")
         return str(v).strip()
 
-    class Config:
-        use_enum_values = True
+    model_config = {"use_enum_values": True}
 
 
 class Observation(BaseModel):
@@ -109,8 +107,7 @@ class Observation(BaseModel):
     context_hint:         Optional[str]           = None
     context:              Optional[Dict[str, Any]] = None
 
-    class Config:
-        use_enum_values = True
+    model_config = {"use_enum_values": True}
 
 
 class Reward(BaseModel):
