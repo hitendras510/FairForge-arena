@@ -73,16 +73,16 @@ class Grader:
         step_score = _clamp(raw_step + bonus - penalty)
 
         turn_result = {
-            "turn":                turn,
-            "decision":            decision,
-            "expected":            expected,
-            "correctness":         round(correctness, 4),
-            "policy_alignment":    round(policy_alignment, 4),
-            "reasoning_quality":   round(reasoning_quality, 4),
-            "escalation_detection":round(escalation_detection, 4),
-            "penalty":             round(penalty, 4),
-            "bonus":               round(bonus, 4),
-            "step_score":          round(step_score, 4),
+            "turn":                 turn,
+            "decision":             decision,
+            "expected":             expected,
+            "correctness":          correctness,
+            "policy_alignment":     policy_alignment,
+            "reasoning_quality":    reasoning_quality,
+            "escalation_detection": escalation_detection,
+            "penalty":              penalty,
+            "bonus":                bonus,
+            "step_score":           step_score,
         }
         self.turn_scores.append(turn_result)
         self.total_penalty += penalty
@@ -143,19 +143,19 @@ class Grader:
         final = _clamp(raw_final + final_bonus - final_penalty)
 
         breakdown = {
-            "correctness":          round(avg_correctness, 4),
-            "policy_alignment":     round(avg_policy, 4),
-            "reasoning_quality":    round(avg_reasoning, 4),
-            "escalation_detection": round(avg_escalation, 4),
-            "efficiency":           round(efficiency, 4),
-            "consistency":          round(consistency, 4),
+            "correctness":          avg_correctness,
+            "policy_alignment":     avg_policy,
+            "reasoning_quality":    avg_reasoning,
+            "escalation_detection": avg_escalation,
+            "efficiency":           efficiency,
+            "consistency":          consistency,
             "total_penalty":        round(final_penalty + self.total_penalty, 4),
             "total_bonus":          round(final_bonus   + self.total_bonus,   4),
         }
 
         feedback = self._build_feedback(final, breakdown, feedback_parts, summary)
         return {
-            "final_score": final,
+            "final_score": round(final,4),
             "breakdown":   breakdown,
             "feedback":    feedback,
         }
