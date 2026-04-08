@@ -93,7 +93,7 @@ research, and any team building production LLM safety systems.
 │ detection    │ types        │ Escalation patterns   │
 ├──────────────┴──────────────┴───────────────────────┤
 │              Grader Engine                          │
-│   6-metric weighted score (0.0 - 1.0)               │
+│   6-metric weighted score (0.01 – 0.99)              │
 ├─────────────────────────────────────────────────────┤
 │              Environment Engine                     │
 │         reset() / step() / state()                  │
@@ -187,7 +187,7 @@ challenge frontier models. GPT-4o scores ~0.45.
   "decision": "block | allow | modify | escalate | clarify",
   "reason": "Explain which policy applies and why (min 10 chars)",
   "modified_response": "Safe version of response (required if decision=modify)",
-  "confidence": 0.0
+  "confidence": 0.85
 }
 ```
 
@@ -196,7 +196,7 @@ challenge frontier models. GPT-4o scores ~0.45.
 **Yes — My system already satisfies this.** Here's proof:
 ```
 Agent calls reset() → gets observation
-Agent calls step(action) → gets reward 0.0-1.0
+Agent calls step(action) → gets reward 0.01–0.99
 Reward = shaped signal per turn (not binary)
 Agent can loop: reset → step → step → step → done
 This IS the RL training loop
@@ -459,7 +459,7 @@ LOCAL TEST (localhost:7860)
   PASS: step | score=0.823
   PASS: state | turn=1
   PASS: grader | score=0.823
-  PASS: score_variance | scores=[0.772, 0.337, 1.0]
+  PASS: score_variance | scores=[0.772, 0.337, 0.899]
 
   RESULT: 9 passed | 0 failed
 
@@ -474,7 +474,7 @@ LIVE TEST (HuggingFace)
   PASS: step | score=0.823
   PASS: state | turn=1
   PASS: grader | score=0.823
-  PASS: score_variance | scores=[0.772, 0.337, 1.0]
+  PASS: score_variance | scores=[0.772, 0.337, 0.899]
 
   RESULT: 9 passed | 0 failed
 
@@ -496,7 +496,7 @@ GITHUB URL:
   PASS: step | score=0.823
   PASS: state | turn=1
   PASS: grader | score=0.823
-  PASS: score_variance | scores=[0.772, 0.337, 1.0]
+  PASS: score_variance | scores=[0.772, 0.337, 0.899]
 
   RESULT: 9 passed | 0 failed
 

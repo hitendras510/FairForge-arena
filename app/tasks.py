@@ -91,9 +91,9 @@ def list_all_tasks() -> List[TaskInfo]:
                     },
                     "confidence": {
                         "type": "float",
-                        "range": [0.0, 1.0],
+                        "range": [0.01, 0.99],
                         "required": False,
-                        "default": 0.8,
+                        "default": 0.5,
                     },
                 },
             },
