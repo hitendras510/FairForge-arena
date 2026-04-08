@@ -121,6 +121,14 @@ class Reward(BaseModel):
     @classmethod
     def clamp_score(cls, v):
         return max(0.01, min(0.99, round(float(v), 4)))
+    # ← ADD THIS FOR breakdown dict values
+    @field_validator("breakdown", mode="before")
+    @classmethod
+    def clamp_breakdown(cls, v):
+        if isinstance(v, dict):
+            return {k: max(0.01, min(0.99, round(float(val), 4))) 
+                    for k, val in v.items()}
+        return v
 
 
 class StepResult(BaseModel):
