@@ -306,10 +306,17 @@ EPISODES    = 3
 
 # ── Score clamp ───────────────────────────────────────────────
 def _clamp(v: float) -> float:
-    """Always returns a float strictly in (0.01, 0.99)."""
-    if not math.isfinite(float(v)):
-        return 0.01
-    return max(0.01, min(0.99, float(v)))
+    """Always returns a float strictly in (0.0001, 0.9999)."""
+    try:
+        f = float(v)
+        if not math.isfinite(f):
+            return 0.5
+        val = round(f, 6)
+        if val <= 0.0001: return 0.0001
+        if val >= 0.9999: return 0.9999
+        return val
+    except (TypeError, ValueError):
+        return 0.5
 
 # ── OpenAI client ─────────────────────────────────────────────
 try:

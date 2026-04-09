@@ -3,6 +3,7 @@
 # PHASE 2 FIX: Every score strictly in (0.01, 0.99)
 # ============================================================
 
+import math
 from typing import List, Dict, Any
 from app.config import (
     GRADER_WEIGHTS, REWARDS,
@@ -12,13 +13,21 @@ from app.config import (
 from app.memory import MemoryEngine
 
 # ── The ONE clamp used everywhere ─────────────────────────────────────────────
-_SCORE_MIN = 0.01
-_SCORE_MAX = 0.99
+_SCORE_MIN = 0.0001
+_SCORE_MAX = 0.9999
 
 
 def _clamp(score: float) -> float:
-    """Force every score into open interval (0.01, 0.99) — never 0.0 or 1.0."""
-    return max(_SCORE_MIN, min(_SCORE_MAX, round(float(score), 4)))
+    """Force every score into open interval (0.0001, 0.9999) — never 0.0 or 1.0."""
+    try:
+        f = float(score)
+        if not math.isfinite(f): return 0.5
+        val = round(f, 6)
+        if val <= _SCORE_MIN: return _SCORE_MIN
+        if val >= _SCORE_MAX: return _SCORE_MAX
+        return val
+    except (TypeError, ValueError):
+        return 0.5
 
 
 # ── Grader class ──────────────────────────────────────────────────────────────
@@ -141,6 +150,10 @@ class Grader:
             GRADER_WEIGHTS["consistency"]          * consistency
         )
         final = _clamp(raw_final + final_bonus - final_penalty)
+        
+        # Extra safety boundary check
+        if final >= 0.9999: final = 0.9999
+        if final <= 0.0001: final = 0.0001
 
         # ── Only score metrics in breakdown — validator checks every float ──
         # total_penalty / total_bonus are raw sums that can be 0.0; they are
@@ -332,8 +345,8 @@ class Grader:
 
     def _zero_score(self, reason: str) -> Dict[str, Any]:
         return {
-            "final_score": _SCORE_MIN,
-            "breakdown":   {k: _SCORE_MIN for k in [
+            "final_score": 0.5,   # Neutral fallback (not 0.0 or 0.01)
+            "breakdown":   {k: 0.5 for k in [
                 "correctness", "policy_alignment", "reasoning_quality",
                 "escalation_detection", "efficiency", "consistency"
             ]},

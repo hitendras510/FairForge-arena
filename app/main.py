@@ -2,7 +2,7 @@
 # SafetyGuard X — FastAPI Server
 # ============================================================
 
-import os
+import os, statistics
 from typing import Any, Dict, List
 
 from fastapi import FastAPI, HTTPException, Query, Request
@@ -50,7 +50,7 @@ class StepResponse(BaseModel):
     ...
     def model_post_init(self):
         if isinstance(self.reward, dict) and "score" in self.reward:
-            self.reward["score"] = _clamp(self.reward["score"])    
+            self.reward["score"] = _clamp(self.reward["score"])
 
 @app.get("/", include_in_schema=False)
 async def root(request: Request):
@@ -182,7 +182,7 @@ def baseline():
         # overall_mean is also clamped — the validator checks ALL floats.
         for r in results:
             r["mean_score"] = _clamp(r["mean_score"])
-        overall = _clamp(round(sum(r["mean_score"] for r in results) / len(results), 4))
+        overall = _clamp(statistics.mean(r["mean_score"] for r in results) if results else 0.5)
         return {"model": "mock_agent", "results": results, "overall_mean": overall}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -204,7 +204,7 @@ def validate():
 @app.get("/leaderboard", tags=["openenv"])
 def leaderboard():
     sorted_lb = sorted(_leaderboard, key=lambda x: x["score"], reverse=True)
-    avg = _clamp(round(sum(x["score"] for x in _leaderboard) / max(len(_leaderboard), 1), 4)) if _leaderboard else 0.01
+    avg = _clamp(statistics.mean(x["score"] for x in _leaderboard) if _leaderboard else 0.5)
     return {
         "top_scores":     sorted_lb[:10],
         "total_episodes": len(_leaderboard),

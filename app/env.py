@@ -459,7 +459,7 @@ class Episode:
             done=self.done,
             risk_level=self.memory.current_risk_level(),
             flags=flags,
-            cumulative_reward=round(_clamp(self.cumulative_reward if self.cumulative_reward > 0 else 0.01), 4),
+            cumulative_reward=round(_clamp(self.cumulative_reward if self.cumulative_reward > 0 else 0.5), 6),
             history=history,
             actions_taken=self.turn_number,
         )
