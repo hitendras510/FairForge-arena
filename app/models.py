@@ -132,25 +132,7 @@ class Observation(BaseModel):
     model_config = {"use_enum_values": True}
 
 
-# class Reward(BaseModel):
-#     score:     float
-#     breakdown: Dict[str, float]
-#     feedback:  str
-#     penalty:   float = 0.0
-#     bonus:     float = 0.0
-    
-#     @field_validator("score", mode="before")
-#     @classmethod
-#     def clamp_score(cls, v):
-#         return max(0.01, min(0.99, float(f"{float(v):.4f}")))
-#     # ← ADD THIS FOR breakdown dict values
-#     @field_validator("breakdown", mode="before")
-#     @classmethod
-#     def clamp_breakdown(cls, v):
-#         if isinstance(v, dict):
-#             return {k: max(0.01, min(0.99, float(f"{float(val):.4f}"))) 
-#                     for k, val in v.items()}
-#         return v
+
 
 class Reward(BaseModel):
     score:     float
@@ -220,6 +202,7 @@ class TaskInfo(BaseModel):
     difficulty:    str
     max_turns:     int
     num_scenarios: int
+    has_grader:    bool = True
     action_schema: Dict[str, Any]
 
 

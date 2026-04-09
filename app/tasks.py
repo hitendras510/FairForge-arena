@@ -70,6 +70,7 @@ def list_all_tasks() -> List[TaskInfo]:
             difficulty=task_id,
             max_turns=meta["max_turns"],
             num_scenarios=meta["num_scenarios"],
+            has_grader=True,
             action_schema={
                 "type": "object",
                 "properties": {
