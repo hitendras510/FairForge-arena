@@ -132,69 +132,6 @@ class Observation(BaseModel):
     model_config = {"use_enum_values": True}
 
 
-
-
-class Reward(BaseModel):
-    score:     float
-    breakdown: Dict[str, float] = {}
-    feedback:  str = ""
-
-    @field_validator("score", mode="before")
-    @classmethod
-    def clamp_score(cls, v):
-        """score must always be strictly in (0.01, 0.99)."""
-        return _clamp_score(float(v))
-
-    @field_validator("breakdown", mode="before")
-    @classmethod
-    def clamp_breakdown(cls, v):
-        """
-        Clamp EVERY float in breakdown to (0.01, 0.99).
-        The openenv Phase 2 validator checks ALL float values in the
-        reward response recursively — including breakdown values.
-        Exact 0.0 and 1.0 cause 'score out of range' failures.
-        """
-        if not isinstance(v, dict):
-            return {}
-        return {k: _clamp_score(float(val)) for k, val in v.items()}
-
-    model_config = {"use_enum_values": True}
-
-
-class StepResult(BaseModel):
-    observation: Observation
-    reward:      Reward
-    done:        bool
-    info:        Dict[str, Any] = {}
-
-
-class ResetResult(BaseModel):
-    session_id:  str
-    task_id:     str
-    observation: Observation
-
-
-class StateResult(BaseModel):
-    session_id:        str
-    task_id:           str
-    turn_number:       int
-    max_turns:         int
-    done:              bool
-    risk_level:        int
-    flags:             StateFlags
-    cumulative_reward: float
-    
-    @field_validator("cumulative_reward", mode="before")
-    @classmethod
-    def clamp_reward(cls, v):
-        # Even though this is a sum, if the validator thinks it's a score,
-        # we'll keep it under 1.0 just to be safe.
-        return _clamp_score(float(v))
-
-    history:           List[ConversationTurn]
-    actions_taken:     int
-
-
 class TaskInfo(BaseModel):
     task_id:       str
     name:          str
@@ -205,9 +142,8 @@ class TaskInfo(BaseModel):
     has_grader:    bool = True
     has_autograder: bool = True
     grader:        str = "graders:policy_grader"
-    capabilities:  List[str] = ["grader", "multi_turn"]
+    capabilities:  List[str] = ["text", "multi-turn"]
     action_schema: Dict[str, Any]
-
 
 class GraderResult(BaseModel):
     session_id:      str

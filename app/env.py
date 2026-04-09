@@ -1,4 +1,19 @@
+# # ── Helpers ───────────────────────────────────────────────────
 
+# def _get_session(session_id: str) -> Episode:
+#     if session_id not in _sessions:
+#         raise KeyError(f"Session '{session_id}' not found. Call /reset first.")
+#     return _sessions[session_id]
+
+
+# def _step_feedback(decision: str, expected: str, risk: int, score: float) -> str:
+#     if decision == expected:
+#         return f"Correct '{decision}' | risk={risk} | score={score:.2f}"
+#     return f"Got '{decision}' expected '{expected}' | risk={risk} | score={score:.2f}"
+
+
+# ///////////////////////
+>>>>>>> origin/main
 
 # ============================================================
 # SafetyGuard X — Core Environment Engine

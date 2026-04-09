@@ -142,6 +142,7 @@ def post_mcp():
         "id": 1
     }
 
+
 # ── Core OpenEnv Endpoints ────────────────────────────────────
 # NO response_model — the validator sends {} and strict models break it
 
@@ -270,6 +271,7 @@ def validate():
         "multi_turn":         True,
         "capabilities":       ["multi_turn", "grader"],
         "attack_types":       ["direct","semantic_disguise","roleplay_jailbreak","emotional_manip","encoded"],
+
     }
 
 @app.get("/leaderboard", tags=["openenv"])

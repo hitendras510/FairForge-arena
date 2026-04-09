@@ -27,6 +27,7 @@ def check(name, fn):
         PASS += 1
     except Exception as e:
         print("  ❌ FAIL: " + name + " — " + str(e))
+
         FAIL += 1
 
 print("\n" + "="*55)
@@ -37,6 +38,7 @@ print("="*55)
 print("\n[1] Basic Connectivity")
 check("GET /health returns 200", lambda: call("GET", "/health"))
 check("Response has status=ok", lambda: assert_eq(call("GET", "/health")["status"], "ok"))
+
 
 # 2. Tasks
 print("\n[2] Tasks Endpoint")
@@ -49,6 +51,7 @@ check("GET /tasks returns 3+ tasks", get_tasks)
 check("Tasks have task_id field", lambda: [t["task_id"] for t in tasks])
 check("Tasks have difficulty field", lambda: [t["difficulty"] for t in tasks])
 check("4 tasks exist (easy/medium/hard/expert)", lambda: assert_eq(len(tasks), 4))
+
 
 # 3. Reset
 print("\n[3] Reset Endpoint")
@@ -133,6 +136,7 @@ def test_inference():
         capture_output=True, text=True, timeout=120
     )
     assert "OVERALL MEAN" in result.stdout, "inference.py did not complete: " + result.stderr[:200]
+
 check("inference.py runs and produces scores", test_inference)
 
 # 9. Required files exist
@@ -141,6 +145,7 @@ import os
 required = ["inference.py", "Dockerfile", "openenv.yaml", "requirements.txt", "README.md", "pyproject.toml", "baseline_inference.py"]
 for f in required:
     check("File exists: " + f, lambda fn=f: assert_true(os.path.exists(fn)))
+
 
 # 10. Dockerfile has port 7860
 print("\n[10] Dockerfile Check")
@@ -180,4 +185,5 @@ if FAIL == 0:
     print("  🎉 ALL CHECKS PASSED — READY TO DEPLOY!")
 else:
     print("  ⚠️  Fix " + str(FAIL) + " issues before deploying")
+
 print("="*55 + "\n")

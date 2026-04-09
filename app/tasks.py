@@ -73,8 +73,9 @@ def list_all_tasks() -> List[TaskInfo]:
             has_grader=True,
             has_autograder=True,
             grader="graders:policy_grader",
-            capabilities=["grader", "multi_turn"],
+            capabilities=["text", "multi-turn"],
             action_schema={
+
                 "type": "object",
                 "properties": {
                     "decision": {
