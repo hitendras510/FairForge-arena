@@ -168,17 +168,10 @@ class Grader:
             "consistency":          consistency,
         }
 
-        # Meta info kept separately — NOT exposed as score floats in API responses
-        _meta = {
-            "total_penalty": round(final_penalty + self.total_penalty, 4),
-            "total_bonus":   round(final_bonus   + self.total_bonus,   4),
-        }
-
         feedback = self._build_feedback(final, breakdown, feedback_parts, summary)
         return {
             "final_score": final,
             "breakdown":   breakdown,
-            "meta":        _meta,
             "feedback":    feedback,
         }
 
@@ -353,6 +346,5 @@ class Grader:
             # Note: meta is intentionally omitted here — penalty/bonus 0.0 values
             # must never appear in any dict that passes through env_grader() because
             # the OpenEnv validator checks ALL floats recursively.
-            "meta":        {},
             "feedback":    reason,
         }

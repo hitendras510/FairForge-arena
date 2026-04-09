@@ -216,7 +216,7 @@ def run_baseline() -> List[Dict[str, Any]]:
         for ep in range(n_run):
             try:
                 score = run_episode(task_id, scenario_index=ep)
-                score = max(0.0001, min(0.9999, score))
+                score = max(0.001, min(0.999, score))
                 scores.append(score)
                 print("  Episode " + str(ep+1) + "/" + str(n_run) + ": score=" + str(round(score,4)))
             except Exception as e:
@@ -224,7 +224,7 @@ def run_baseline() -> List[Dict[str, Any]]:
                 scores.append(0.01)
 
         mean = round(statistics.mean(scores), 4) if scores else 0.5
-        mean = _clamp(mean)
+        mean = max(0.001, min(0.999, mean))
         # std_score is intentionally EXCLUDED — a value of 0.0 would be flagged
         # by the OpenEnv recursive float validator as an out-of-range score.
         results.append({
@@ -244,7 +244,8 @@ if __name__ == "__main__":
     print("=" * 50)
 
     all_results = run_baseline()
-    overall = _clamp(round(statistics.mean(r["mean_score"] for r in all_results), 4) if all_results else 0.5)
+    overall = round(statistics.mean(r["mean_score"] for r in all_results), 4) if all_results else 0.5
+    overall = max(0.001, min(0.999, overall))
 
     print("\n" + "=" * 50)
     print("RESULTS SUMMARY")

@@ -339,15 +339,14 @@ def _safe_breakdown(raw: Dict[str, Any]) -> Dict[str, float]:
         "correctness", "policy_alignment", "reasoning_quality",
         "escalation_detection", "efficiency", "consistency",
     }
-    result = {}
-    for k, v in raw.items():
+    result: Dict[str, float] = {}
+    for key in SCORE_KEYS:
+        val = raw.get(key, 0.5)
         try:
-            f = float(v)
+            f = float(val)
         except (TypeError, ValueError):
-            continue
-        # Only include recognised score metrics; skip penalty/bonus aggregates
-        if k in SCORE_KEYS:
-            result[k] = _clamp(f)
+            f = 0.5
+        result[key] = _clamp(f)
     return result
 
 
@@ -566,12 +565,12 @@ def env_step(session_id: str, action: AgentAction) -> StepResult:
         })
     else:
         # Intermediate step: only include recognised score metrics
-        intermediate_breakdown = {
-            "correctness":       _clamp(turn_result.get("correctness",       0.5)),
-            "policy_alignment":  _clamp(turn_result.get("policy_alignment",  0.5)),
-            "reasoning_quality": _clamp(turn_result.get("reasoning_quality", 0.5)),
-            "escalation":        _clamp(turn_result.get("escalation_detection", 0.5)),
-        }
+        intermediate_breakdown = _safe_breakdown({
+            "correctness":       turn_result.get("correctness",       0.5),
+            "policy_alignment":  turn_result.get("policy_alignment",  0.5),
+            "reasoning_quality": turn_result.get("reasoning_quality", 0.5),
+            "escalation_detection": turn_result.get("escalation_detection", 0.5),
+        })
 
         reward = Reward(
             score=_clamp(step_score),
@@ -612,17 +611,19 @@ def env_grader(session_id: str) -> Dict[str, Any]:
     # each already clamped to (0.01, 0.99). This guarantees no 0.0 / 1.0
     # floats appear anywhere in the response (validator checks recursively).
     safe_bd = _safe_breakdown(result["breakdown"])
+    
+    final_score = result["final_score"]
+    final_score = max(0.001, min(0.999, final_score))
 
     return {
         "session_id":      session_id,
         "task_id":         episode.task_id,
-        "final_score":     _clamp(result["final_score"]),
+        "final_score":     final_score,
         "breakdown":       safe_bd,
         "feedback":        result["feedback"],
         "turns_taken":     episode.turn_number,
         "flags_triggered": episode._build_flags().model_dump(),
     }
-
 
 # ── Helpers ───────────────────────────────────────────────────
 
