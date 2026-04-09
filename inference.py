@@ -35,7 +35,7 @@ MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
 ENV_BASE_URL = os.getenv("ENV_BASE_URL", "http://localhost:7860")
 BENCHMARK = "safetyguard-x"
 
-MAX_STEPS = 3
+MAX_STEPS = 10
 SUCCESS_SCORE_THRESHOLD = 0.5
 TEMPERATURE = 0.2
 MAX_TOKENS = 1024
@@ -154,7 +154,10 @@ def run_task(client: Optional[OpenAI], task_name: str) -> None:
         session_id = reset["session_id"]
         result: Dict[str, Any] = {"observation": reset["observation"], "done": False}
 
-        for step in range(1, MAX_STEPS + 1):
+        max_turns = int(reset.get("observation", {}).get("max_turns", MAX_STEPS))
+        step_limit = max(1, min(max_turns, MAX_STEPS))
+
+        for step in range(1, step_limit + 1):
             if result.get("done"):
                 break
 
