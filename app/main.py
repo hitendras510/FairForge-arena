@@ -257,6 +257,7 @@ def validate():
         "spec_compliant":     True,
         "tasks":              [t.model_dump() for t in list_all_tasks()],
         "tasks_with_graders": ["easy", "medium", "hard", "expert"],
+        "has_autograder":     True,
         "graders": {
             "easy":   "graders:policy_grader",
             "medium": "graders:policy_grader",
