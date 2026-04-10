@@ -120,12 +120,21 @@ class Episode:
 
     def _build_flags(self) -> StateFlags:
         summary = self.memory.summary()
+        history = self.memory.get_history()
+        
+        # Check if ANY turn in the history has these flags set
+        # This ensures the UI sidebar stays updated if an attack happened
+        is_encoded   = any(h.get("flags", {}).get("encoded_detected", False) for h in history)
+        is_roleplay  = any(h.get("flags", {}).get("roleplay_attempt", False) for h in history)
+        is_emotional = any(h.get("flags", {}).get("emotional_manip", False) for h in history)
+        is_conflict  = any(h.get("flags", {}).get("policy_conflict", False) for h in history)
+
         return StateFlags(
             escalation_detected=summary.get("escalation_pattern", False),
-            policy_conflict=False,
-            encoded_detected=False,
-            emotional_manip=False,
-            roleplay_attempt=False,
+            policy_conflict=is_conflict,
+            encoded_detected=is_encoded,
+            emotional_manip=is_emotional,
+            roleplay_attempt=is_roleplay,
             late_escalation=summary.get("escalated_too_late", False),
             over_blocking=summary.get("over_blocked", False),
             missed_escalation=summary.get("never_escalated_needed", False),

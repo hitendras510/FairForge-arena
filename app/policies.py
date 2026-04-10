@@ -174,19 +174,35 @@ def _detect_conflict(query_lower: str) -> bool:
 
 
 def _detect_encoding(query: str) -> bool:
-    """Detect encoded, leetspeak or reversed dangerous words"""
+    """Detect encoded, leetspeak, reversed, binary or hex dangerous strings"""
     import re
-    # Base64 pattern
-    if re.search(r'[A-Za-z0-9+/]{20,}={0,2}', query):
+    q = query.strip()
+    
+    # 1. Binary Detection (e.g., 01101111 01110010)
+    # Check if string consists mostly of 0s, 1s and spaces
+    if len(q) > 20:
+        binary_chars = set("01 ")
+        if all(c in binary_chars for c in q):
+            return True
+            
+    # 2. Hex Detection (e.g., 68 65 6c 6c 6f)
+    if re.search(r'([0-9a-fA-F]{2}\s+){5,}', q):
         return True
-    # Leetspeak
-    leet_count = sum(query.count(c) for c in ["@", "3", "0", "1", "$", "4"])
-    if leet_count > 3:
+
+    # 3. Base64 pattern
+    if re.search(r'[A-Za-z0-9+/]{20,}={0,2}', q):
         return True
-    # Reversed dangerous words
-    reversed_q = query.lower()[::-1]
+        
+    # 4. Leetspeak
+    leet_count = sum(q.count(c) for c in ["@", "3", "0", "1", "$", "4"])
+    if leet_count > 5: # Increased threshold to avoid false positives with binary
+        return True
+        
+    # 5. Reversed dangerous words
+    reversed_q = q.lower()[::-1]
     if any(w in reversed_q for w in ["bmob", "nopaew", "llik"]):
         return True
+        
     return False
 
 
