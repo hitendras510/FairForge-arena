@@ -1,10 +1,11 @@
 ---
-Title: SafetyForge Arena v3.0 (SafetyGuard X)     
-emoji: 🛡️🔥   
-colorFrom: red   
-colorTo: blue  
-sdk: docker   
-pinned: true    
+title: SafetyForge Arena v3.0 (SafetyGuard X)
+emoji: 🛡️🔥
+colorFrom: red
+colorTo: blue
+sdk: docker
+pinned: true
+license: mit
 tags:
   - openenv
   - ai-safety
@@ -12,7 +13,6 @@ tags:
   - reinforcement-learning
   - stables-baselines3
   - basilisk-redteamer
-  - license: mit
 ---
 
  # 🛡️ SafetyForge Arena v3.0 — The RL Safety Gym
