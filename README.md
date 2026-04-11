@@ -12,7 +12,7 @@ tags:
   - reinforcement-learning
   - stables-baselines3
   - basilisk-redteamer
-license: mit
+  - license: mit
 ---
 
  # 🛡️ SafetyForge Arena v3.0 — The RL Safety Gym
