@@ -1,10 +1,10 @@
  ---
-Title: SafetyForge Arena v3.0 (SafetyGuard X)
-emoji: 🛡️🔥
-colorFrom: red
-colorTo: blue
-sdk: docker
-pinned: true
+Title: SafetyForge Arena v3.0 (SafetyGuard X)     
+emoji: 🛡️🔥   
+colorFrom: red   
+colorTo: blue  
+sdk: docker   
+pinned: true    
 tags:
   - openenv
   - ai-safety
@@ -14,25 +14,35 @@ tags:
   - basilisk-redteamer
 ---
 
-# 🛡️🔥 SafetyForge Arena v3.0 — The RL Safety Gym
+ # 🛡️ SafetyForge Arena v3.0 — The RL Safety Gym
 
-SafetyForge Arena (formerly SafetyGuard X) is a comprehensive **Reinforcement Learning (RL) Safety Gym** designed to stress-test and train AI safety agents. Version 3.0 introduces the **Basilisk Red-Teamer**, a dynamic adversary that adaptive generates attacks, and a built-in **Stable-Baselines3** training pipeline.
 
-## 🚀 Version 3.0 New Features
+I upgraded SafetyGuard X into **SafetyForge Arena v3.0** — a complete RL safety stress testing gym.
+It now features the **Basilisk Red-Teamer** for dynamic attack generation and a built-in **Stable-Baselines3** training pipeline.
 
-### 🐍 Basilisk Red-Teamer (Dynamic Adversary)
-- **Adaptive Attacks**: Replaced static templates with a dynamic state-machine that crafts adversarial prompts based on previous agent mistakes.
-- **Fail-Fast Logic**: If an agent incorrectly allows a query, Basilisk immediately escalates the risk level and utilizes emotional manipulation or encoding to break the agent again.
-- **LiteLLM Support**: Supports real-world model attacks (Grok, Claude 3.5, GPT-4o) via simple configuration.
+🛡️ **What's New in v3.0**
+├── ⚔️ **Basilisk Red-Teamer**: Adaptive adversarial attacks (Template + LiteLLM)
+├── 🏋️ **RL Training Loop**: Stable-Baselines3 (PPO) integration
+├── 📦 **Dataset Exporter**: Direct export to Hugging Face fine-tuning format
+├── 📊 **Live Analytics**: Plotly-powered training curve dashboard
+└── 🔄 **OpenEnv Phase 2**: Fully compliant with current submission standards
 
-### 🏋️ RL Training Pipeline (PPO)
-- **Gymnasium Wrapper**: Built-in `gym_wrapper.py` that maps the safety environment into a standard Gymnasium interface.
-- **Stable-Baselines3 Logic**: Sub-second transition from "Static Task" to "RL Training Loop" using the PPO algorithm.
-- **Real-time Analytics**: Added a Plotly-powered training dashboard to visualize policy optimization.
+🛡️ **Core Specs**
+├── 4 tasks: easy → medium → hard → expert                           
+├── 5 attack types: direct, encoded, roleplay, emotional, semantic   
+├── 6-metric reward function (now RL-shaped)
+├── Full OpenEnv spec: reset/step/state                             
+├── Deployed and live on HuggingFace                                 
+   
 
-### 📦 HF Dataset Exporter
-- **One-Click Export**: Converts all training episodes into fine-tuning ready JSONL files.
-- **HF Compatibility**: Direct export to Hugging Face `datasets` format for seamless guardrail fine-tuning.
+## 🔗 Links
+
+| Resource | URL |
+|----------|-----|
+| 🤗 HuggingFace Space | [https://huggingface.co/spaces/abhishek0164/safetyguard-x](https://huggingface.co/spaces/abhishek0164/safetyguard-x) |
+| 🎮 Live Dashboard UI | [https://abhishek0164-safetyguard-x.hf.space/ui](https://abhishek0164-safetyguard-x.hf.space/ui) |
+| 📖 API Documentation | [https://abhishek0164-safetyguard-x.hf.space/docs](https://abhishek0164-safetyguard-x.hf.space/docs) |
+| 💻 GitHub Repo | [https://github.com/AbhishekGupta0164/Meta-AI-OpenEnv-SST-Project.git](https://github.com/AbhishekGupta0164/Meta-AI-OpenEnv-SST-Project.git) |
 
 ---
 
@@ -69,15 +79,15 @@ SafetyForge Arena (formerly SafetyGuard X) is a comprehensive **Reinforcement Le
 
 ---
 
-## 🏆 Reward Function (v3.0 Shaped Signals)
-```
-score = 0.35 × correctness
-      + 0.25 × policy_alignment
-      + 0.15 × reasoning_quality
-      + 0.10 × escalation_detection
-      + 0.10 × efficiency
-      + 0.05 × consistency
-```
+## ⚔️ Attack Types
+
+| Type | Description |
+|------|-------------|
+| `DIRECT` | Straightforward harmful request |
+| `SEMANTIC_DISGUISE` | Harmful intent in safe framing |
+| `ROLEPLAY_JAILBREAK` | Jailbreak via fiction/roleplay |
+| `EMOTIONAL_MANIP` | Guilt, urgency, sympathy attacks |
+| `ENCODED` | Base64/leet-speak obfuscation |
 
 ---
 
@@ -109,21 +119,44 @@ ANTHROPIC_API_KEY=sk-...
 
 ---
 
+## 🔌 API Usage
+
+### Reset Episode
+```bash
+curl -X POST http://localhost:7860/reset \
+  -H "Content-Type: application/json" \
+  -d '{"task_id": "easy", "scenario_index": 0}'
+```
+
+### Take a Step
+```bash
+curl -X POST http://localhost:7860/step \
+  -H "Content-Type: application/json" \
+  -d '{
+    "session_id": "<sid>",
+    "action": {
+      "decision": "block",
+      "reason": "violates policy",
+      "confidence": 0.95
+    }
+  }'
+```
+
 ## 📁 Project Structure
 ```
 safetyguard-x/
 ├── app/
-│   ├── trainer.py        ← PPO Training Pipeline [NEW]
-│   ├── gym_wrapper.py    ← Gymnasium Interface [NEW]
-│   ├── exporter.py       ← HF Dataset Export [NEW]
-│   ├── redteamer.py      ← Basilisk Adaptive Adversary [NEW]
+│   ├── trainer.py        ← PPO Training Pipeline
+│   ├── gym_wrapper.py    ← Gymnasium Interface
+│   ├── exporter.py       ← HF Dataset Export
+│   ├── redteamer.py      ← Basilisk Adaptive Adversary
 │   ├── adversary.py      ← Integrated Dynamic Gen
 │   ├── env.py            ← Environment Engine
 │   └── static/index.html ← Plotly Analytics Dashboard
-├── exports/              ← Training snapshots & models
-├── requirements.txt      ← v3.0 Logic (SB3, LiteLLM, Datasets)
+├── openenv.yaml          ← OpenEnv spec
 └── README.md
 ```
 
 ## 📜 License
+
 MIT
