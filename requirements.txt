@@ -5,13 +5,11 @@ python-multipart==0.0.12
 pyyaml>=6.0
 openenv-core>=0.2.0
 openai>=1.0.0
-# Core v3.0 dependencies
 litellm>=1.30.0
-# Torch CPU to save space on HF
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.1.2+cpu
-torchvision==0.16.2+cpu
-torchaudio==2.1.2+cpu
+# Core v3.0 ML stack (installed via index-url in Dockerfile/CI)
+torch
+torchvision
+torchaudio
 stable-baselines3>=2.3.0
 huggingface_hub>=0.20.0
 datasets>=2.18.0

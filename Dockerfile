@@ -19,6 +19,7 @@ WORKDIR /home/user/app
 COPY --chown=user requirements.txt .
 
 RUN pip install --upgrade pip --no-cache-dir \
+ && pip install --no-cache-dir torch torchvision torchaudio stable-baselines3 --index-url https://download.pytorch.org/whl/cpu \
  && pip install --no-cache-dir -r requirements.txt
 
 COPY --chown=user . .
