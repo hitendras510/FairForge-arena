@@ -12,11 +12,13 @@ tags:
   - reinforcement-learning
   - stables-baselines3
   - basilisk-redteamer
+license: mit
 ---
 
  # 🛡️ SafetyForge Arena v3.0 — The RL Safety Gym
-
-
+ 
+**AI-powered reinforcement learning safety gym for adversarial stress-testing LLM policies using adaptive red-teaming and intelligent decision-making.**
+ 
 I upgraded SafetyGuard X into **SafetyForge Arena v3.0** — a complete RL safety stress testing gym.
 The AI automatically evaluates any query, makes a decision (Allow/Block/Modify), explains its reasoning in the right panel, and even shows the final safe response when appropriate.
 It supports multi-turn conversations, just like a real safety monitoring system used at OpenAI/Meta/xAI.
@@ -316,3 +318,6 @@ SafetyForge Arena v3.0 — Full System Test
 ALL TESTS PASSED — Ready to deploy v3.0!
 ==================================================
 ```
+## 📄 License
+ 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

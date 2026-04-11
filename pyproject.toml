@@ -4,8 +4,9 @@ build-backend = "setuptools.backends.legacy:build"
 
 [project]
 name = "safetyguard-x"
-version = "1.0.0"
-description = "Adversarial AI Safety Stress Testing Environment"
+version = "3.0.0"
+description = "AI-powered reinforcement learning safety gym for adversarial stress-testing LLM policies using adaptive red-teaming and intelligent decision-making."
+license = {text = "MIT"}
 requires-python = ">=3.10"
 dependencies = [
     "fastapi==0.115.5",
