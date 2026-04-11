@@ -297,9 +297,9 @@ async def train_policy(request: Request, background_tasks: BackgroundTasks):
         
         def run_n_update():
              try:
-                 # In a real environment, we'd pass a callback to run_training
-                 # For now, we simulate the completion since run_training is synchronous within this thread
-                 run_training(episodes=episodes, task_id=task_id)
+                 def on_ep(n):
+                     TRAINING_STATUS["current_ep"] = n
+                 run_training(episodes=episodes, task_id=task_id, on_episode_end=on_ep)
                  TRAINING_STATUS["current_ep"] = episodes
              finally:
                  TRAINING_STATUS["active"] = False

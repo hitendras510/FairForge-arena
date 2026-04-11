@@ -27,9 +27,10 @@ from app.env import _sessions
 
 class SafetyTrainingCallback(BaseCallback):
     """Logs rewards and generates training curves at intervals."""
-    def __init__(self, verbose=0, save_freq=100):
+    def __init__(self, verbose=0, save_freq=100, on_episode_end=None):
         super(SafetyTrainingCallback, self).__init__(verbose)
         self.save_freq = save_freq
+        self.on_episode_end = on_episode_end
         self.rewards = []
         self.avg_rewards = []
 
@@ -38,6 +39,11 @@ class SafetyTrainingCallback(BaseCallback):
         if self.locals['dones'][0]:
             reward = self.locals['rewards'][0]
             self.rewards.append(reward)
+            
+            # Trigger custom callback for progress tracking
+            if self.on_episode_end:
+                self.on_episode_end(len(self.rewards))
+
             if len(self.rewards) % self.save_freq == 0:
                 avg = np.mean(self.rewards[-self.save_freq:])
                 self.avg_rewards.append(avg)
@@ -92,7 +98,7 @@ class SafetyTrainingCallback(BaseCallback):
             if self.verbose > 0:
                 print(f"Plotly image export failed: {e}")
 
-def run_training(episodes: int = 500, task_id: str = "expert"):
+def run_training(episodes: int = 500, task_id: str = "expert", on_episode_end=None):
     """
     Main training entry point.
     1. Initialize Env
@@ -123,7 +129,7 @@ def run_training(episodes: int = 500, task_id: str = "expert"):
     )
 
     # Train
-    callback = SafetyTrainingCallback(verbose=1, save_freq=min(50, episodes//5))
+    callback = SafetyTrainingCallback(verbose=1, save_freq=min(50, episodes//5), on_episode_end=on_episode_end)
     model.learn(total_timesteps=episodes * 10, callback=callback) # Assuming avg 10 steps per episode
 
     # Save Model

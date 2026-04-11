@@ -18,7 +18,6 @@ tags:
 
 
 I upgraded SafetyGuard X into **SafetyForge Arena v3.0** — a complete RL safety stress testing gym.
-You can simply open the index.html file and test it instantly.
 The AI automatically evaluates any query, makes a decision (Allow/Block/Modify), explains its reasoning in the right panel, and even shows the final safe response when appropriate.
 It supports multi-turn conversations, just like a real safety monitoring system used at OpenAI/Meta/xAI.
 I focused on making the AI fully autonomous while keeping full transparency through the Explainable AI panel.
@@ -233,6 +232,13 @@ After a training run, export for Hugging Face fine-tuning:
 curl http://localhost:7860/export_dataset --output training_data.jsonl
 ```
 
+### 3. Running with Basilisk (Real LLMs)
+Update your `.env` file to enable real adversarial models:
+```env
+REDTEAMER_MODEL=claude-3-5-sonnet-20240620
+ANTHROPIC_API_KEY=sk-...
+```
+
 ---
 
 ## 🔌 API Usage
@@ -244,7 +250,19 @@ curl -X POST http://localhost:7860/reset \
   -d '{"task_id": "easy", "scenario_index": 0}'
 ```
 
----
+### Take a Step
+```bash
+curl -X POST http://localhost:7860/step \
+  -H "Content-Type: application/json" \
+  -d '{
+    "session_id": "<sid>",
+    "action": {
+      "decision": "block",
+      "reason": "violates policy",
+      "confidence": 0.95
+    }
+  }'
+```
 
 ## 📁 Project Structure
 ```
