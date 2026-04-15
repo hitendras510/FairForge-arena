@@ -23,18 +23,6 @@
 
 ---
 
-## 🚀 Core Capabilities
-
-| Capability              | Description |
-|-------------------------|-----------|
-| **MEASURE**             | Calculates Demographic Parity, Equal Opportunity, Disparate Impact, and Intersectional Bias using industry-standard metrics. |
-| **FLAG**                | Live bias drift monitoring with real-time alerts when fairness degrades in production. |
-| **EXPLAIN**             | Gemini-powered natural language explanations and "What-If" counterfactual scenarios. |
-| **FIX**                 | Automated mitigation engine (reweighting, proxy removal, threshold adjustment) + PPO training to optimize fairness. |
-| **REPORT**              | One-click EU AI Act compliant PDF reports with full audit trail. |
-
----
-
 ## ✨ Key Features
 
 - **Interactive Intersectional Bias Heatmap** — Visualizes bias across gender, race, and age combinations.
