@@ -11,7 +11,7 @@
 
 **Team:**  MASSIVE-X  
 **Focus:** AI Fairness
-**Track:** Unbiased AI Decision
+**Track:** Unbiased AI Decision 
 
 **FairForge Arena** is an accessible, enterprise-grade AI Fairness Training Gym . It is engineered to thoroughly inspect data sets and software models for hidden unfairness. By combining high-performance backend pipelines with Reinforcement Learning, FairForge provides organizations with an easy way to **measure, flag, and fix** harmful bias in automated decisions (finance, healthcare, hiring) *before* their systems impact real people.
 
@@ -20,6 +20,29 @@
 ## 🌍 UN Sustainable Development Goals (SDGs)
 * **SDG 10 (Reduced Inequalities):** Prevents algorithmic discrimination against marginalized groups in life-changing automated decisions.
 * **SDG 16 (Peace, Justice, and Strong Institutions):** Enforces transparency and institutional accountability via automated, accessible compliance reporting.
+
+---
+
+## 🚀 Core Capabilities
+
+| Capability              | Description |
+|-------------------------|-----------|
+| **MEASURE**             | Calculates Demographic Parity, Equal Opportunity, Disparate Impact, and Intersectional Bias using industry-standard metrics. |
+| **FLAG**                | Live bias drift monitoring with real-time alerts when fairness degrades in production. |
+| **EXPLAIN**             | Gemini-powered natural language explanations and "What-If" counterfactual scenarios. |
+| **FIX**                 | Automated mitigation engine (reweighting, proxy removal, threshold adjustment) + PPO training to optimize fairness. |
+| **REPORT**              | One-click EU AI Act compliant PDF reports with full audit trail. |
+
+---
+
+## ✨ Key Features
+
+- **Interactive Intersectional Bias Heatmap** — Visualizes bias across gender, race, and age combinations.
+- **PPO Training Arena** — Watch the AI agent learn to become fairer over episodes (real-time training curve).
+- **Gemini Counterfactual Explainer** — Answers questions like *"Why was this applicant rejected?"* in plain English.
+- **One-Click Mitigation Controls** — Apply fixes and instantly see the impact.
+- **EU AI Act Compliance Reports** — Ready-to-submit governance documentation.
+- **Real-Time Monitoring Simulation** — Demonstrates production-ready bias drift detection.
 
 ---
 
@@ -38,8 +61,9 @@
 Built for scale, relying heavily on modern Data Cloud Engineering principles to ensure smooth integration into existing enterprise workflows:
 
 * **Backend API:** `FastAPI` (Python) for high-concurrency, asynchronous ML routing.
-* **AI Engine:** `PyTorch` (PPO training loop) & `Scikit-learn`.
+* **AI Engine:** `PyTorch` (PPO training loop) Custom fairness_metrics + 12 policy rules & `Scikit-learn`.
 * **LLM Layer:** Google Gemini API (Vertex AI) for natural language report generation.
+* **RL Gym:**  OpenEnv + Stable-Baselines3 PPO Trainer.
 * **Infrastructure (GCP):**
   * **Google Cloud Run:** Serverless, auto-scaling container deployment.
   * **Google Cloud Storage (GCS):** Secure blob storage for exported PDF audits.
