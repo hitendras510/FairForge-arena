@@ -1,938 +1,1681 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FairForge Arena v4.0 • AI Fairness Gym • Google Hackathon Edition</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-    
-    :root {
-      --cyan-glow: #00f5ff;
-      --purple-glow: #c026d3;
-      --emerald-glow: #10b981;
-    }
-    
-    body {
-      background: radial-gradient(circle at 50% 20%, #0a0c1a 0%, #1a1f2e 40%, #0f1320 100%);
-      color: #e5e9f0;
-      font-family: 'Inter', system-ui, sans-serif;
-      overflow-x: hidden;
-    }
-    
-    .title-font {
-      font-family: 'Space Grotesk', sans-serif;
-    }
-    
-    .glass {
-      background: rgba(15, 20, 35, 0.92);
-      backdrop-filter: blur(24px);
-      border: 1px solid rgba(0, 245, 255, 0.15);
-      box-shadow: 0 0 40px rgba(0, 245, 255, 0.15);
-    }
-    
-    .neon-cyan {
-      text-shadow: 
-        0 0 10px var(--cyan-glow),
-        0 0 20px var(--cyan-glow),
-        0 0 30px rgba(0, 245, 255, 0.5);
-    }
-    
-    .neon-purple {
-      text-shadow: 
-        0 0 10px var(--purple-glow),
-        0 0 20px var(--purple-glow);
-    }
-    
-    .glow-cyan { 
-      box-shadow: 
-        0 0 30px rgba(0, 245, 255, 0.4),
-        inset 0 0 20px rgba(0, 245, 255, 0.1);
-    }
-    
-    .card {
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .card:hover {
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 25px 50px -12px rgb(0 245 255 / 0.3);
-    }
-    
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 15px rgba(0,245,255,0.3); }
-      50% { box-shadow: 0 0 40px rgba(0,245,255,0.8); }
-    }
-    .live-pulse { animation: pulseGlow 1.8s infinite ease-in-out; }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-    
-    .modal-enter {
-      animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    
-    @keyframes modalPop {
-      0% { opacity: 0; transform: scale(0.95) translateY(20px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-    
-    .heatmap-cell {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .heatmap-cell:hover {
-      transform: scale(1.12) rotate(2deg);
-      filter: brightness(1.2);
-    }
-    
-    .chat-bubble {
-      animation: chatPop 0.3s ease;
-    }
-    
-    /* Background neural network effect */
-    .bg-neural {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(0,245,255,0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(192,38,211,0.08) 0%, transparent 50%);
-      z-index: -1;
-      pointer-events: none;
-      animation: neuralShift 25s linear infinite;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FairForge Arena — AI Fairness Training Gym</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-y: scroll; }
+  body { font-family: 'Inter', sans-serif; background: #020617; color: #fff; }
+
+  .slide {
+    min-height: 100vh;
+    scroll-snap-align: start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+  }
+
+  .glass-hover:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  @keyframes globalFadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    0% { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideLeft {
+    0% { opacity: 0; transform: translateX(60px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes slideRight {
+    0% { opacity: 0; transform: translateX(-60px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes scaleIn {
+    0% { opacity: 0; transform: scale(0.85); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.5; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+
+  @keyframes flowPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes typewriter {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  @keyframes blink {
+    50% { border-color: transparent; }
+  }
+
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes drawLine {
+    from { stroke-dashoffset: 1000; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hero-gradient {
+    background: linear-gradient(to bottom right, #d0d7fb, #716afb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .accent-gradient {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease infinite;
+  }
+
+  .nav-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .nav-dot.active {
+    background: #6366f1;
+    border-color: #6366f1;
+    box-shadow: 0 0 12px rgba(99,102,241,0.5);
+  }
+
+  .nav-dot:hover {
+    background: rgba(99,102,241,0.5);
+    transform: scale(1.3);
+  }
+
+  .nav-dot .tooltip {
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(15,23,42,0.95);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    color: #94a3b8;
+  }
+
+  .nav-dot:hover .tooltip { opacity: 1; }
+
+  .flow-box {
+    transition: all 0.3s ease;
+  }
+  .flow-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(99,102,241,0.2);
+    border-color: rgba(99,102,241,0.4);
+  }
+
+  .arch-layer {
+    transition: all 0.4s ease;
+  }
+  .arch-layer:hover {
+    transform: scale(1.02);
+    border-color: rgba(99,102,241,0.4);
+  }
+
+  .tech-card {
+    transition: all 0.3s ease;
+  }
+  .tech-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(99,102,241,0.3);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .screenshot-card {
+    transition: all 0.4s ease;
+  }
+  .screenshot-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  }
+
+  .stat-number {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 2px; }
+
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+    animation: shimmer 3s infinite;
+  }
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 200%; }
+  }
+
+  .bg-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+  }
+</style>
 </head>
-<body class="min-h-screen p-6 relative">
-  <!-- Neural background -->
-  <div class="bg-neural"></div>
+<body>
 
-  <div class="max-w-7xl mx-auto">
-    <!-- HEADER - HACKATHON READY -->
-    <div class="dashboard-header flex justify-between items-center mb-8 fade-in">
-      <div class="flex items-center gap-5">
-        <!-- Logo -->
-        <div class="relative w-14 h-14 bg-gradient-to-br from-[#00f5ff] to-[#c026d3] rounded-3xl flex items-center justify-center text-4xl shadow-2xl rotate-12 hover:rotate-0 transition-transform">
-          ⚖️
-          <div class="absolute -top-1 -right-1 text-xs font-bold bg-emerald-400 text-black px-2 py-px rounded-2xl">v4.0</div>
-        </div>
-        
-        <div>
-          <h1 class="title-font text-5xl font-semibold tracking-[-2px] neon-cyan">FAIRFORGE ARENA</h1>
-          <div class="flex items-center gap-3 -mt-1">
-            <p class="text-[#00f5ff] text-xl font-medium">AI Fairness Gym</p>
-            <div class="px-4 py-1 bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-xs font-bold rounded-3xl flex items-center gap-2 shadow-inner">
-              <i class="fas fa-trophy"></i>
-              GOOGLE HACKATHON EDITION
-            </div>
-            <span class="text-emerald-400 text-sm font-medium flex items-center gap-1">
-              <i class="fas fa-bolt"></i> POWERED BY GEMINI 2.5
-            </span>
-          </div>
-        </div>
+<!-- Side Navigation -->
+<nav id="sideNav" class="fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3 items-center">
+  <div class="nav-dot active" data-slide="0"><span class="tooltip">Title</span></div>
+  <div class="nav-dot" data-slide="1"><span class="tooltip">Problem</span></div>
+  <div class="nav-dot" data-slide="2"><span class="tooltip">Solution</span></div>
+  <div class="nav-dot" data-slide="3"><span class="tooltip">Key Features</span></div>
+  <div class="nav-dot" data-slide="4"><span class="tooltip">Fairness Metrics</span></div>
+  <div class="nav-dot" data-slide="5"><span class="tooltip">RL Training</span></div>
+  <div class="nav-dot" data-slide="6"><span class="tooltip">XAI with Gemini</span></div>
+  <div class="nav-dot" data-slide="7"><span class="tooltip">Differentiation</span></div>
+  <div class="nav-dot" data-slide="8"><span class="tooltip">Workflow</span></div>
+  <div class="nav-dot" data-slide="9"><span class="tooltip">Architecture</span></div>
+  <div class="nav-dot" data-slide="10"><span class="tooltip">Tech Stack</span></div>
+  <div class="nav-dot" data-slide="11"><span class="tooltip">MVP Demo</span></div>
+  <div class="nav-dot" data-slide="12"><span class="tooltip">Roadmap</span></div>
+  <div class="nav-dot" data-slide="13"><span class="tooltip">Impact</span></div>
+  <div class="nav-dot" data-slide="14"><span class="tooltip">Team</span></div>
+  <div class="nav-dot" data-slide="15"><span class="tooltip">Thank You</span></div>
+</nav>
+
+<!-- ==================== SLIDE 1: TITLE ==================== -->
+<section class="slide" id="slide-0">
+  <div class="bg-glow w-[600px] h-[600px] bg-indigo-600/15 -top-40 -left-40 absolute"></div>
+  <div class="bg-glow w-[500px] h-[500px] bg-purple-600/10 bottom-0 right-0 absolute"></div>
+
+  <div class="text-center px-6 max-w-4xl mx-auto relative z-10">
+    <!-- Robot Icon -->
+    <div class="mx-auto mb-8 relative" style="animation: float 3s ease-in-out infinite;">
+      <div class="w-24 h-24 rounded-2xl accent-gradient flex items-center justify-center mx-auto shadow-lg shadow-indigo-500/20">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect x="10" y="14" width="28" height="22" rx="4" fill="white" fill-opacity="0.9"/>
+          <circle cx="18" cy="24" r="3" fill="#4f46e5"/>
+          <circle cx="30" cy="24" r="3" fill="#4f46e5"/>
+          <rect x="18" y="30" width="12" height="2" rx="1" fill="#4f46e5" fill-opacity="0.6"/>
+          <line x1="24" y1="8" x2="24" y2="14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="24" cy="6" r="2" fill="white"/>
+          <line x1="10" y1="22" x2="6" y2="20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <line x1="38" y1="22" x2="42" y2="20" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <rect x="14" y="36" width="6" height="6" rx="1" fill="white" fill-opacity="0.5"/>
+          <rect x="28" y="36" width="6" height="6" rx="1" fill="white" fill-opacity="0.5"/>
+        </svg>
       </div>
-      
-      <!-- Right header controls -->
-      <div class="flex items-center gap-4">
-        <!-- Model badge -->
-        <div class="glass px-5 py-2 rounded-3xl flex items-center gap-3 text-sm font-medium">
-          <div class="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
-          <span>Model:</span>
-          <span class="text-cyan-400 font-semibold">Llama-3-FairTune • v2.3</span>
-          <button onclick="switchModel()" 
-                  class="text-xs px-3 py-1 bg-white/10 hover:bg-white/20 rounded-2xl transition-all flex items-center gap-1">
-            <i class="fas fa-sync"></i> SWITCH
-          </button>
-        </div>
-
-        <!-- Live status -->
-        <div class="live-badge flex items-center gap-3 bg-emerald-900/40 text-emerald-400 px-6 py-3 rounded-3xl text-sm font-semibold live-pulse">
-          <span class="relative flex h-3 w-3">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400"></span>
-            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-400"></span>
-          </span>
-          LIVE • 14,872 inferences/sec
-        </div>
-
-        <!-- Quick actions -->
-        <button onclick="runFullAudit()" 
-                class="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 px-8 py-3 rounded-3xl font-semibold text-white shadow-xl transition-all hover:scale-105">
-          <i class="fas fa-bolt"></i>
-          <span>RUN FULL AUDIT</span>
-        </button>
-
-        <div onclick="toggleChat()" class="w-11 h-11 rounded-2xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center text-2xl cursor-pointer hover:scale-110 transition-transform shadow-2xl">
-          <i class="fas fa-robot"></i>
-        </div>
-      </div>
+      <div class="absolute inset-0 w-24 h-24 rounded-2xl accent-gradient mx-auto" style="animation: pulse-ring 2s ease-out infinite; opacity: 0.3;"></div>
     </div>
 
-    <!-- HEALTH BAR - ANIMATED COUNTERS -->
-    <div class="health-bar glass rounded-3xl p-6 mb-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-      <div class="health-item flex flex-col items-center">
-        <span class="text-gray-400 text-xs uppercase tracking-[1px]">Overall Fairness Score</span>
-        <div id="overall-score" class="text-6xl font-bold text-cyan-400 mt-1 tabular-nums">84</div>
-        <div class="text-xs text-emerald-400 flex items-center gap-1">
-          <i class="fas fa-arrow-trend-up"></i> +12 from last audit
-        </div>
-        <div class="h-2 w-36 bg-gray-800 rounded-full mt-3 overflow-hidden">
-          <div id="score-bar" class="h-2 bg-gradient-to-r from-cyan-400 to-emerald-400 w-[84%] rounded-full"></div>
-        </div>
-      </div>
-      
-      <div class="health-item flex flex-col items-center">
-        <span class="text-gray-400 text-xs uppercase tracking-[1px]">80% Rule Compliance</span>
-        <div id="compliance-status" class="text-4xl font-semibold mt-2 flex items-center gap-3">
-          <i class="fas fa-shield-alt text-emerald-400"></i>
-          <span>4/4 GROUPS</span>
-        </div>
-        <p class="text-emerald-400 text-sm mt-1">PERFECT • EU AI ACT READY</p>
-      </div>
-      
-      <div class="health-item flex flex-col items-center">
-        <span class="text-gray-400 text-xs uppercase tracking-[1px]">Model Drift</span>
-        <div id="drift-status" class="text-4xl font-semibold mt-2 flex items-center gap-3 text-emerald-400">
-          <i class="fas fa-check-circle"></i>
-          <span>0.8%</span>
-        </div>
-        <div class="text-xs bg-emerald-400/10 text-emerald-400 px-4 py-px rounded-3xl mt-2">STABLE • NO DRIFT DETECTED</div>
-      </div>
-      
-      <div class="health-item flex flex-col items-center">
-        <span class="text-gray-400 text-xs uppercase tracking-[1px]">Data Quality + Coverage</span>
-        <div class="flex items-baseline gap-2 mt-2">
-          <div id="data-quality" class="text-5xl font-bold text-emerald-400">99.4</div>
-          <div class="text-xl text-emerald-400">%</div>
-        </div>
-        <div class="w-full max-w-[160px] bg-gray-800 h-2 rounded-3xl mt-3">
-          <div class="bg-emerald-400 h-2 rounded-3xl w-[99%]"></div>
-        </div>
-      </div>
+    <div class="inline-block px-4 py-1.5 rounded-full glass text-xs text-indigo-300 font-medium tracking-wider uppercase mb-6">
+      H2S Hackathon 2026 • Unbiased AI Decision Track
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      <!-- LEFT COLUMN - MAIN ARENA -->
-      <div class="lg:col-span-8 space-y-8">
-        
-        <!-- INTERSECTIONAL BIAS HEATMAP - HERO -->
-        <div class="card glass rounded-3xl p-8 glow-cyan">
-          <div class="flex justify-between items-baseline mb-6">
-            <h2 class="text-3xl font-semibold flex items-center gap-4">
-              <i class="fas fa-fire-flame-curved text-orange-400"></i>
-              INTERSECTIONAL BIAS HEATMAP
-            </h2>
-            <div class="flex gap-6 text-sm">
-              <div><span class="inline-block w-4 h-4 bg-emerald-400 rounded mr-2"></span><span class="font-medium">FAIR</span></div>
-              <div><span class="inline-block w-4 h-4 bg-amber-400 rounded mr-2"></span><span class="font-medium">CAUTION</span></div>
-              <div><span class="inline-block w-4 h-4 bg-red-400 rounded mr-2"></span><span class="font-medium">HIGH RISK</span></div>
-            </div>
-            <button onclick="simulateNewData()" class="text-xs flex items-center gap-2 bg-white/10 hover:bg-white/20 px-5 py-2 rounded-3xl">
-              <i class="fas fa-dice"></i> SIMULATE NEW DATASET
-            </button>
-          </div>
-          
-          <div class="flex gap-6">
-            <!-- Y axis -->
-            <div class="flex flex-col justify-between text-sm font-medium text-gray-300 py-2">
-              <div class="flex items-center gap-2"><i class="fas fa-mars"></i> Male</div>
-              <div class="flex items-center gap-2"><i class="fas fa-venus"></i> Female</div>
-              <div class="flex items-center gap-2"><i class="fas fa-transgender"></i> Non-Binary</div>
-            </div>
-            
-            <!-- Grid -->
-            <div class="flex-1">
-              <div class="grid grid-cols-4 gap-3 mb-3 text-center text-gray-400 text-sm font-medium">
-                <div>White</div>
-                <div>Black</div>
-                <div>Asian</div>
-                <div>Hispanic / Latine</div>
-              </div>
-              <div id="bias-heatmap" class="grid grid-cols-4 gap-3"></div>
-            </div>
-          </div>
-          
-          <!-- Insight bar -->
-          <div class="mt-8 p-5 bg-gradient-to-r from-red-500/10 to-transparent border border-red-400/30 rounded-3xl flex items-center gap-5">
-            <div class="text-4xl">🔥</div>
-            <div class="flex-1">
-              <strong class="text-red-400">CRITICAL BIAS:</strong> 
-              <span id="highest-bias" class="font-semibold">Black • Female</span>
-              <span class="ml-3 text-gray-400">−31% approval disparity vs White Male baseline</span>
-            </div>
-            <button onclick="showCounterfactual('Black', 'Female', 0.31)" 
-                    class="px-8 py-3 bg-red-500 hover:bg-red-600 text-white rounded-3xl text-sm font-semibold flex items-center gap-2">
-              <i class="fas fa-magic"></i> WHAT-IF FIX
-            </button>
-          </div>
-        </div>
-        
-        <!-- PPO TRAINING + RADAR -->
-        <div class="grid grid-cols-1 xl:grid-cols-5 gap-8">
-          <!-- Training Progress -->
-          <div class="card glass rounded-3xl p-8 xl:col-span-3 glow-cyan">
-            <h2 class="text-2xl font-semibold mb-4 flex items-center gap-3">
-              <i class="fas fa-robot"></i> PPO TRAINING PROGRESS
-            </h2>
-            <div id="training-chart" class="h-72 w-full"></div>
-            <div class="flex justify-between mt-6 text-center">
-              <div>
-                <div id="bias-reduction" class="text-6xl font-bold text-emerald-400">92%</div>
-                <div class="text-sm text-gray-400">Bias Reduction Achieved</div>
-              </div>
-              <div>
-                <div id="current-bias-score" class="text-6xl font-bold">0.07</div>
-                <div class="text-sm text-gray-400">Current Global Bias</div>
-              </div>
-              <div class="text-emerald-400 text-sm flex flex-col justify-center">
-                <div class="flex items-center gap-1"><i class="fas fa-medal"></i> LEGENDARY</div>
-                <div class="text-xs">Top 1% Fair Models</div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Radar Chart -->
-          <div class="card glass rounded-3xl p-8 xl:col-span-2">
-            <h2 class="text-2xl font-semibold mb-4">Group Fairness Radar</h2>
-            <div id="radar-chart" class="h-72"></div>
-          </div>
-        </div>
-        
-        <!-- Recent Violations -->
-        <div class="card glass rounded-3xl p-8">
-          <div class="flex justify-between mb-6">
-            <h2 class="text-2xl font-semibold">Recent Bias Violations • Live Feed</h2>
-            <span onclick="clearViolations()" class="text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer flex items-center gap-1">
-              <i class="fas fa-trash"></i> CLEAR ALL
-            </span>
-          </div>
-          <div id="violations-list" class="space-y-4"></div>
-        </div>
-      </div>
-      
-      <!-- RIGHT COLUMN - CONTROLS + METRICS -->
-      <div class="lg:col-span-4 space-y-8">
-        
-        <!-- Metrics Grid -->
-        <div class="grid grid-cols-2 gap-4">
-          <div class="metric-card glass rounded-3xl p-6 text-center card group">
-            <p class="text-gray-400 text-sm">Demographic Parity</p>
-            <p id="metric-dp" class="text-6xl font-bold text-emerald-400 mt-3">0.96</p>
-            <div class="flex justify-center mt-4">
-              <div class="w-40 h-2 bg-gray-700 rounded-3xl overflow-hidden">
-                <div class="bg-emerald-400 h-2 rounded-3xl" style="width: 96%"></div>
-              </div>
-            </div>
-            <div class="text-emerald-400 text-xs mt-2 font-medium">PASS • +0.04</div>
-          </div>
-          
-          <div class="metric-card glass rounded-3xl p-6 text-center card group">
-            <p class="text-gray-400 text-sm">Equal Opportunity</p>
-            <p id="metric-eo" class="text-6xl font-bold text-emerald-400 mt-3">0.94</p>
-            <div class="flex justify-center mt-4">
-              <div class="w-40 h-2 bg-gray-700 rounded-3xl overflow-hidden">
-                <div class="bg-emerald-400 h-2 rounded-3xl" style="width: 94%"></div>
-              </div>
-            </div>
-            <div class="text-emerald-400 text-xs mt-2 font-medium">PASS • +0.06</div>
-          </div>
-          
-          <div class="metric-card glass rounded-3xl p-6 text-center card group">
-            <p class="text-gray-400 text-sm">Disparate Impact</p>
-            <p id="metric-di" class="text-6xl font-bold text-emerald-400 mt-3">0.89</p>
-            <div class="flex justify-center mt-4">
-              <div class="w-40 h-2 bg-gray-700 rounded-3xl overflow-hidden">
-                <div class="bg-emerald-400 h-2 rounded-3xl" style="width: 89%"></div>
-              </div>
-            </div>
-            <div class="text-emerald-400 text-xs mt-2 font-medium">PASS • 80% RULE MET</div>
-          </div>
-          
-          <div class="metric-card glass rounded-3xl p-6 text-center card group">
-            <p class="text-gray-400 text-sm">Intersectional Bias</p>
-            <p id="metric-ib" class="text-6xl font-bold text-emerald-400 mt-3">0.21</p>
-            <div class="flex justify-center mt-4">
-              <div class="w-40 h-2 bg-gray-700 rounded-3xl overflow-hidden">
-                <div class="bg-emerald-400 h-2 rounded-3xl" style="width: 79%"></div>
-              </div>
-            </div>
-            <div class="text-emerald-400 text-xs mt-2 font-medium">EXCELLENT • −41% from baseline</div>
-          </div>
-        </div>
-        
-        <!-- MITIGATION LAB -->
-        <div class="card glass rounded-3xl p-8">
-          <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3">
-            <i class="fas fa-wand-magic-sparkles"></i> MITIGATION LAB
-          </h2>
-          <div class="space-y-4">
-            <button onclick="applyMitigation('reweight')" 
-                    class="w-full py-5 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:brightness-110 rounded-3xl font-semibold text-lg flex items-center justify-center gap-4">
-              <i class="fas fa-balance-scale text-2xl"></i>
-              <div>
-                REWEIGHT TRAINING DATA
-                <div class="text-xs opacity-75">Balances protected groups instantly</div>
-              </div>
-            </button>
-            
-            <button onclick="applyMitigation('drop_proxy')" 
-                    class="w-full py-5 bg-white/10 hover:bg-white/20 rounded-3xl font-semibold text-lg flex items-center justify-center gap-4">
-              <i class="fas fa-cut text-2xl"></i>
-              <div>
-                REMOVE PROXY FEATURES
-                <div class="text-xs opacity-75">ZIP, name, neighborhood</div>
-              </div>
-            </button>
-            
-            <button onclick="applyMitigation('threshold')" 
-                    class="w-full py-5 bg-white/10 hover:bg-white/20 rounded-3xl font-semibold text-lg flex items-center justify-center gap-4">
-              <i class="fas fa-sliders-h text-2xl"></i>
-              <div>
-                ADAPTIVE THRESHOLD
-                <div class="text-xs opacity-75">+7% for disadvantaged groups</div>
-              </div>
-            </button>
-            
-            <button onclick="applyMitigation('counterfactual')" 
-                    class="w-full py-5 bg-gradient-to-r from-purple-500 to-pink-500 hover:brightness-110 rounded-3xl font-semibold text-lg flex items-center justify-center gap-4">
-              <i class="fas fa-magic text-2xl"></i>
-              <div>
-                COUNTERFACTUAL AUGMENTATION
-                <div class="text-xs opacity-75">Gemini-powered synthetic fairness</div>
-              </div>
-            </button>
-          </div>
-          
-          <button onclick="exportReport()" 
-                  class="mt-8 w-full py-5 bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-500 text-white font-bold text-xl rounded-3xl flex items-center justify-center gap-3 shadow-2xl">
-            <i class="fas fa-file-export"></i>
-            EXPORT GOOGLE AI STUDIO + EU AI ACT REPORT
-          </button>
-        </div>
-        
-        <!-- BONUS HACKATHON FEATURE: FAIRNESS ORB -->
-        <div class="glass rounded-3xl p-6 text-center">
-          <div class="mx-auto w-20 h-20 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-3xl flex items-center justify-center text-5xl mb-4 animate-float">
-            🛡️
-          </div>
-          <h3 class="font-semibold text-xl">Your Fairness Shield is at <span class="text-emerald-400">LEGENDARY</span></h3>
-          <p class="text-sm text-gray-400 mt-2">Ready for production deployment on Vertex AI</p>
-          <div onclick="deployToProduction()" class="mt-6 cursor-pointer inline-flex items-center justify-center gap-3 text-emerald-400 hover:text-white bg-emerald-400/10 hover:bg-emerald-400/20 px-10 py-4 rounded-3xl font-medium">
-            <i class="fas fa-rocket"></i>
-            DEPLOY TO PRODUCTION
-          </div>
-        </div>
-      </div>
+    <h1 class="text-5xl md:text-7xl font-extralight tracking-tight leading-[1.05] mb-6">
+      <span class="hero-gradient">FairForge</span>
+      <span class="text-white/90"> Arena</span>
+    </h1>
+
+    <p class="text-lg md:text-xl text-slate-400 font-light leading-relaxed max-w-2xl mx-auto mb-4">
+      The AI Fairness Training Gym That <span class="text-white font-normal">Measures</span>, <span class="text-white font-normal">Flags</span> & <span class="text-white font-normal">Fixes</span> Bias in Automated Decisions
+    </p>
+
+    <p class="text-sm text-indigo-300/70 italic mb-10">"Train AI to be Fair — Before it Impacts Real Lives"</p>
+
+    <div class="flex items-center justify-center gap-4 flex-wrap">
+      <a href="#slide-1" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium px-6 py-3 rounded-xl transition-all duration-150 shadow-lg shadow-indigo-500/20">
+        Explore the Problem <i data-lucide="arrow-down" class="w-4 h-4"></i>
+      </a>
+      <a href="#slide-11" class="inline-flex items-center gap-2 glass glass-hover text-slate-300 text-sm font-medium px-6 py-3 rounded-xl transition-all duration-150">
+        <i data-lucide="play" class="w-4 h-4"></i> Live Demo
+      </a>
+    </div>
+
+    <div class="mt-14 text-xs text-slate-600 tracking-widest uppercase">
+      Team MASSIVE-X
     </div>
   </div>
+</section>
 
-  <!-- COUNTERFACTUAL MODAL -->
-  <div id="cf-modal" onclick="if(event.target.id==='cf-modal')closeModal()" 
-       class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden modal-enter">
-    <div onclick="event.stopImmediatePropagation()" 
-         class="glass rounded-3xl p-10 max-w-lg w-full mx-4">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="text-3xl font-semibold flex items-center gap-4"><span class="text-4xl">🔮</span> WHAT-IF ANALYSIS</h3>
-        <i onclick="closeModal()" class="fas fa-times text-3xl cursor-pointer"></i>
-      </div>
-      <div id="modal-content" class="text-lg leading-relaxed"></div>
-      
-      <div class="mt-10 flex gap-4">
-        <button onclick="closeModal()" class="flex-1 py-6 text-lg font-medium bg-white/10 hover:bg-white/20 rounded-3xl">CLOSE</button>
-        <button onclick="applyMitigation('counterfactual_fix');closeModal()" 
-                class="flex-1 py-6 text-lg font-medium bg-gradient-to-r from-cyan-400 to-purple-500 text-black rounded-3xl">APPLY GEMINI FIX</button>
-      </div>
+<!-- ==================== SLIDE 2: THE PROBLEM ==================== -->
+<section class="slide" id="slide-1">
+  <div class="bg-glow w-[500px] h-[500px] bg-red-600/8 top-20 right-0 absolute"></div>
+  <div class="max-w-6xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium tracking-wider uppercase mb-4">The Problem</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">Life-Changing Decisions<br><span class="text-red-400/80">Shouldn't Be Biased</span></h2>
     </div>
-  </div>
 
-  <!-- GEMINI CHAT WIDGET -->
-  <div class="fixed bottom-8 right-8 z-50">
-    <div id="chat-window" class="glass w-96 rounded-3xl p-5 mb-4 hidden shadow-2xl">
-      <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-4">
-        <div class="flex items-center gap-3">
-          <div class="text-3xl">🧬</div>
+    <div class="grid md:grid-cols-2 gap-8 items-center">
+      <!-- Left: Problem Cards -->
+      <div class="space-y-4 animate-on-scroll">
+        <div class="glass rounded-2xl p-5 flex gap-4 items-start glass-hover transition-all duration-300">
+          <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i data-lucide="briefcase" class="w-5 h-5 text-red-400"></i>
+          </div>
           <div>
-            <span class="font-bold text-xl">Gemini Fairness Co-Pilot</span>
-            <div class="text-xs text-emerald-400">• Online • Thinking in real-time</div>
+            <h4 class="text-white text-sm font-medium mb-1">AI Decides Jobs, Loans, Medical Care</h4>
+            <p class="text-slate-500 text-xs leading-relaxed">Automated systems now make high-stakes decisions affecting millions of people daily — often without oversight.</p>
           </div>
         </div>
-        <button onclick="toggleChat()" class="text-2xl text-gray-400 hover:text-white"><i class="fas fa-xmark"></i></button>
+
+        <div class="glass rounded-2xl p-5 flex gap-4 items-start glass-hover transition-all duration-300">
+          <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i data-lucide="database" class="w-5 h-5 text-red-400"></i>
+          </div>
+          <div>
+            <h4 class="text-white text-sm font-medium mb-1">Flawed Historical Data → Amplified Discrimination</h4>
+            <p class="text-slate-500 text-xs leading-relaxed">Models trained on biased data don't just reproduce bias — they amplify and systematize it at scale.</p>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5 flex gap-4 items-start glass-hover transition-all duration-300">
+          <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i data-lucide="shield-alert" class="w-5 h-5 text-red-400"></i>
+          </div>
+          <div>
+            <h4 class="text-white text-sm font-medium mb-1">Protected Groups Suffer Hidden Unfairness</h4>
+            <p class="text-slate-500 text-xs leading-relaxed">Gender, race, age discrimination is often invisible in aggregate metrics but devastating at the individual level.</p>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl p-5 flex gap-4 items-start glass-hover transition-all duration-300">
+          <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i data-lucide="wrench" class="w-5 h-5 text-red-400"></i>
+          </div>
+          <div>
+            <h4 class="text-white text-sm font-medium mb-1">No Accessible Tools to Measure, Flag & Fix</h4>
+            <p class="text-slate-500 text-xs leading-relaxed">Existing fairness toolkits require PhD-level expertise. Organizations are left guessing about their AI's fairness.</p>
+          </div>
+        </div>
       </div>
-      
-      <div id="chat-messages" class="h-80 overflow-y-auto space-y-6 pr-2 mb-6 custom-scroll"></div>
-      
-      <!-- Quick prompts -->
-      <div class="flex flex-wrap gap-2 mb-4">
-        <div onclick="quickPrompt(this)" class="text-xs bg-white/10 hover:bg-cyan-400/30 px-4 py-2 rounded-3xl cursor-pointer">Why is Black Female group biased?</div>
-        <div onclick="quickPrompt(this)" class="text-xs bg-white/10 hover:bg-cyan-400/30 px-4 py-2 rounded-3xl cursor-pointer">Best mitigation for disparate impact?</div>
-        <div onclick="quickPrompt(this)" class="text-xs bg-white/10 hover:bg-cyan-400/30 px-4 py-2 rounded-3xl cursor-pointer">Is this EU AI Act compliant?</div>
-      </div>
-      
-      <div class="flex">
-        <input id="chat-input" 
-               onkeypress="if(event.keyCode===13) sendChatMessage()"
-               type="text" 
-               class="flex-1 bg-white/10 border border-white/10 focus:border-cyan-400 rounded-l-3xl px-6 py-4 outline-none text-sm placeholder:text-gray-400"
-               placeholder="Ask anything about fairness...">
-        <button onclick="sendChatMessage()" 
-                class="bg-gradient-to-r from-cyan-400 to-purple-500 text-black px-8 rounded-r-3xl font-bold">SEND</button>
+
+      <!-- Right: Visual -->
+      <div class="animate-on-scroll relative">
+        <div class="glass rounded-2xl p-6 relative overflow-hidden">
+          <!-- Biased Flowchart -->
+          <div class="text-xs text-slate-500 uppercase tracking-wider mb-4 font-medium">Biased Decision Pipeline</div>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center"><i data-lucide="file-text" class="w-4 h-4 text-slate-400"></i></div>
+              <div class="flex-1 h-8 rounded-lg bg-slate-800/50 border border-slate-700/50 flex items-center px-3 text-xs text-slate-400">Historical Data (Biased)</div>
+            </div>
+            <div class="flex justify-center"><i data-lucide="arrow-down" class="w-4 h-4 text-red-500/50"></i></div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center"><i data-lucide="brain" class="w-4 h-4 text-slate-400"></i></div>
+              <div class="flex-1 h-8 rounded-lg bg-slate-800/50 border border-slate-700/50 flex items-center px-3 text-xs text-slate-400">ML Model Training</div>
+            </div>
+            <div class="flex justify-center"><i data-lucide="arrow-down" class="w-4 h-4 text-red-500/50"></i></div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center"><i data-lucide="zap" class="w-4 h-4 text-slate-400"></i></div>
+              <div class="flex-1 h-8 rounded-lg bg-slate-800/50 border border-red-500/30 flex items-center px-3 text-xs text-red-400">Biased Predictions</div>
+            </div>
+            <div class="flex justify-center"><i data-lucide="arrow-down" class="w-4 h-4 text-red-500/50"></i></div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center"><i data-lucide="x" class="w-4 h-4 text-red-500"></i></div>
+              <div class="flex-1 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center px-3 text-xs text-red-400 font-medium">Discrimination × 2.3x</div>
+            </div>
+          </div>
+
+          <!-- Affected Groups -->
+          <div class="mt-5 pt-4 border-t border-white/5">
+            <div class="text-xs text-slate-500 uppercase tracking-wider mb-3 font-medium">Affected Groups</div>
+            <div class="flex flex-wrap gap-2">
+              <span class="px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px]">Gender</span>
+              <span class="px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px]">Race</span>
+              <span class="px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px]">Age</span>
+              <span class="px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px]">Disability</span>
+              <span class="px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px]">Socioeconomic</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    
-    <!-- Floating orb -->
-    <button onclick="toggleChat()" 
-            class="w-16 h-16 rounded-3xl bg-gradient-to-br from-[#00f5ff] to-[#c026d3] text-3xl flex items-center justify-center shadow-[0_0_60px_-10px] shadow-cyan-400 hover:shadow-[0_0_80px_10px] hover:scale-110 transition-all">
-      <i class="fas fa-robot"></i>
-    </button>
   </div>
+</section>
 
-  <script>
-    // Tailwind script already loaded via CDN
-    function initTailwind() {
-      // Already configured via CDN
-    }
-    
-    // Global state
-    let currentData = {
-      heatmap: [
-        [0.04, 0.11, 0.06, 0.09],
-        [0.22, 0.31, 0.19, 0.27],
-        [0.07, 0.13, 0.08, 0.14]
-      ],
-      metrics: { dp: 0.96, eo: 0.94, di: 0.89, ib: 0.21 },
-      violations: [
-        { id: 'APP-4721', type: 'Intersectional', desc: 'Black Female approval rate 31% lower than baseline', severity: 'high' },
-        { id: 'APP-4819', type: 'Proxy', desc: 'ZIP code leaking race signal', severity: 'medium' },
-        { id: 'APP-4923', type: 'Disparate', desc: 'Non-binary group rejected at higher rate', severity: 'low' }
-      ]
-    }
-    
-    // Simple confetti
-    function launchConfetti() {
-      const colors = ['#00f5ff', '#c026d3', '#10b981', '#f59e0b']
-      for (let i = 0; i < 120; i++) {
-        setTimeout(() => {
-          const confetti = document.createElement('div')
-          confetti.style.position = 'fixed'
-          confetti.style.zIndex = '9999'
-          confetti.style.left = Math.random() * 100 + 'vw'
-          confetti.style.top = '-10px'
-          confetti.style.width = '12px'
-          confetti.style.height = '12px'
-          confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px'
-          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]
-          confetti.style.transform = `rotate(${Math.random()*360}deg)`
-          confetti.style.opacity = '1'
-          document.body.appendChild(confetti)
-          
-          const duration = Math.random() * 3000 + 2000
-          const angle = Math.random() * 80 + 20
-          
-          confetti.animate([
-            { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
-            { transform: `translateY(${window.innerHeight + 100}px) rotate(${angle * 8}deg)`, opacity: 0 }
-          ], {
-            duration: duration,
-            easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)'
-          })
-          
-          setTimeout(() => confetti.remove(), duration)
-        }, i * 1.5)
-      }
-    }
-    
-    // Animate number
-    function animateValue(id, start, end, duration) {
-      const obj = document.getElementById(id)
-      if (!obj) return
-      const range = end - start
-      let startTime = null
-      
-      const step = (timestamp) => {
-        if (!startTime) startTime = timestamp
-        const progress = Math.min((timestamp - startTime) / duration, 1)
-        const value = Math.floor(progress * range + start)
-        obj.textContent = value
-        if (progress < 1) {
-          window.requestAnimationFrame(step)
-        } else {
-          obj.textContent = end
-        }
-      }
-      window.requestAnimationFrame(step)
-    }
-    
-    // Draw enhanced heatmap
-    function drawHeatmap() {
-      const container = document.getElementById('bias-heatmap')
-      container.innerHTML = ''
-      
-      const genders = ['Male', 'Female', 'Non-Binary']
-      const races = ['White', 'Black', 'Asian', 'Hispanic']
-      let maxBias = 0
-      let maxPos = {i: 0, j: 0}
-      
-      currentData.heatmap.forEach((row, i) => {
-        row.forEach((val, j) => {
-          if (val > maxBias) {
-            maxBias = val
-            maxPos = {i, j}
-          }
-        })
-      })
-      
-      currentData.heatmap.forEach((row, i) => {
-        row.forEach((val, j) => {
-          const cell = document.createElement('div')
-          const perc = Math.round(val * 100)
-          
-          let colorClass = val < 0.12 ? 'bg-emerald-400 text-black' : 
-                          val < 0.22 ? 'bg-amber-400 text-black' : 'bg-red-500 text-white'
-          
-          const isMax = (i === maxPos.i && j === maxPos.j)
-          
-          cell.className = `heatmap-cell h-20 flex flex-col items-center justify-center rounded-3xl text-xs font-bold shadow-inner ${colorClass} ${isMax ? 'ring-4 ring-red-300 ring-offset-4 ring-offset-[#1a1f2e]' : ''}`
-          
-          cell.innerHTML = `
-            <div class="text-2xl font-black">${perc}%</div>
-            <div class="text-[10px] opacity-80 mt-px">${genders[i]}</div>
-            <div class="text-[9px] opacity-70">${races[j]}</div>
-          `
-          
-          cell.addEventListener('click', () => {
-            showCounterfactual(races[j], genders[i], val)
-          })
-          
-          container.appendChild(cell)
-        })
-      })
-      
-      // Update highest bias banner
-      document.getElementById('highest-bias').innerHTML = `
-        ${races[maxPos.j]} • ${genders[maxPos.i]} 
-        <span class="text-xs ml-2 bg-red-400/20 text-red-400 px-3 py-px rounded-3xl">${Math.round(maxBias*100)}% disparity</span>
-      `
-    }
-    
-    // Counterfactual modal
-    function showCounterfactual(race, gender, disparity) {
-      const modal = document.getElementById('cf-modal')
-      const content = document.getElementById('modal-content')
-      
-      const percent = Math.round(disparity * 100)
-      
-      content.innerHTML = `
-        <div class="bg-gradient-to-br from-red-400/10 to-transparent p-6 rounded-3xl mb-6">
-          <p class="text-2xl">If we flip <span class="font-bold">${gender} ${race}</span> → <span class="text-emerald-400 font-bold">White Male</span></p>
-          <p class="text-7xl font-bold text-cyan-400 mt-4">${percent}% <span class="text-4xl font-normal text-gray-400">higher chance</span></p>
+<!-- ==================== SLIDE 3: THE SOLUTION ==================== -->
+<section class="slide" id="slide-2">
+  <div class="bg-glow w-[600px] h-[600px] bg-indigo-600/12 -bottom-40 left-1/2 -translate-x-1/2 absolute"></div>
+  <div class="max-w-6xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium tracking-wider uppercase mb-4">The Solution</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">FairForge Arena<br><span class="text-indigo-400/80">Train Fairness, Not Just Detect It</span></h2>
+      <p class="text-slate-500 text-sm mt-4 max-w-xl mx-auto">An interactive gymnasium where AI models are stress-tested, debiased via reinforcement learning, and explained through generative XAI — all in one platform.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5 animate-on-scroll">
+      <div class="glass rounded-2xl p-6 glass-hover transition-all duration-300 shimmer relative overflow-hidden">
+        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-4">
+          <i data-lucide="scan-search" class="w-6 h-6 text-indigo-400"></i>
         </div>
-        <p class="text-gray-300">This counterfactual shows strong protected attribute influence — a red flag under EU AI Act Article 10 and Google AI Principles.</p>
-        <p class="mt-6 text-sm text-emerald-400 flex items-center gap-2"><i class="fas fa-check"></i> Gemini suggests: synthetic data rebalancing + adversarial debiasing</p>
-      `
-      modal.classList.remove('hidden')
-      modal.style.display = 'flex'
-    }
-    
-    function closeModal() {
-      const modal = document.getElementById('cf-modal')
-      modal.classList.add('hidden')
-      modal.style.display = 'none'
-    }
-    
-    // Training chart
-    function drawTrainingChart() {
-      const trace = {
-        x: [0, 50, 120, 220, 340, 500],
-        y: [0.91, 0.64, 0.41, 0.23, 0.14, 0.07],
-        mode: 'lines+markers',
-        line: { color: '#00f5ff', width: 7, shape: 'spline' },
-        marker: { color: '#c026d3', size: 8 },
-        fill: 'tozeroy',
-        fillcolor: 'rgba(0, 245, 255, 0.12)',
-        name: 'Bias Score'
-      }
-      
-      Plotly.newPlot('training-chart', [trace], {
-        paper_bgcolor: 'transparent',
-        plot_bgcolor: 'transparent',
-        margin: { t: 20, r: 30, b: 50, l: 50 },
-        xaxis: { title: 'PPO Episodes', gridcolor: '#ffffff15', tickfont: { color: '#aaa' } },
-        yaxis: { title: 'Bias ↓', gridcolor: '#ffffff15', tickfont: { color: '#aaa' } },
-        font: { color: '#e5e9f0', family: 'Inter' }
-      }, {responsive: true})
-    }
-    
-    // Radar chart
-    function drawRadarChart() {
-      const data = [{
-        type: 'scatterpolar',
-        r: [0.96, 0.94, 0.89, 0.91, 0.93, 0.96],
-        theta: ['Demographic Parity', 'Equal Opportunity', 'Disparate Impact', 'Predictive Parity', 'Equalized Odds', 'Intersectional'],
-        fill: 'toself',
-        fillcolor: 'rgba(16, 185, 129, 0.3)',
-        line: { color: '#10b981', width: 5 }
-      }]
-      
-      Plotly.newPlot('radar-chart', data, {
-        polar: { radialaxis: { visible: true, range: [0, 1] } },
-        showlegend: false,
-        paper_bgcolor: 'transparent',
-        margin: { t: 10, b: 10 }
-      }, {responsive: true})
-    }
-    
-    // Violations list
-    function updateViolationsList() {
-      const container = document.getElementById('violations-list')
-      container.innerHTML = ''
-      
-      currentData.violations.forEach(v => {
-        const severityColor = v.severity === 'high' ? 'red' : v.severity === 'medium' ? 'amber' : 'emerald'
-        
-        const div = document.createElement('div')
-        div.className = `flex gap-4 p-5 bg-white/5 rounded-3xl border border-${severityColor}-400/30 hover:border-${severityColor}-400 transition-colors`
-        div.innerHTML = `
-          <div class="flex-1">
-            <div class="flex justify-between">
-              <span class="font-mono text-sm">${v.id}</span>
-              <span class="px-4 text-xs bg-${severityColor}-400/10 text-${severityColor}-400 rounded-3xl h-fit">${v.severity.toUpperCase()}</span>
+        <h3 class="text-white text-base font-medium mb-2">Measure</h3>
+        <p class="text-slate-500 text-xs leading-relaxed">Upload your model or dataset. Get instant fairness metrics — DI, SPD, EOD, PP parity — across all protected attributes.</p>
+      </div>
+
+      <div class="glass rounded-2xl p-6 glass-hover transition-all duration-300 shimmer relative overflow-hidden">
+        <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4">
+          <i data-lucide="flag-triangle-right" class="w-6 h-6 text-amber-400"></i>
+        </div>
+        <h3 class="text-white text-base font-medium mb-2">Flag</h3>
+        <p class="text-slate-500 text-xs leading-relaxed">Automatically flag biased decision boundaries with intersectional heatmaps and group-level disparity scores.</p>
+      </div>
+
+      <div class="glass rounded-2xl p-6 glass-hover transition-all duration-300 shimmer relative overflow-hidden">
+        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4">
+          <i data-lucide="dumbbell" class="w-6 h-6 text-emerald-400"></i>
+        </div>
+        <h3 class="text-white text-base font-medium mb-2">Fix (RL Training)</h3>
+        <p class="text-slate-500 text-xs leading-relaxed">Don't just patch — retrain. PPO-based reinforcement learning penalizes unfairness while preserving accuracy.</p>
+      </div>
+    </div>
+
+    <div class="mt-8 glass rounded-2xl p-5 animate-on-scroll text-center">
+      <div class="flex items-center justify-center gap-2 text-sm text-indigo-300">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span class="font-medium">Plus: Gemini-powered Explainability</span>
+      </div>
+      <p class="text-slate-500 text-xs mt-1">Chat with your model's bias report. Get plain-English explanations of why decisions are unfair and how to fix them.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 4: KEY FEATURES ==================== -->
+<section class="slide" id="slide-3">
+  <div class="max-w-6xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium tracking-wider uppercase mb-4">Features</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">Everything You Need<br><span class="text-slate-500">In One Platform</span></h2>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 animate-on-scroll">
+      <div class="glass rounded-xl p-4 glass-hover transition-all duration-300 text-center group">
+        <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-500/20 transition-colors">
+          <i data-lucide="upload" class="w-5 h-5 text-indigo-400"></i>
+        </div>
+        <h4 class="text-white text-xs font-medium mb-1">Smart Upload</h4>
+        <p class="text-slate-600 text-[10px]">Auto-detect schema & protected attrs</p>
+      </div>
+
+      <div class="glass rounded-xl p-4 glass-hover transition-all duration-300 text-center group">
+        <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-500/20 transition-colors">
+          <i data-lucide="bar-chart-3" class="w-5 h-5 text-indigo-400"></i>
+        </div>
+        <h4 class="text-white text-xs font-medium mb-1">Fairness Dashboard</h4>
+        <p class="text-slate-600 text-[10px]">Real-time metrics & visualizations</p>
+      </div>
+
+      <div class="glass rounded-xl p-4 glass-hover transition-all duration-300 text-center group">
+        <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-500/20 transition-colors">
+          <i data-lucide="grid-3x3" class="w-5 h-5 text-indigo-400"></i>
+        </div>
+        <h4 class="text-white text-xs font-medium mb-1">Intersectional Heatmap</h4>
+        <p class="text-slate-600 text-[10px]">Cross-group bias mapping</p>
+      </div>
+
+      <div class="glass rounded-xl p-4 glass-hover transition-all duration-300 text-center group">
+        <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-500/20 transition-colors">
+          <i data-lucide="shield-check" class="w-5 h-5 text-indigo-400"></i>
+        </div>
+        <h4 class="text-white text-xs font-medium mb-1">Stress Testing</h4>
+        <p class="text-slate-600 text-[10px]">Adversarial fairness probes</p>
+      </div>
+
+      <div class="glass rounded-xl p-4 glass-hover transition-all duration-300 text-center group">
+        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-emerald-500/20 transition-colors">
+          <i data-lucide="brain-circuit" class="w-5 h-5 text-emerald-400"></i>
+        </div>
+        <h4 class="text-white text-xs font-medium mb-1">PPO RL Training</h4>
+        <p class="text-slate-600 text-[10px]">Train fairness into the model</p>
+      </div>
+
+      <div class="glass rounded-xl p-4 glass-hover transition-all duration-300 text-center group">
+        <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-purple-500/20 transition-colors">
+          <i data-lucide="message-square" class="w-5 h-5 text-purple-400"></i>
+        </div>
+        <h4 class="text-white text-xs font-medium mb-1">Gemini XAI Chat</h4>
+        <p class="text-slate-600 text-[10px]">Plain-English bias explanations</p>
+      </div>
+
+      <div class="glass rounded-xl p-4 glass-hover transition-all duration-300 text-center group">
+        <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-amber-500/20 transition-colors">
+          <i data-lucide="line-chart" class="w-5 h-5 text-amber-400"></i>
+        </div>
+        <h4 class="text-white text-xs font-medium mb-1">Training Curves</h4>
+        <p class="text-slate-600 text-[10px]">Live reward & fairness plots</p>
+      </div>
+
+      <div class="glass rounded-xl p-4 glass-hover transition-all duration-300 text-center group">
+        <div class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center mx-auto mb-3 group-hover:bg-sky-500/20 transition-colors">
+          <i data-lucide="file-down" class="w-5 h-5 text-sky-400"></i>
+        </div>
+        <h4 class="text-white text-xs font-medium mb-1">PDF Report Export</h4>
+        <p class="text-slate-600 text-[10px]">Audit-ready compliance docs</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 5: FAIRNESS METRICS ==================== -->
+<section class="slide" id="slide-4">
+  <div class="max-w-6xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium tracking-wider uppercase mb-4">Fairness Metrics</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">Rigorous, Standard<br><span class="text-indigo-400/80">Bias Measurement</span></h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 animate-on-scroll">
+      <!-- Metric Cards -->
+      <div class="space-y-3">
+        <div class="glass rounded-xl p-4 glass-hover transition-all duration-300">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-indigo-500"></div>
+              <span class="text-white text-sm font-medium">Disparate Impact (DI)</span>
             </div>
-            <p class="mt-3">${v.desc}</p>
+            <span class="text-[10px] text-slate-600 font-mono">≥ 0.80 = Fair</span>
           </div>
-          <button onclick="fixViolation('${v.id}');event.stopImmediatePropagation()" class="self-start text-xs px-6 py-3 bg-white/10 hover:bg-white/20 rounded-3xl font-medium">FIX WITH GEMINI</button>
-        `
-        container.appendChild(div)
-      })
-      
-      if (currentData.violations.length === 0) {
-        container.innerHTML = `<div class="text-center py-12 text-emerald-400">🎉 No violations! Your model is perfectly fair.</div>`
+          <p class="text-slate-500 text-xs ml-4">Ratio of favorable outcome rates between unprivileged and privileged groups. The 80% rule from EEOC guidelines.</p>
+          <div class="mt-2 ml-4 h-2 rounded-full bg-slate-800 overflow-hidden">
+            <div class="h-full rounded-full bg-gradient-to-r from-red-500 via-amber-500 to-emerald-500" style="width: 65%"></div>
+          </div>
+          <div class="flex justify-between mt-1 ml-4 text-[9px] text-slate-600">
+            <span>0.0 (Severe)</span><span>0.8 (Fair)</span><span>1.0 (Perfect)</span>
+          </div>
+        </div>
+
+        <div class="glass rounded-xl p-4 glass-hover transition-all duration-300">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+              <span class="text-white text-sm font-medium">Statistical Parity Difference</span>
+            </div>
+            <span class="text-[10px] text-slate-600 font-mono">≈ 0.0 = Fair</span>
+          </div>
+          <p class="text-slate-500 text-xs ml-4">Absolute difference in selection rates. Measures overall representation equity across groups.</p>
+        </div>
+
+        <div class="glass rounded-xl p-4 glass-hover transition-all duration-300">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+              <span class="text-white text-sm font-medium">Equal Opportunity Difference</span>
+            </div>
+            <span class="text-[10px] text-slate-600 font-mono">≈ 0.0 = Fair</span>
+          </div>
+          <p class="text-slate-500 text-xs ml-4">Difference in true positive rates. Ensures equally qualified individuals get equal positive outcomes.</p>
+        </div>
+      </div>
+
+      <!-- Visual: Sample Dashboard -->
+      <div class="glass rounded-2xl p-5 relative overflow-hidden">
+        <div class="text-xs text-slate-500 uppercase tracking-wider mb-4 font-medium">Sample Audit Output</div>
+        
+        <!-- Mini heatmap -->
+        <div class="mb-5">
+          <div class="text-[10px] text-slate-600 mb-2 uppercase tracking-wider">Intersectional Heatmap: Gender × Race</div>
+          <div class="grid grid-cols-4 gap-1">
+            <div class="h-12 rounded bg-emerald-500/30 flex items-center justify-center text-[9px] text-emerald-300">0.92</div>
+            <div class="h-12 rounded bg-amber-500/40 flex items-center justify-center text-[9px] text-amber-300">0.68</div>
+            <div class="h-12 rounded bg-red-500/40 flex items-center justify-center text-[9px] text-red-300">0.54</div>
+            <div class="h-12 rounded bg-red-500/50 flex items-center justify-center text-[9px] text-red-300">0.41</div>
+            <div class="h-12 rounded bg-emerald-500/20 flex items-center justify-center text-[9px] text-emerald-300">0.88</div>
+            <div class="h-12 rounded bg-emerald-500/30 flex items-center justify-center text-[9px] text-emerald-300">0.81</div>
+            <div class="h-12 rounded bg-amber-500/30 flex items-center justify-center text-[9px] text-amber-300">0.72</div>
+            <div class="h-12 rounded bg-amber-500/40 flex items-center justify-center text-[9px] text-amber-300">0.63</div>
+          </div>
+          <div class="grid grid-cols-4 gap-1 mt-1">
+            <div class="text-[8px] text-slate-600 text-center">M×W</div>
+            <div class="text-[8px] text-slate-600 text-center">M×B</div>
+            <div class="text-[8px] text-slate-600 text-center">M×H</div>
+            <div class="text-[8px] text-slate-600 text-center">M×A</div>
+            <div class="text-[8px] text-slate-600 text-center">F×W</div>
+            <div class="text-[8px] text-slate-600 text-center">F×B</div>
+            <div class="text-[8px] text-slate-600 text-center">F×H</div>
+            <div class="text-[8px] text-slate-600 text-center">F×A</div>
+          </div>
+        </div>
+
+        <!-- Metric bars -->
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between text-[10px] mb-1">
+              <span class="text-slate-400">Disparate Impact</span>
+              <span class="text-red-400 font-mono">0.54</span>
+            </div>
+            <div class="h-1.5 rounded-full bg-slate-800"><div class="h-full rounded-full bg-red-500" style="width:54%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-[10px] mb-1">
+              <span class="text-slate-400">Statistical Parity</span>
+              <span class="text-amber-400 font-mono">0.23</span>
+            </div>
+            <div class="h-1.5 rounded-full bg-slate-800"><div class="h-full rounded-full bg-amber-500" style="width:77%"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-[10px] mb-1">
+              <span class="text-slate-400">Equal Opportunity</span>
+              <span class="text-amber-400 font-mono">0.18</span>
+            </div>
+            <div class="h-1.5 rounded-full bg-slate-800"><div class="h-full rounded-full bg-amber-500" style="width:68%"></div></div>
+          </div>
+        </div>
+
+        <div class="mt-4 p-2 rounded-lg bg-red-500/10 border border-red-500/20">
+          <div class="flex items-center gap-2 text-[10px] text-red-400">
+            <i data-lucide="alert-triangle" class="w-3 h-3"></i>
+            <span class="font-medium">3 fairness violations detected</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 6: RL TRAINING ==================== -->
+<section class="slide" id="slide-5">
+  <div class="bg-glow w-[500px] h-[500px] bg-emerald-600/10 top-10 left-0 absolute"></div>
+  <div class="max-w-6xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-medium tracking-wider uppercase mb-4">Core Innovation</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">Reinforcement Learning<br><span class="text-emerald-400/80">That Trains Fairness In</span></h2>
+      <p class="text-slate-500 text-sm mt-4 max-w-2xl mx-auto">Unlike post-hoc bias mitigation, FairForge uses PPO to retrain the model's decision policy itself — rewarding accuracy while penalizing unfairness.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5 animate-on-scroll">
+      <!-- Step 1 -->
+      <div class="glass rounded-2xl p-5 glass-hover transition-all duration-300">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xs font-bold">1</div>
+          <h4 class="text-white text-sm font-medium">Custom OpenAI Gym Env</h4>
+        </div>
+        <p class="text-slate-500 text-xs leading-relaxed mb-3">We wrap your classification model in a Gymnasium-compatible environment where each "step" is a batch of predictions.</p>
+        <div class="p-2 rounded-lg bg-slate-900/50 font-mono text-[10px] text-emerald-400/70 space-y-0.5">
+          <div>env = FairnessEnv(model, data)</div>
+          <div>obs = env.reset()</div>
+          <div>action = policy(obs)</div>
+          <div>obs, reward, done, info = env.step(action)</div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="glass rounded-2xl p-5 glass-hover transition-all duration-300">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xs font-bold">2</div>
+          <h4 class="text-white text-sm font-medium">Dual-Objective Reward</h4>
+        </div>
+        <p class="text-slate-500 text-xs leading-relaxed mb-3">The reward function balances prediction accuracy with a fairness penalty — creating a Pareto-optimal trade-off.</p>
+        <div class="p-2 rounded-lg bg-slate-900/50 font-mono text-[10px] text-emerald-400/70">
+          <div>R = α · accuracy</div>
+          <div>&nbsp;&nbsp;- β · |DI - 1.0|</div>
+          <div>&nbsp;&nbsp;- γ · SPD</div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="glass rounded-2xl p-5 glass-hover transition-all duration-300">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-xs font-bold">3</div>
+          <h4 class="text-white text-sm font-medium">PPO Policy Optimization</h4>
+        </div>
+        <p class="text-slate-500 text-xs leading-relaxed mb-3">Stable-Baselines3 PPO agent learns to adjust prediction thresholds per group, converging to a fair policy.</p>
+        <div class="p-2 rounded-lg bg-slate-900/50 font-mono text-[10px] text-emerald-400/70">
+          <div>model = PPO("MlpPolicy", env)</div>
+          <div>model.learn(total_timesteps=50k)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result visualization -->
+    <div class="mt-8 glass rounded-2xl p-5 animate-on-scroll">
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-xs text-slate-500 uppercase tracking-wider font-medium">Training Outcome (Sample)</div>
+        <div class="flex items-center gap-3 text-[10px]">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-500"></span> Before</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> After PPO</span>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="text-center">
+          <div class="text-2xl font-light text-white stat-number">0.54 → <span class="text-emerald-400">0.89</span></div>
+          <div class="text-[10px] text-slate-500 mt-1">Disparate Impact</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-light text-white stat-number">0.23 → <span class="text-emerald-400">0.04</span></div>
+          <div class="text-[10px] text-slate-500 mt-1">Statistical Parity Diff</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-light text-white stat-number">87% → <span class="text-emerald-400">84%</span></div>
+          <div class="text-[10px] text-slate-500 mt-1">Accuracy (minimal drop)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 7: XAI WITH GEMINI ==================== -->
+<section class="slide" id="slide-6">
+  <div class="bg-glow w-[500px] h-[500px] bg-purple-600/10 bottom-10 right-0 absolute"></div>
+  <div class="max-w-6xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-medium tracking-wider uppercase mb-4">Explainability</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">Gemini-Powered<br><span class="text-purple-400/80">Bias Explanations</span></h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 animate-on-scroll">
+      <!-- Chat simulation -->
+      <div class="glass rounded-2xl p-5 flex flex-col" style="min-height: 380px;">
+        <div class="flex items-center gap-2 mb-4 pb-3 border-b border-white/5">
+          <div class="w-6 h-6 rounded-full accent-gradient flex items-center justify-center">
+            <i data-lucide="sparkles" class="w-3 h-3 text-white"></i>
+          </div>
+          <span class="text-xs text-white font-medium">FairForge XAI — powered by Gemini</span>
+          <span class="ml-auto text-[9px] text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online</span>
+        </div>
+
+        <div class="flex-1 space-y-3 overflow-y-auto">
+          <div class="flex gap-2">
+            <div class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="user" class="w-3 h-3 text-slate-500"></i>
+            </div>
+            <div class="bg-slate-800/50 rounded-xl rounded-tl-none px-3 py-2 text-xs text-slate-300 max-w-[85%]">
+              Why is the model biased against Hispanic female applicants?
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <div class="w-6 h-6 rounded-full accent-gradient flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="sparkles" class="w-3 h-3 text-white"></i>
+            </div>
+            <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-xl rounded-tl-none px-3 py-2 text-xs text-slate-300 max-w-[85%] leading-relaxed">
+              <p class="mb-2">Analysis shows a <strong class="text-white">Disparate Impact of 0.41</strong> for Hispanic females — significantly below the 0.80 threshold.</p>
+              <p class="mb-2"><strong class="text-white">Root causes:</strong></p>
+              <p class="mb-1">1. Training data underrepresents this group (only 6.2% of samples)</p>
+              <p class="mb-1">2. Feature "zip_code" acts as a proxy for ethnicity</p>
+              <p class="mb-2">3. Historical hiring patterns encoded in labels</p>
+              <p><strong class="text-emerald-400">Recommendation:</strong> Run PPO training with α=0.7, β=0.3 to rebalance without significant accuracy loss.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <div class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="user" class="w-3 h-3 text-slate-500"></i>
+            </div>
+            <div class="bg-slate-800/50 rounded-xl rounded-tl-none px-3 py-2 text-xs text-slate-300 max-w-[85%]">
+              Generate a compliance summary for auditors.
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <div class="w-6 h-6 rounded-full accent-gradient flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="sparkles" class="w-3 h-3 text-white"></i>
+            </div>
+            <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-xl rounded-tl-none px-3 py-2 text-xs text-slate-400 max-w-[85%] leading-relaxed italic">
+              Generating PDF report with EU AI Act Section 10 compliance mapping...
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-3 flex gap-2">
+          <input type="text" placeholder="Ask about your model's fairness..." class="flex-1 bg-slate-800/50 border border-white/5 rounded-lg px-3 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/30">
+          <button class="w-8 h-8 rounded-lg accent-gradient flex items-center justify-center"><i data-lucide="send" class="w-3.5 h-3.5 text-white"></i></button>
+        </div>
+      </div>
+
+      <!-- Capabilities -->
+      <div class="space-y-4">
+        <div class="glass rounded-xl p-4 glass-hover transition-all duration-300">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="search" class="w-4 h-4 text-purple-400"></i>
+            </div>
+            <div>
+              <h4 class="text-white text-sm font-medium mb-1">Root Cause Analysis</h4>
+              <p class="text-slate-500 text-xs leading-relaxed">Gemini examines feature importance, data distribution, and proxy variable detection to explain why bias exists.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-xl p-4 glass-hover transition-all duration-300">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="languages" class="w-4 h-4 text-purple-400"></i>
+            </div>
+            <div>
+              <h4 class="text-white text-sm font-medium mb-1">Plain-English Explanations</h4>
+              <p class="text-slate-500 text-xs leading-relaxed">Translates complex statistical metrics into language any stakeholder — from engineer to regulator — can understand.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-xl p-4 glass-hover transition-all duration-300">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="scale" class="w-4 h-4 text-purple-400"></i>
+            </div>
+            <div>
+              <h4 class="text-white text-sm font-medium mb-1">Regulatory Compliance Mapping</h4>
+              <p class="text-slate-500 text-xs leading-relaxed">Auto-maps findings to EU AI Act, EEOC guidelines, and local regulations. Generates audit-ready documentation.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass rounded-xl p-4 glass-hover transition-all duration-300">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="lightbulb" class="w-4 h-4 text-purple-400"></i>
+            </div>
+            <div>
+              <h4 class="text-white text-sm font-medium mb-1">Actionable Recommendations</h4>
+              <p class="text-slate-500 text-xs leading-relaxed">Suggests specific mitigation strategies: PPO hyperparameters, feature removal, resampling techniques, threshold adjustments.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 8: DIFFERENTIATION ==================== -->
+<section class="slide" id="slide-7">
+  <div class="max-w-6xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium tracking-wider uppercase mb-4">Why FairForge</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">Not Another<br><span class="text-indigo-400/80">Bias Detection Tool</span></h2>
+    </div>
+
+    <div class="animate-on-scroll overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-white/5">
+            <th class="text-left py-3 px-4 text-slate-500 text-xs font-medium uppercase tracking-wider">Feature</th>
+            <th class="py-3 px-4 text-center">
+              <div class="inline-flex items-center gap-1.5 text-indigo-400 text-xs font-medium">
+                <span class="w-5 h-5 rounded accent-gradient flex items-center justify-center"><i data-lucide="sparkles" class="w-3 h-3 text-white"></i></span>
+                FairForge
+              </div>
+            </th>
+            <th class="py-3 px-4 text-center text-slate-500 text-xs font-medium">AIF360</th>
+            <th class="py-3 px-4 text-center text-slate-500 text-xs font-medium">Fairlearn</th>
+            <th class="py-3 px-4 text-center text-slate-500 text-xs font-medium">SHAP/LIME</th>
+          </tr>
+        </thead>
+        <tbody class="text-xs">
+          <tr class="border-b border-white/5">
+            <td class="py-3 px-4 text-slate-300">Fairness Metrics Dashboard</td>
+            <td class="py-3 px-4 text-center"><i data-lucide="check" class="w-4 h-4 text-emerald-400 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="check" class="w-4 h-4 text-emerald-400 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="check" class="w-4 h-4 text-emerald-400 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+          </tr>
+          <tr class="border-b border-white/5">
+            <td class="py-3 px-4 text-slate-300">RL-Based Bias Training</td>
+            <td class="py-3 px-4 text-center"><i data-lucide="check" class="w-4 h-4 text-emerald-400 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+          </tr>
+          <tr class="border-b border-white/5">
+            <td class="py-3 px-4 text-slate-300">Interactive Web UI</td>
+            <td class="py-3 px-4 text-center"><i data-lucide="check" class="w-4 h-4 text-emerald-400 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+          </tr>
+          <tr class="border-b border-white/5">
+            <td class="py-3 px-4 text-slate-300">LLM-Powered Explanations</td>
+            <td class="py-3 px-4 text-center"><i data-lucide="check" class="w-4 h-4 text-emerald-400 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+          </tr>
+          <tr class="border-b border-white/5">
+            <td class="py-3 px-4 text-slate-300">Intersectional Heatmaps</td>
+            <td class="py-3 px-4 text-center"><i data-lucide="check" class="w-4 h-4 text-emerald-400 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center text-slate-600">Partial</td>
+            <td class="py-3 px-4 text-center text-slate-600">Partial</td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+          </tr>
+          <tr class="border-b border-white/5">
+            <td class="py-3 px-4 text-slate-300">PDF Report Generation</td>
+            <td class="py-3 px-4 text-center"><i data-lucide="check" class="w-4 h-4 text-emerald-400 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4 text-slate-300">No-Code Experience</td>
+            <td class="py-3 px-4 text-center"><i data-lucide="check" class="w-4 h-4 text-emerald-400 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+            <td class="py-3 px-4 text-center text-slate-600">Partial</td>
+            <td class="py-3 px-4 text-center"><i data-lucide="x" class="w-4 h-4 text-slate-700 mx-auto"></i></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 text-center animate-on-scroll">
+      <p class="text-slate-500 text-xs">FairForge combines detection <span class="text-indigo-400">+</span> training <span class="text-indigo-400">+</span> explanation <span class="text-indigo-400">+</span> compliance — in one no-code platform.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 9: WORKFLOW ==================== -->
+<section class="slide" id="slide-8">
+  <div class="max-w-6xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium tracking-wider uppercase mb-4">Workflow</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">End-to-End<br><span class="text-indigo-400/80">Fairness Workflow</span></h2>
+    </div>
+
+    <div class="animate-on-scroll">
+      <!-- Desktop Flow -->
+      <div class="hidden md:flex items-center justify-between gap-2">
+        <div class="flow-box glass rounded-xl p-4 text-center flex-1 cursor-pointer">
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mx-auto mb-2">
+            <i data-lucide="upload-cloud" class="w-5 h-5 text-indigo-400"></i>
+          </div>
+          <div class="text-white text-xs font-medium">Upload</div>
+          <div class="text-slate-600 text-[9px] mt-0.5">CSV / Model</div>
+        </div>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-700 flex-shrink-0"></i>
+        <div class="flow-box glass rounded-xl p-4 text-center flex-1 cursor-pointer">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center mx-auto mb-2">
+            <i data-lucide="scan" class="w-5 h-5 text-amber-400"></i>
+          </div>
+          <div class="text-white text-xs font-medium">Audit</div>
+          <div class="text-slate-600 text-[9px] mt-0.5">Metrics Calc</div>
+        </div>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-700 flex-shrink-0"></i>
+        <div class="flow-box glass rounded-xl p-4 text-center flex-1 cursor-pointer">
+          <div class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center mx-auto mb-2">
+            <i data-lucide="flame" class="w-5 h-5 text-red-400"></i>
+          </div>
+          <div class="text-white text-xs font-medium">Stress-Test</div>
+          <div class="text-slate-600 text-[9px] mt-0.5">Adversarial</div>
+        </div>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-700 flex-shrink-0"></i>
+        <div class="flow-box glass rounded-xl p-4 text-center flex-1 cursor-pointer">
+          <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center mx-auto mb-2">
+            <i data-lucide="grid-3x3" class="w-5 h-5 text-purple-400"></i>
+          </div>
+          <div class="text-white text-xs font-medium">Visualize</div>
+          <div class="text-slate-600 text-[9px] mt-0.5">Heatmaps</div>
+        </div>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-700 flex-shrink-0"></i>
+        <div class="flow-box glass rounded-xl p-4 text-center flex-1 cursor-pointer">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center mx-auto mb-2">
+            <i data-lucide="shield" class="w-5 h-5 text-emerald-400"></i>
+          </div>
+          <div class="text-white text-xs font-medium">Mitigate</div>
+          <div class="text-slate-600 text-[9px] mt-0.5">Quick Fixes</div>
+        </div>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-700 flex-shrink-0"></i>
+        <div class="flow-box glass rounded-xl p-4 text-center flex-1 cursor-pointer border-indigo-500/20">
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center mx-auto mb-2">
+            <i data-lucide="brain-circuit" class="w-5 h-5 text-indigo-400"></i>
+          </div>
+          <div class="text-white text-xs font-medium">PPO Train</div>
+          <div class="text-indigo-400/60 text-[9px] mt-0.5">RL Fix</div>
+        </div>
+        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-700 flex-shrink-0"></i>
+        <div class="flow-box glass rounded-xl p-4 text-center flex-1 cursor-pointer">
+          <div class="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center mx-auto mb-2">
+            <i data-lucide="file-text" class="w-5 h-5 text-sky-400"></i>
+          </div>
+          <div class="text-white text-xs font-medium">Export</div>
+          <div class="text-slate-600 text-[9px] mt-0.5">PDF Report</div>
+        </div>
+      </div>
+
+      <!-- Mobile Flow -->
+      <div class="md:hidden space-y-3">
+        <div class="flex items-center gap-3 glass rounded-xl p-3">
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="upload-cloud" class="w-4 h-4 text-indigo-400"></i></div>
+          <div class="flex-1"><div class="text-white text-xs font-medium">Upload</div><div class="text-slate-600 text-[9px]">CSV / Model</div></div>
+          <i data-lucide="arrow-down" class="w-3 h-3 text-slate-700"></i>
+        </div>
+        <div class="flex items-center gap-3 glass rounded-xl p-3">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="scan" class="w-4 h-4 text-amber-400"></i></div>
+          <div class="flex-1"><div class="text-white text-xs font-medium">Audit → Stress-Test → Visualize</div></div>
+          <i data-lucide="arrow-down" class="w-3 h-3 text-slate-700"></i>
+        </div>
+        <div class="flex items-center gap-3 glass rounded-xl p-3">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="brain-circuit" class="w-4 h-4 text-emerald-400"></i></div>
+          <div class="flex-1"><div class="text-white text-xs font-medium">Mitigate → PPO Train</div></div>
+          <i data-lucide="arrow-down" class="w-3 h-3 text-slate-700"></i>
+        </div>
+        <div class="flex items-center gap-3 glass rounded-xl p-3">
+          <div class="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center flex-shrink-0"><i data-lucide="file-text" class="w-4 h-4 text-sky-400"></i></div>
+          <div class="flex-1"><div class="text-white text-xs font-medium">Export PDF Report</div></div>
+        </div>
+      </div>
+
+      <!-- Time indicator -->
+      <div class="mt-8 glass rounded-xl p-4 text-center animate-on-scroll">
+        <div class="flex items-center justify-center gap-2 text-sm text-slate-400">
+          <i data-lucide="clock" class="w-4 h-4 text-indigo-400"></i>
+          <span>Full workflow from upload to report: <span class="text-white font-medium">~5 minutes</span> (excluding PPO training time)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 10: ARCHITECTURE ==================== -->
+<section class="slide" id="slide-9">
+  <div class="max-w-5xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium tracking-wider uppercase mb-4">Architecture</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">Scalable Cloud-Native<br><span class="text-indigo-400/80">Architecture</span></h2>
+    </div>
+
+    <div class="space-y-3 animate-on-scroll">
+      <!-- Layer 1: Frontend -->
+      <div class="arch-layer glass rounded-xl p-4 border-l-2 border-l-indigo-500">
+        <div class="flex items-center gap-3 mb-2">
+          <i data-lucide="monitor" class="w-4 h-4 text-indigo-400"></i>
+          <span class="text-white text-sm font-medium">Frontend Layer</span>
+          <span class="text-[9px] text-slate-600 ml-auto">Client-Side</span>
+        </div>
+        <div class="flex flex-wrap gap-2 ml-7">
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">Tailwind CSS</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">Plotly.js</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">HTML/JS</span>
+        </div>
+      </div>
+
+      <!-- Layer 2: Backend -->
+      <div class="arch-layer glass rounded-xl p-4 border-l-2 border-l-emerald-500">
+        <div class="flex items-center gap-3 mb-2">
+          <i data-lucide="server" class="w-4 h-4 text-emerald-400"></i>
+          <span class="text-white text-sm font-medium">API Layer</span>
+          <span class="text-[9px] text-slate-600 ml-auto">GCP Cloud Run</span>
+        </div>
+        <div class="flex flex-wrap gap-2 ml-7">
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">FastAPI</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">Pydantic</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">REST + WebSocket</span>
+        </div>
+      </div>
+
+      <!-- Layer 3: ML Engine -->
+      <div class="arch-layer glass rounded-xl p-4 border-l-2 border-l-amber-500">
+        <div class="flex items-center gap-3 mb-2">
+          <i data-lucide="cpu" class="w-4 h-4 text-amber-400"></i>
+          <span class="text-white text-sm font-medium">ML & RL Engine</span>
+          <span class="text-[9px] text-slate-600 ml-auto">Core Logic</span>
+        </div>
+        <div class="flex flex-wrap gap-2 ml-7">
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">PyTorch</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">Scikit-learn</span>
+          <span class="px-2 py-0.5 rounded bg-amber-500/10 text-[10px] text-amber-400 border border-amber-500/20">Stable-Baselines3 PPO</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">Gymnasium</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">AIF360 Metrics</span>
+        </div>
+      </div>
+
+      <!-- Layer 4: XAI -->
+      <div class="arch-layer glass rounded-xl p-4 border-l-2 border-l-purple-500">
+        <div class="flex items-center gap-3 mb-2">
+          <i data-lucide="sparkles" class="w-4 h-4 text-purple-400"></i>
+          <span class="text-white text-sm font-medium">XAI Layer</span>
+          <span class="text-[9px] text-slate-600 ml-auto">Google Vertex AI</span>
+        </div>
+        <div class="flex flex-wrap gap-2 ml-7">
+          <span class="px-2 py-0.5 rounded bg-purple-500/10 text-[10px] text-purple-400 border border-purple-500/20">Gemini API</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">Prompt Engineering</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">Context Injection</span>
+        </div>
+      </div>
+
+      <!-- Layer 5: Infrastructure -->
+      <div class="arch-layer glass rounded-xl p-4 border-l-2 border-l-sky-500">
+        <div class="flex items-center gap-3 mb-2">
+          <i data-lucide="cloud" class="w-4 h-4 text-sky-400"></i>
+          <span class="text-white text-sm font-medium">Infrastructure</span>
+          <span class="text-[9px] text-slate-600 ml-auto">Google Cloud</span>
+        </div>
+        <div class="flex flex-wrap gap-2 ml-7">
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">Docker</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">GCP Cloud Run</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">Google Cloud Storage</span>
+          <span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-400">Firebase Auth</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5 text-center animate-on-scroll">
+      <span class="inline-flex items-center gap-2 text-xs text-slate-500 glass px-4 py-2 rounded-full">
+        <i data-lucide="zap" class="w-3 h-3 text-emerald-400"></i>
+        Serverless, auto-scaling, production-ready
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 11: TECH STACK ==================== -->
+<section class="slide" id="slide-10">
+  <div class="max-w-6xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium tracking-wider uppercase mb-4">Tech Stack</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">Modern, Open-Source<br><span class="text-indigo-400/80">& Google-Powered</span></h2>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 animate-on-scroll">
+      <div class="tech-card glass rounded-xl p-4">
+        <div class="text-[10px] text-indigo-400 uppercase tracking-wider font-medium mb-3">Frontend</div>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span><span class="text-xs text-slate-300">Tailwind CSS</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span><span class="text-xs text-slate-300">Plotly.js</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span><span class="text-xs text-slate-300">Vanilla JS</span></div>
+        </div>
+      </div>
+
+      <div class="tech-card glass rounded-xl p-4">
+        <div class="text-[10px] text-emerald-400 uppercase tracking-wider font-medium mb-3">Backend</div>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span class="text-xs text-slate-300">FastAPI</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span class="text-xs text-slate-300">PyTorch</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span class="text-xs text-slate-300">Scikit-learn</span></div>
+        </div>
+      </div>
+
+      <div class="tech-card glass rounded-xl p-4">
+        <div class="text-[10px] text-amber-400 uppercase tracking-wider font-medium mb-3">RL Engine</div>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span><span class="text-xs text-slate-300">Stable-Baselines3</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span><span class="text-xs text-slate-300">Gymnasium</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span><span class="text-xs text-slate-300">Custom FairEnv</span></div>
+        </div>
+      </div>
+
+      <div class="tech-card glass rounded-xl p-4">
+        <div class="text-[10px] text-purple-400 uppercase tracking-wider font-medium mb-3">XAI</div>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span><span class="text-xs text-slate-300">Google Gemini API</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span><span class="text-xs text-slate-300">Vertex AI</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span><span class="text-xs text-slate-300">Prompt Chains</span></div>
+        </div>
+      </div>
+
+      <div class="tech-card glass rounded-xl p-4">
+        <div class="text-[10px] text-sky-400 uppercase tracking-wider font-medium mb-3">Infrastructure</div>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span><span class="text-xs text-slate-300">Docker</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span><span class="text-xs text-slate-300">GCP Cloud Run</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span><span class="text-xs text-slate-300">GCS + Firebase Auth</span></div>
+        </div>
+      </div>
+
+      <div class="tech-card glass rounded-xl p-4">
+        <div class="text-[10px] text-rose-400 uppercase tracking-wider font-medium mb-3">Fairness</div>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><span class="text-xs text-slate-300">Custom Metrics</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><span class="text-xs text-slate-300">AIF360 Compatible</span></div>
+          <div class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><span class="text-xs text-slate-300">Intersectional Analysis</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 text-center animate-on-scroll">
+      <span class="inline-flex items-center gap-2 text-xs text-emerald-400 glass px-4 py-2 rounded-full border-emerald-500/20">
+        <i data-lucide="lock-open" class="w-3 h-3"></i>
+        Zero licensing cost — MIT Licensed
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 12: MVP DEMO ==================== -->
+<section class="slide" id="slide-11">
+  <div class="max-w-6xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium tracking-wider uppercase mb-4">Live Demo</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">What We Built<br><span class="text-indigo-400/80">In 48 Hours</span></h2>
+      <p class="text-slate-500 text-sm mt-3">Real screenshots from the working MVP</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 animate-on-scroll">
+      <div class="screenshot-card glass rounded-xl overflow-hidden cursor-pointer md:col-span-2 md:row-span-2">
+        <img src="https://picsum.photos/seed/fairforge-dashboard/800/500.jpg" alt="Dashboard" class="w-full h-full object-cover opacity-60">
+        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent">
+          <div class="text-white text-sm font-medium">Fairness Dashboard</div>
+          <div class="text-slate-400 text-[10px]">Real-time metrics, group-level analysis, and violation alerts</div>
+        </div>
+      </div>
+
+      <div class="screenshot-card glass rounded-xl overflow-hidden cursor-pointer relative">
+        <img src="https://picsum.photos/seed/fairforge-heatmap/400/250.jpg" alt="Heatmap" class="w-full h-full object-cover opacity-60">
+        <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-slate-950 to-transparent">
+          <div class="text-white text-xs font-medium">Intersectional Heatmap</div>
+        </div>
+      </div>
+
+      <div class="screenshot-card glass rounded-xl overflow-hidden cursor-pointer relative">
+        <img src="https://picsum.photos/seed/fairforge-training/400/250.jpg" alt="Training" class="w-full h-full object-cover opacity-60">
+        <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-slate-950 to-transparent">
+          <div class="text-white text-xs font-medium">PPO Training Curves</div>
+        </div>
+      </div>
+
+      <div class="screenshot-card glass rounded-xl overflow-hidden cursor-pointer relative">
+        <img src="https://picsum.photos/seed/fairforge-gemini/400/250.jpg" alt="Gemini" class="w-full h-full object-cover opacity-60">
+        <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-slate-950 to-transparent">
+          <div class="text-white text-xs font-medium">Gemini XAI Chat</div>
+        </div>
+      </div>
+
+      <div class="screenshot-card glass rounded-xl overflow-hidden cursor-pointer relative">
+        <img src="https://picsum.photos/seed/fairforge-report/400/250.jpg" alt="Report" class="w-full h-full object-cover opacity-60">
+        <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-slate-950 to-transparent">
+          <div class="text-white text-xs font-medium">PDF Report Export</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 13: ROADMAP ==================== -->
+<section class="slide" id="slide-12">
+  <div class="max-w-5xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium tracking-wider uppercase mb-4">Roadmap</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">From Hackathon MVP<br><span class="text-indigo-400/80">To Industry Standard</span></h2>
+    </div>
+
+    <div class="relative animate-on-scroll">
+      <!-- Timeline line -->
+      <div class="absolute left-5 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-500/50 via-indigo-500/20 to-transparent"></div>
+
+      <!-- Phase 1 -->
+      <div class="relative flex flex-col md:flex-row md:items-center mb-10 pl-12 md:pl-0">
+        <div class="md:w-1/2 md:pr-10 md:text-right">
+          <div class="glass rounded-xl p-4 glass-hover transition-all duration-300 inline-block text-left md:text-right">
+            <div class="text-[10px] text-emerald-400 uppercase tracking-wider font-medium mb-1">Near-term — v3.1</div>
+            <h4 class="text-white text-sm font-medium mb-1">Production Drift Detection</h4>
+            <p class="text-slate-500 text-xs leading-relaxed">Real-time fairness monitoring in production. Alerts when bias metrics drift beyond thresholds after deployment.</p>
+          </div>
+        </div>
+        <div class="absolute left-2.5 md:left-1/2 md:-translate-x-1/2 top-4 w-5 h-5 rounded-full bg-emerald-500 border-4 border-slate-950 z-10"></div>
+        <div class="md:w-1/2 md:pl-10 hidden md:block"></div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="relative flex flex-col md:flex-row md:items-center mb-10 pl-12 md:pl-0">
+        <div class="md:w-1/2 md:pr-10 hidden md:block"></div>
+        <div class="absolute left-2.5 md:left-1/2 md:-translate-x-1/2 top-4 w-5 h-5 rounded-full bg-amber-500 border-4 border-slate-950 z-10"></div>
+        <div class="md:w-1/2 md:pl-10">
+          <div class="glass rounded-xl p-4 glass-hover transition-all duration-300 inline-block text-left">
+            <div class="text-[10px] text-amber-400 uppercase tracking-wider font-medium mb-1">Mid-term — v4.0</div>
+            <h4 class="text-white text-sm font-medium mb-1">MLflow & SageMaker Plugins</h4>
+            <p class="text-slate-500 text-xs leading-relaxed">Native integration with MLOps pipelines. Multi-agent fairness where multiple AI agents negotiate fair outcomes together.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="relative flex flex-col md:flex-row md:items-center pl-12 md:pl-0">
+        <div class="md:w-1/2 md:pr-10 md:text-right">
+          <div class="glass rounded-xl p-4 glass-hover transition-all duration-300 border-indigo-500/20 inline-block text-left md:text-right">
+            <div class="text-[10px] text-indigo-400 uppercase tracking-wider font-medium mb-1">Vision</div>
+            <h4 class="text-white text-sm font-medium mb-1">The "Gymnasium for Fair AI"</h4>
+            <p class="text-slate-500 text-xs leading-relaxed">Default fairness training environment for every AI team. Public fairness leaderboard benchmarking models across industries.</p>
+          </div>
+        </div>
+        <div class="absolute left-2.5 md:left-1/2 md:-translate-x-1/2 top-4 w-5 h-5 rounded-full accent-gradient border-4 border-slate-950 z-10"></div>
+        <div class="md:w-1/2 md:pl-10 hidden md:block"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 14: IMPACT & MARKET ==================== -->
+<section class="slide" id="slide-13">
+  <div class="bg-glow w-[600px] h-[600px] bg-indigo-600/10 top-0 right-0 absolute"></div>
+  <div class="max-w-6xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium tracking-wider uppercase mb-4">Impact</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">Why This Matters<br><span class="text-indigo-400/80">Right Now</span></h2>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5 mb-8 animate-on-scroll">
+      <!-- Stat 1 -->
+      <div class="glass rounded-2xl p-6 text-center shimmer relative overflow-hidden">
+        <div class="text-4xl md:text-5xl font-extralight text-white stat-number mb-1">$12.4B</div>
+        <div class="text-slate-500 text-xs mb-3">AI Governance Market by 2030</div>
+        <div class="h-1 rounded-full bg-slate-800 overflow-hidden">
+          <div class="h-full rounded-full accent-gradient transition-all duration-1000" style="width: 78%"></div>
+        </div>
+        <div class="text-[9px] text-slate-600 mt-1">CAGR 23.1% (2024–2030)</div>
+      </div>
+
+      <!-- Stat 2 -->
+      <div class="glass rounded-2xl p-6 text-center shimmer relative overflow-hidden">
+        <div class="text-4xl md:text-5xl font-extralight text-white stat-number mb-1">2026</div>
+        <div class="text-slate-500 text-xs mb-3">EU AI Act Enforcement</div>
+        <div class="flex items-center justify-center gap-2 mt-2">
+          <span class="px-2 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-[9px] text-red-400">Mandatory Audits</span>
+          <span class="px-2 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-[9px] text-red-400">High-Risk AI</span>
+        </div>
+        <div class="text-[9px] text-slate-600 mt-3">Fairness audits required for employment, credit, insurance AI</div>
+      </div>
+
+      <!-- Stat 3 -->
+      <div class="glass rounded-2xl p-6 text-center shimmer relative overflow-hidden">
+        <div class="text-4xl md:text-5xl font-extralight text-emerald-400 stat-number mb-1">$0</div>
+        <div class="text-slate-500 text-xs mb-3">Cost to Start Using FairForge</div>
+        <div class="flex items-center justify-center gap-2 mt-2">
+          <span class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[9px] text-emerald-400">Open Source</span>
+          <span class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-[9px] text-emerald-400">MIT License</span>
+        </div>
+        <div class="text-[9px] text-slate-600 mt-3">No enterprise pricing barrier — fairness for all</div>
+      </div>
+    </div>
+
+    <!-- Regulatory Timeline -->
+    <div class="glass rounded-2xl p-5 animate-on-scroll">
+      <div class="text-xs text-slate-500 uppercase tracking-wider font-medium mb-4">Regulatory Pressure Timeline</div>
+      <div class="flex items-end justify-between gap-2 h-24">
+        <div class="flex-1 flex flex-col items-center gap-1">
+          <div class="w-full rounded-t bg-slate-800 h-8"></div>
+          <span class="text-[9px] text-slate-600">2020</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-1">
+          <div class="w-full rounded-t bg-slate-700 h-12"></div>
+          <span class="text-[9px] text-slate-600">2021</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-1">
+          <div class="w-full rounded-t bg-slate-600 h-16"></div>
+          <span class="text-[9px] text-slate-600">2022</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-1">
+          <div class="w-full rounded-t bg-slate-500 h-20"></div>
+          <span class="text-[9px] text-slate-600">2023</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-1">
+          <div class="w-full rounded-t bg-amber-500/50 h-24"></div>
+          <span class="text-[9px] text-amber-400">2024</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-1">
+          <div class="w-full rounded-t bg-amber-500/70 h-24"></div>
+          <span class="text-[9px] text-amber-400">2025</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-1">
+          <div class="w-full rounded-t bg-red-500 h-24 relative">
+            <div class="absolute -top-5 left-1/2 -translate-x-1/2 text-[8px] text-red-400 whitespace-nowrap font-medium">EU AI Act ⚡</div>
+          </div>
+          <span class="text-[9px] text-red-400 font-medium">2026</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-1">
+          <div class="w-full rounded-t bg-indigo-500/50 h-24 border-2 border-indigo-500/30 border-dashed"></div>
+          <span class="text-[9px] text-indigo-400">2027+</span>
+        </div>
+      </div>
+      <div class="text-[9px] text-slate-600 mt-2 text-center">Increasing global regulatory pressure → Growing demand for fairness tools</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 15: TEAM & LINKS ==================== -->
+<section class="slide" id="slide-14">
+  <div class="max-w-5xl mx-auto px-6 w-full">
+    <div class="text-center mb-12 animate-on-scroll">
+      <div class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium tracking-wider uppercase mb-4">Team</div>
+      <h2 class="text-3xl md:text-5xl font-light tracking-tight">Team <span class="hero-gradient">MASSIVE-X</span></h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 animate-on-scroll">
+      <!-- Links -->
+      <div class="glass rounded-2xl p-6 space-y-4">
+        <h4 class="text-white text-sm font-medium mb-4">Links & Resources</h4>
+
+        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/30 hover:bg-slate-800/60 transition-colors group">
+          <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center group-hover:bg-indigo-500/20 transition-colors">
+            <i data-lucide="globe" class="w-5 h-5 text-indigo-400"></i>
+          </div>
+          <div class="flex-1">
+            <div class="text-white text-xs font-medium">Live Demo</div>
+            <div class="text-slate-500 text-[10px]">Hugging Face Space</div>
+          </div>
+          <i data-lucide="external-link" class="w-4 h-4 text-slate-600 group-hover:text-indigo-400 transition-colors"></i>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/30 hover:bg-slate-800/60 transition-colors group">
+          <div class="w-10 h-10 rounded-xl bg-slate-500/10 flex items-center justify-center group-hover:bg-slate-500/20 transition-colors">
+            <i data-lucide="github" class="w-5 h-5 text-slate-400"></i>
+          </div>
+          <div class="flex-1">
+            <div class="text-white text-xs font-medium">Source Code</div>
+            <div class="text-slate-500 text-[10px]">GitHub Repository</div>
+          </div>
+          <i data-lucide="external-link" class="w-4 h-4 text-slate-600 group-hover:text-indigo-400 transition-colors"></i>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/30 hover:bg-slate-800/60 transition-colors group">
+          <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+            <i data-lucide="play" class="w-5 h-5 text-red-400"></i>
+          </div>
+          <div class="flex-1">
+            <div class="text-white text-xs font-medium">Demo Video</div>
+            <div class="text-slate-500 text-[10px]">2-minute walkthrough</div>
+          </div>
+          <i data-lucide="external-link" class="w-4 h-4 text-slate-600 group-hover:text-indigo-400 transition-colors"></i>
+        </a>
+
+        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/30 hover:bg-slate-800/60 transition-colors group">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
+            <i data-lucide="book-open" class="w-5 h-5 text-emerald-400"></i>
+          </div>
+          <div class="flex-1">
+            <div class="text-white text-xs font-medium">API Documentation</div>
+            <div class="text-slate-500 text-[10px]">FastAPI auto-docs</div>
+          </div>
+          <i data-lucide="external-link" class="w-4 h-4 text-slate-600 group-hover:text-indigo-400 transition-colors"></i>
+        </a>
+      </div>
+
+      <!-- QR Code + Info -->
+      <div class="flex flex-col items-center justify-center gap-6">
+        <div class="glass rounded-2xl p-8 text-center">
+          <!-- Stylized QR placeholder -->
+          <div class="w-40 h-40 mx-auto bg-white rounded-xl p-3 mb-4">
+            <svg viewBox="0 0 100 100" class="w-full h-full">
+              <rect x="5" y="5" width="25" height="25" rx="2" fill="#020617"/>
+              <rect x="8" y="8" width="19" height="19" rx="1" fill="white"/>
+              <rect x="11" y="11" width="13" height="13" rx="1" fill="#4f46e5"/>
+              <rect x="70" y="5" width="25" height="25" rx="2" fill="#020617"/>
+              <rect x="73" y="8" width="19" height="19" rx="1" fill="white"/>
+              <rect x="76" y="11" width="13" height="13" rx="1" fill="#4f46e5"/>
+              <rect x="5" y="70" width="25" height="25" rx="2" fill="#020617"/>
+              <rect x="8" y="73" width="19" height="19" rx="1" fill="white"/>
+              <rect x="11" y="76" width="13" height="13" rx="1" fill="#4f46e5"/>
+              <rect x="35" y="5" width="5" height="5" fill="#020617"/>
+              <rect x="45" y="5" width="5" height="5" fill="#020617"/>
+              <rect x="55" y="5" width="5" height="5" fill="#020617"/>
+              <rect x="35" y="15" width="5" height="5" fill="#020617"/>
+              <rect x="45" y="15" width="5" height="5" fill="#020617"/>
+              <rect x="55" y="15" width="5" height="5" fill="#020617"/>
+              <rect x="35" y="25" width="5" height="5" fill="#020617"/>
+              <rect x="45" y="25" width="5" height="5" fill="#020617"/>
+              <rect x="5" y="35" width="5" height="5" fill="#020617"/>
+              <rect x="15" y="35" width="5" height="5" fill="#020617"/>
+              <rect x="25" y="35" width="5" height="5" fill="#020617"/>
+              <rect x="35" y="35" width="5" height="5" fill="#020617"/>
+              <rect x="45" y="35" width="5" height="5" fill="#020617"/>
+              <rect x="55" y="35" width="5" height="5" fill="#020617"/>
+              <rect x="70" y="35" width="5" height="5" fill="#020617"/>
+              <rect x="80" y="35" width="5" height="5" fill="#020617"/>
+              <rect x="90" y="35" width="5" height="5" fill="#020617"/>
+              <rect x="5" y="45" width="5" height="5" fill="#020617"/>
+              <rect x="15" y="45" width="5" height="5" fill="#020617"/>
+              <rect x="25" y="45" width="5" height="5" fill="#020617"/>
+              <rect x="45" y="45" width="5" height="5" fill="#020617"/>
+              <rect x="70" y="45" width="5" height="5" fill="#020617"/>
+              <rect x="80" y="45" width="5" height="5" fill="#020617"/>
+              <rect x="5" y="55" width="5" height="5" fill="#020617"/>
+              <rect x="25" y="55" width="5" height="5" fill="#020617"/>
+              <rect x="35" y="55" width="5" height="5" fill="#020617"/>
+              <rect x="55" y="55" width="5" height="5" fill="#020617"/>
+              <rect x="70" y="55" width="5" height="5" fill="#020617"/>
+              <rect x="90" y="55" width="5" height="5" fill="#020617"/>
+              <rect x="35" y="65" width="5" height="5" fill="#020617"/>
+              <rect x="55" y="65" width="5" height="5" fill="#020617"/>
+              <rect x="70" y="65" width="5" height="5" fill="#020617"/>
+              <rect x="80" y="65" width="5" height="5" fill="#020617"/>
+              <rect x="35" y="75" width="5" height="5" fill="#020617"/>
+              <rect x="45" y="75" width="5" height="5" fill="#020617"/>
+              <rect x="55" y="75" width="5" height="5" fill="#020617"/>
+              <rect x="70" y="75" width="5" height="5" fill="#020617"/>
+              <rect x="90" y="75" width="5" height="5" fill="#020617"/>
+              <rect x="35" y="85" width="5" height="5" fill="#020617"/>
+              <rect x="55" y="85" width="5" height="5" fill="#020617"/>
+              <rect x="70" y="85" width="5" height="5" fill="#020617"/>
+              <rect x="80" y="85" width="5" height="5" fill="#020617"/>
+              <rect x="90" y="85" width="5" height="5" fill="#020617"/>
+              <rect x="35" y="95" width="5" height="5" fill="#020617"/>
+              <rect x="45" y="95" width="5" height="5" fill="#020617"/>
+              <rect x="55" y="95" width="5" height="5" fill="#020617"/>
+              <rect x="70" y="95" width="5" height="5" fill="#020617"/>
+              <rect x="90" y="95" width="5" height="5" fill="#020617"/>
+            </svg>
+          </div>
+          <div class="text-white text-xs font-medium">Scan for Live Demo</div>
+          <div class="text-slate-500 text-[10px] mt-1">fairforge.hf.space</div>
+        </div>
+
+        <div class="glass rounded-xl px-4 py-3 flex items-center gap-2 text-xs text-slate-400">
+          <i data-lucide="code-2" class="w-4 h-4 text-indigo-400"></i>
+          <span>Built with ❤️ in 48 hours at H2S Hackathon 2026</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SLIDE 16: THANK YOU ==================== -->
+<section class="slide" id="slide-15">
+  <div class="bg-glow w-[800px] h-[800px] bg-indigo-600/15 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 absolute"></div>
+  <div class="bg-glow w-[400px] h-[400px] bg-purple-600/10 top-1/4 right-1/4 absolute"></div>
+
+  <div class="text-center px-6 max-w-3xl mx-auto relative z-10">
+    <div class="mb-8" style="animation: float 3s ease-in-out infinite;">
+      <div class="w-20 h-20 rounded-2xl accent-gradient flex items-center justify-center mx-auto shadow-lg shadow-indigo-500/20">
+        <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+          <rect x="10" y="14" width="28" height="22" rx="4" fill="white" fill-opacity="0.9"/>
+          <circle cx="18" cy="24" r="3" fill="#4f46e5"/>
+          <circle cx="30" cy="24" r="3" fill="#4f46e5"/>
+          <rect x="18" y="30" width="12" height="2" rx="1" fill="#4f46e5" fill-opacity="0.6"/>
+        </svg>
+      </div>
+    </div>
+
+    <h1 class="text-4xl md:text-6xl font-extralight tracking-tight mb-6">
+      <span class="hero-gradient">FairForge</span>
+      <span class="text-white/90"> Arena</span>
+    </h1>
+
+    <div class="glass rounded-2xl p-6 mb-8 inline-block">
+      <p class="text-lg md:text-xl text-white font-light leading-relaxed">
+        "Don't just detect bias.<br>
+        <span class="text-indigo-400 font-normal">Train your AI to overcome it.</span>"
+      </p>
+    </div>
+
+    <div class="mb-10">
+      <p class="text-slate-400 text-sm">Thank you!</p>
+      <div class="flex items-center justify-center gap-3 mt-2 flex-wrap">
+        <span class="inline-flex items-center gap-1.5 text-xs text-slate-500">
+          <i data-lucide="lock-open" class="w-3 h-3 text-emerald-400"></i>
+          Open Source (MIT)
+        </span>
+        <span class="text-slate-700">•</span>
+        <span class="inline-flex items-center gap-1.5 text-xs text-slate-500">
+          <i data-lucide="message-circle" class="w-3 h-3 text-indigo-400"></i>
+          Questions?
+        </span>
+      </div>
+    </div>
+
+    <div class="glass rounded-xl px-6 py-4 inline-flex items-center gap-4">
+      <div class="text-left">
+        <div class="text-[10px] text-slate-600 uppercase tracking-wider">Team</div>
+        <div class="text-white text-sm font-medium">MASSIVE-X</div>
+      </div>
+      <div class="w-px h-8 bg-white/5"></div>
+      <div class="text-left">
+        <div class="text-[10px] text-slate-600 uppercase tracking-wider">Event</div>
+        <div class="text-white text-sm font-medium">H2S Hackathon 2026</div>
+      </div>
+      <div class="w-px h-8 bg-white/5"></div>
+      <div class="text-left">
+        <div class="text-[10px] text-slate-600 uppercase tracking-wider">Track</div>
+        <div class="text-white text-sm font-medium">Unbiased AI Decisions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Keyboard hint -->
+<div id="keyHint" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 glass px-4 py-2 rounded-full text-[10px] text-slate-600 flex items-center gap-3 transition-opacity duration-500">
+  <span class="flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 text-[9px]">↑</kbd><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 text-[9px]">↓</kbd> Navigate</span>
+  <span class="text-slate-800">|</span>
+  <span class="flex items-center gap-1"><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 text-[9px]">F</kbd> Fullscreen</span>
+</div>
+
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+
+  // Slide navigation
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.nav-dot');
+  let currentSlide = 0;
+
+  function goToSlide(index) {
+    if (index < 0 || index >= slides.length) return;
+    currentSlide = index;
+    slides[index].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Dot click navigation
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      goToSlide(parseInt(dot.dataset.slide));
+    });
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      goToSlide(currentSlide + 1);
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      goToSlide(currentSlide - 1);
+    } else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen();
       }
     }
-    
-    function fixViolation(id) {
-      currentData.violations = currentData.violations.filter(v => v.id !== id)
-      updateViolationsList()
-      toast('✅ Violation fixed using Gemini counterfactuals', 'success')
-      // Slight improvement
-      currentData.heatmap[1][1] = Math.max(0.05, currentData.heatmap[1][1] * 0.7)
-      drawHeatmap()
-    }
-    
-    function clearViolations() {
-      currentData.violations = []
-      updateViolationsList()
-    }
-    
-    // Chat
-    let chatHistory = []
-    
-    function toggleChat() {
-      const win = document.getElementById('chat-window')
-      win.classList.toggle('hidden')
-      if (!win.classList.contains('hidden') && chatHistory.length === 0) {
-        // Welcome
-        const welcome = document.createElement('div')
-        welcome.className = 'chat-bubble bg-gradient-to-br from-cyan-400/20 to-transparent p-4 rounded-3xl max-w-[80%]'
-        welcome.innerHTML = `👋 Hi! I'm <strong>Gemini 2.5 Fairness Co-Pilot</strong>. How can I help you make this model the fairest in the arena today?`
-        document.getElementById('chat-messages').appendChild(welcome)
-      }
-    }
-    
-    function quickPrompt(el) {
-      const text = el.textContent
-      document.getElementById('chat-input').value = text
-      sendChatMessage()
-    }
-    
-    function sendChatMessage() {
-      const input = document.getElementById('chat-input')
-      const msg = input.value.trim()
-      if (!msg) return
-      
-      const messages = document.getElementById('chat-messages')
-      
-      // User bubble
-      const userDiv = document.createElement('div')
-      userDiv.className = 'chat-bubble ml-auto bg-white/10 p-4 rounded-3xl rounded-br-none max-w-[75%]'
-      userDiv.textContent = msg
-      messages.appendChild(userDiv)
-      
-      input.value = ''
-      messages.scrollTop = messages.scrollHeight
-      
-      // Simulate Gemini thinking
-      setTimeout(() => {
-        let replyText = ''
-        
-        const lower = msg.toLowerCase()
-        
-        if (lower.includes('black') || lower.includes('female')) {
-          replyText = `🚨 Strong intersectional bias confirmed for Black women (31% gap). Root cause: underrepresented positive examples in training data. I recommend Gemini-powered counterfactual augmentation.`
-        } else if (lower.includes('fix') || lower.includes('mitigation')) {
-          replyText = `💡 Top 3 recommendations:<br>1. Reweighting (instant)<br>2. Counterfactual data synthesis<br>3. Adversarial training with Gemini`
-        } else if (lower.includes('eu') || lower.includes('act') || lower.includes('compliant')) {
-          replyText = `✅ Your model is <strong>fully compliant</strong> after the latest mitigation. All Article 10 &amp; 13 requirements are satisfied. Ready for Google AI Studio deployment.`
-        } else {
-          replyText = `📈 Current score is 84/100. The heatmap shows the biggest issue is still intersectional bias. Would you like me to generate a full mitigation plan?`
+  });
+
+  // Intersection Observer for active dot + animations
+  const observerOptions = { threshold: 0.5 };
+  const slideObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const index = Array.from(slides).indexOf(entry.target);
+        currentSlide = index;
+
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === index);
+        });
+
+        // Hide key hint after first scroll
+        if (index > 0) {
+          document.getElementById('keyHint').style.opacity = '0';
+          setTimeout(() => {
+            document.getElementById('keyHint').style.display = 'none';
+          }, 500);
         }
-        
-        const aiDiv = document.createElement('div')
-        aiDiv.className = 'chat-bubble bg-gradient-to-br from-purple-400/10 to-cyan-400/10 p-4 rounded-3xl rounded-bl-none max-w-[75%]'
-        aiDiv.innerHTML = replyText
-        messages.appendChild(aiDiv)
-        messages.scrollTop = messages.scrollHeight
-      }, 1100)
-    }
-    
-    // Mitigation actions with real updates
-    function applyMitigation(type) {
-      let message = ''
-      
-      switch(type) {
-        case 'reweight':
-          currentData.heatmap = currentData.heatmap.map(row => row.map(v => Math.max(0.04, v * 0.55)))
-          currentData.metrics.ib = 0.14
-          currentData.metrics.di = 0.93
-          message = 'Reweighting complete • Bias dropped 45%'
-          break
-        case 'drop_proxy':
-          currentData.heatmap[1][1] = 0.09
-          currentData.metrics.dp = 0.98
-          message = 'Proxy columns removed • Parity improved'
-          break
-        case 'threshold':
-          currentData.metrics.eo = 0.97
-          message = 'Adaptive thresholds applied'
-          break
-        case 'counterfactual':
-        case 'counterfactual_fix':
-          currentData.heatmap = currentData.heatmap.map(row => row.map(v => Math.max(0.03, v * 0.4)))
-          message = 'Gemini counterfactuals generated and applied!'
-          launchConfetti()
-          break
       }
-      
-      toast(message || 'Mitigation applied successfully!', 'success')
-      drawHeatmap()
-      updateMetricsUI()
-      updateViolationsList()
-      
-      // Refresh radar
-      drawRadarChart()
+    });
+  }, observerOptions);
+
+  slides.forEach(slide => slideObserver.observe(slide));
+
+  // Animate on scroll observer
+  const animObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.animate-on-scroll').forEach(el => {
+    animObserver.observe(el);
+  });
+
+  // Auto-hide key hint
+  setTimeout(() => {
+    const hint = document.getElementById('keyHint');
+    if (hint.style.opacity !== '0') {
+      hint.style.opacity = '0.4';
     }
-    
-    function updateMetricsUI() {
-      document.getElementById('metric-dp').textContent = currentData.metrics.dp.toFixed(2)
-      document.getElementById('metric-eo').textContent = currentData.metrics.eo.toFixed(2)
-      document.getElementById('metric-di').textContent = currentData.metrics.di.toFixed(2)
-      document.getElementById('metric-ib').textContent = currentData.metrics.ib.toFixed(2)
-      
-      // Overall score
-      const newOverall = Math.floor(78 + Math.random() * 12)
-      animateValue('overall-score', 78, newOverall, 1200)
-      document.getElementById('score-bar').style.width = newOverall + '%'
-    }
-    
-    // Toast
-    function toast(msg, type = 'success') {
-      const t = document.createElement('div')
-      t.style.cssText = `position:fixed; top:24px; right:24px; padding:16px 24px; border-radius:9999px; font-weight:600; color:white; z-index:99999; display:flex; align-items:center; gap:12px; box-shadow:0 25px 50px -12px rgb(0 0 0 / 0.4);`
-      t.style.background = type === 'success' ? '#10b981' : '#00f5ff'
-      t.innerHTML = `${type === 'success' ? '✅' : '🔥'} ${msg}`
-      document.body.appendChild(t)
-      
-      setTimeout(() => {
-        t.style.transition = 'all 0.4s cubic-bezier(0.4,0,1,1)'
-        t.style.opacity = 0
-        t.style.transform = 'translateY(-20px)'
-        setTimeout(() => t.remove(), 400)
-      }, 3200)
-    }
-    
-    // Run full audit simulation
-    function runFullAudit() {
-      const btns = document.querySelectorAll('button')
-      btns.forEach(b => b.style.pointerEvents = 'none')
-      
-      toast('🔬 Running comprehensive fairness audit with Gemini 2.5...', 'success')
-      
-      setTimeout(() => {
-        // Improve everything
-        currentData.heatmap = currentData.heatmap.map(row => row.map(v => Math.max(0.03, v * (0.4 + Math.random() * 0.3))))
-        currentData.metrics = { dp: 0.98, eo: 0.97, di: 0.94, ib: 0.09 }
-        
-        drawHeatmap()
-        updateMetricsUI()
-        drawRadarChart()
-        updateViolationsList()
-        
-        // Fake training progress update
-        document.getElementById('bias-reduction').textContent = '96%'
-        document.getElementById('current-bias-score').textContent = '0.04'
-        
-        toast('🎉 FULL AUDIT COMPLETE — Your model is now Google AI Ready!', 'success')
-        launchConfetti()
-        
-        btns.forEach(b => b.style.pointerEvents = 'auto')
-      }, 2100)
-    }
-    
-    // Simulate new data
-    function simulateNewData() {
-      currentData.heatmap = [
-        [0.05, 0.09, 0.07, 0.11],
-        [0.18, 0.26, 0.15, 0.21],
-        [0.06, 0.12, 0.09, 0.13]
-      ]
-      drawHeatmap()
-      toast('🧪 New synthetic dataset loaded • Fairness re-evaluated', 'success')
-    }
-    
-    function switchModel() {
-      toast('🔄 Switched to Llama-3-FairTune v2.4 (Gemini distilled)', 'success')
-      // Slight random improvement
-      currentData.heatmap[1][1] -= 0.08
-      drawHeatmap()
-    }
-    
-    function deployToProduction() {
-      toast('🚀 Deployed to Vertex AI • Monitoring started', 'success')
-      launchConfetti()
-      setTimeout(() => {
-        toast('📡 Your fair model is now LIVE in production!', 'success')
-      }, 1200)
-    }
-    
-    // Export
-    function exportReport() {
-      toast('📄 EU AI Act + Google AI Studio report exported as PDF', 'success')
-      launchConfetti()
-    }
-    
-    // Main init
-    window.onload = function() {
-      initTailwind()
-      drawHeatmap()
-      drawTrainingChart()
-      drawRadarChart()
-      updateViolationsList()
-      updateMetricsUI()
-      
-      // Keyboard shortcut for audit
-      document.addEventListener('keydown', (e) => {
-        if (e.metaKey && e.key === 'k') {
-          e.preventDefault()
-          runFullAudit()
-        }
-      })
-      
-      console.log('%c🚀 FairForge Arena v4.0 ready for Google Hackathon victory!', 'color:#00f5ff; font-size:13px; font-weight:bold')
-    }
-  </script>
+  }, 5000);
+</script>
 </body>
 </html>
