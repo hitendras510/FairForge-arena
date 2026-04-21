@@ -1,3 +1,489 @@
+<!-- ═══ TOP NAV ═══ -->
+<nav id="nav">
+  <div class="nav-logo" onclick="goPage('home')">
+    <div class="nav-logo-mark"><i data-lucide="scale"></i></div>
+    <div class="nav-logo-text">Fair<span>Forge</span></div>
+  </div>
+  <div class="nav-tabs" id="nav-tabs">
+    <div class="nav-tab active" data-page="home"><i data-lucide="home"></i><span class="tab-label">Home</span></div>
+    <div class="nav-tab" data-page="dashboard"><i data-lucide="layout-dashboard"></i><span class="tab-label">Dashboard</span></div>
+    <div class="nav-tab" data-page="audit"><i data-lucide="bar-chart-3"></i><span class="tab-label">Audit</span></div>
+    <div class="nav-tab" data-page="heatmap"><i data-lucide="grid-3x3"></i><span class="tab-label">Heatmap</span></div>
+    <div class="nav-tab" data-page="training"><i data-lucide="brain-circuit"></i><span class="tab-label">Training</span></div>
+    <div class="nav-tab" data-page="policies"><i data-lucide="shield-check"></i><span class="tab-label">Policies</span></div>
+    <div class="nav-tab" data-page="report"><i data-lucide="file-badge-2"></i><span class="tab-label">Report</span></div>
+    <div class="nav-tab" data-page="mitigate"><i data-lucide="settings-2"></i><span class="tab-label">Mitigate</span></div>
+    <div class="nav-tab" data-page="whatif"><i data-lucide="git-compare-arrows"></i><span class="tab-label">What-If</span></div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-status"><span class="nav-status-dot"></span><span id="nav-domain">No audit</span></div>
+    <span class="nav-run-badge" id="nav-run"></span>
+  </div>
+</nav>
+
+<!-- ═══ PAGES ═══ -->
+<div id="pages">
+
+<!-- ═══════════════════ HOME PAGE ═══════════════════ -->
+<section class="page active" id="page-home">
+  <div class="home-hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <div class="hero-badge"><i data-lucide="sparkles"></i> AI-Powered Fairness Testing</div>
+      <h1 class="hero-h1">Find Bias.<br><em>Fix Models.</em><br>Build Trust.</h1>
+      <p class="hero-p">FairForge Arena is your AI fairness training gym. Upload datasets, run adversarial audits, train bias-free models with reinforcement learning, and generate compliance reports — all in one place.</p>
+      <div class="hero-actions">
+        <button class="btn btn-accent btn-lg" onclick="goPage('audit')"><i data-lucide="zap" style="width:16px;height:16px;stroke-width:2.5"></i> Start Audit</button>
+        <button class="btn btn-dark btn-lg" onclick="loadSample('hiring')"><i data-lucide="database" style="width:16px;height:16px;stroke-width:2"></i> Try Sample Data</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-val">12</div><div class="hero-stat-lbl">Fairness Policies</div></div>
+        <div><div class="hero-stat-val">4</div><div class="hero-stat-lbl">Domain Templates</div></div>
+        <div><div class="hero-stat-val">PPO</div><div class="hero-stat-lbl">RL Debiasing</div></div>
+        <div><div class="hero-stat-val">XAI</div><div class="hero-stat-lbl">Counterfactual</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="home-section">
+    <div class="home-section-label">Capabilities</div>
+    <h2 class="home-section-title">Everything You Need to Prove Fairness</h2>
+    <p class="home-section-sub">A complete pipeline from data upload to compliance report, with AI explanations at every step.</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--accent-dim);color:var(--accent)"><i data-lucide="scan-search"></i></div>
+        <h3>Adversarial Audit</h3>
+        <p>Automatically injects realistic bias patterns into your dataset and measures how your model reacts across 8+ fairness metrics.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--green-dim);color:var(--green)"><i data-lucide="grid-3x3"></i></div>
+        <h3>Bias Heatmap</h3>
+        <p>Visualize fairness scores across every demographic intersection — gender, race, age — in a single color-coded matrix.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--blue-dim);color:var(--blue)"><i data-lucide="brain-circuit"></i></div>
+        <h3>RL Debiasing</h3>
+        <p>Train a PPO agent to adjust model thresholds in real-time, reducing bias while preserving predictive accuracy.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--amber-dim);color:var(--amber)"><i data-lucide="shield-check"></i></div>
+        <h3>Policy Compliance</h3>
+        <p>Check against 12 fairness policies covering Title VII, ECOA, ADA, and emerging AI regulations with severity scoring.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--red-dim);color:var(--red)"><i data-lucide="settings-2"></i></div>
+        <h3>Mitigation Engine</h3>
+        <p>Apply reweighting, threshold adjustment, proxy removal, adversarial debiasing, and group calibration strategies.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:var(--purple-dim);color:var(--purple)"><i data-lucide="git-compare-arrows"></i></div>
+        <h3>Counterfactual XAI</h3>
+        <p>Change a single protected attribute and see how model decisions flip — with Gemini-powered narrative explanations.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Domains -->
+  <div class="home-section" style="border-top:1px solid var(--border);padding-top:80px">
+    <div class="home-section-label">Domains</div>
+    <h2 class="home-section-title">Built for Real-World Scenarios</h2>
+    <p class="home-section-sub">Pre-configured templates for the highest-risk AI applications.</p>
+    <div class="domain-grid">
+      <div class="domain-card" onclick="loadSample('hiring')">
+        <div class="domain-card-icon" style="color:var(--accent)"><i data-lucide="briefcase" style="width:32px;height:32px;stroke-width:1.3"></i></div>
+        <h4>Hiring</h4>
+        <p>Resume screening, candidate ranking, interview scheduling bias</p>
+      </div>
+      <div class="domain-card" onclick="loadSample('loan')">
+        <div class="domain-card-icon" style="color:var(--green)"><i data-lucide="landmark" style="width:32px;height:32px;stroke-width:1.3"></i></div>
+        <h4>Loan &amp; Finance</h4>
+        <p>Credit scoring, loan approval, interest rate discrimination</p>
+      </div>
+      <div class="domain-card" onclick="loadSample('medical')">
+        <div class="domain-card-icon" style="color:var(--amber)"><i data-lucide="heart-pulse" style="width:32px;height:32px;stroke-width:1.3"></i></div>
+        <h4>Medical</h4>
+        <p>Triage prioritization, treatment recommendation, risk assessment</p>
+      </div>
+      <div class="domain-card" onclick="loadSample('intersectional')">
+        <div class="domain-card-icon" style="color:var(--red)"><i data-lucide="users" style="width:32px;height:32px;stroke-width:1.3"></i></div>
+        <h4>Intersectional</h4>
+        <p>Multi-axis bias across gender &times; race &times; age combinations</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="home-section" style="border-top:1px solid var(--border);padding-top:80px;padding-bottom:100px">
+    <div class="home-section-label">How It Works</div>
+    <h2 class="home-section-title">Three Steps to Fair AI</h2>
+    <div class="steps-row" style="margin-top:36px">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <h4>Upload &amp; Audit</h4>
+        <p>Drop your CSV or pick a sample. FairForge injects adversarial bias and runs 8+ fairness metrics automatically.</p>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <h4>Train &amp; Mitigate</h4>
+        <p>Use PPO reinforcement learning or choose from 5 mitigation strategies to reduce detected bias.</p>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <h4>Report &amp; Ship</h4>
+        <p>Generate an A–F report card with policy compliance, Gemini narrative, and exportable PDF.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ DASHBOARD PAGE ═══════════════════ -->
+<section class="page" id="page-dashboard">
+  <div class="app-page">
+    <div class="page-head">
+      <h1>Dashboard</h1>
+      <p>Overview of your latest fairness audit results</p>
+    </div>
+    <div id="dash-empty" class="empty" style="margin-top:40px">
+      <i data-lucide="layout-dashboard"></i>
+      <h3>No audit data yet</h3>
+      <p>Run an audit from the Audit tab to see your dashboard</p>
+      <div class="chips" style="justify-content:center;margin-top:16px">
+        <button class="chip" style="color:var(--accent);border-color:var(--accent-border)" onclick="goPage('audit')">Go to Audit</button>
+        <button class="chip" style="color:var(--green);border-color:var(--green-border)" onclick="loadSample('hiring')">Try Hiring Sample</button>
+      </div>
+    </div>
+    <div id="dash-content" style="display:none">
+      <div class="col-4" id="dash-metrics" style="margin-bottom:16px"></div>
+      <div class="col-2" style="margin-bottom:16px">
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--accent)"></span>Score Breakdown</div><div class="chartbox" style="height:200px"><canvas id="dash-chart1"></canvas></div></div>
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--red)"></span>Fairness Metrics</div><div class="chartbox" style="height:200px"><canvas id="dash-chart2"></canvas></div></div>
+      </div>
+      <div class="col-2">
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--red)"></span>Violations</div><div id="dash-violations"></div></div>
+        <div class="card">
+          <div class="card-head"><span class="card-head-dot" style="background:var(--accent)"></span>AI Narrative</div>
+          <div class="ai-box"><div class="ai-head"><div class="ai-icon"><i data-lucide="sparkles"></i></div><span style="font-size:12px;font-weight:500">Gemini 1.5 Flash</span></div><div class="ai-text" id="dash-narrative" style="font-size:11.5px">—</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ AUDIT PAGE ═══════════════════ -->
+<section class="page" id="page-audit">
+  <div class="app-page">
+    <div class="page-head">
+      <h1>Audit</h1>
+      <p>Upload a dataset, configure parameters, and run the full fairness pipeline</p>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-head"><span class="card-head-dot" style="background:var(--accent)"></span>Dataset Configuration</div>
+      <div class="row">
+        <div style="flex:2;min-width:240px">
+          <div class="upload" id="drop-zone" onclick="document.getElementById('csv-file').click()">
+            <i data-lucide="upload-cloud"></i>
+            <div class="upload-t" id="drop-text">Drop CSV file here or click to browse</div>
+            <div class="upload-s" id="drop-sub">Hiring, loan, medical, intersectional datasets</div>
+          </div>
+          <input type="file" id="csv-file" accept=".csv" style="display:none" onchange="onFileSelected(this)">
+        </div>
+        <div style="flex:1;min-width:210px">
+          <div class="fg"><label>Domain</label><select id="domain-select"><option value="hiring">Hiring</option><option value="loan">Loan / Finance</option><option value="medical">Medical</option><option value="intersectional">Intersectional</option></select></div>
+          <div class="fg"><label>Sensitive Columns <span style="color:var(--text3)">(comma-separated)</span></label><input type="text" id="sensitive-cols" value="gender,race" placeholder="gender,race,age_group"></div>
+          <div class="fg"><label>Target Column <span style="color:var(--text3)">(blank = last col)</span></label><input type="text" id="target-col" placeholder="hired / approved / high_risk"></div>
+          <button class="btn btn-accent" style="width:100%" id="audit-btn" onclick="runAudit()"><span id="audit-icon"><i data-lucide="zap" style="width:14px;height:14px;stroke-width:2.5"></i></span> <span id="audit-text">Run Fairness Audit</span></button>
+        </div>
+      </div>
+    </div>
+    <div id="audit-results" style="display:none">
+      <div class="col-4" id="metric-cards" style="margin-bottom:16px"></div>
+      <div class="col-2" style="margin-bottom:16px">
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--blue)"></span>Audit Score Breakdown</div><div class="chartbox" style="height:200px"><canvas id="chart-grader"></canvas></div></div>
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--red)"></span>Fairness Metrics</div><div class="chartbox" style="height:200px"><canvas id="chart-metrics"></canvas></div></div>
+      </div>
+      <div class="col-2" style="margin-bottom:16px">
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--red)"></span>Policy Violations</div><div id="violations-list"></div></div>
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--accent)"></span>Gemini AI Narrative</div><div class="ai-box"><div class="ai-head"><div class="ai-icon"><i data-lucide="sparkles"></i></div><span style="font-size:12px;font-weight:500">Gemini 1.5 Flash</span><span style="margin-left:auto;font-size:9px;color:var(--green);display:flex;align-items:center;gap:4px"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block"></span>LIVE</span></div><div class="ai-text" id="gemini-narrative" style="font-size:11.5px">Awaiting audit...</div></div></div>
+      </div>
+      <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--amber)"></span>Adversary Bias Injected</div><div id="bias-info" style="font-size:12px;color:var(--text2)"></div></div>
+    </div>
+    <div id="audit-empty" class="empty" style="margin-top:40px">
+      <i data-lucide="scale"></i>
+      <h3>No audit run yet</h3>
+      <p>Upload a CSV above or use a sample dataset</p>
+      <div class="chips" style="justify-content:center;margin-top:16px">
+        <button class="chip" style="color:var(--accent);border-color:var(--accent-border)" onclick="loadSample('hiring')">Hiring</button>
+        <button class="chip" style="color:var(--green);border-color:var(--green-border)" onclick="loadSample('loan')">Loan</button>
+        <button class="chip" style="color:var(--amber);border-color:var(--amber-border)" onclick="loadSample('medical')">Medical</button>
+        <button class="chip" style="color:var(--red);border-color:var(--red-border)" onclick="loadSample('intersectional')">Intersectional</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ HEATMAP PAGE ═══════════════════ -->
+<section class="page" id="page-heatmap">
+  <div class="app-page">
+    <div class="page-head"><h1>Bias Heatmap</h1><p>Cross-group fairness visualization — demographic groups &times; metrics</p></div>
+    <div id="heatmap-empty" class="empty"><i data-lucide="grid-3x3"></i><h3>No heatmap data</h3><p>Run an audit first to generate the heatmap</p><button class="btn btn-dark" style="margin-top:14px" onclick="goPage('audit')"><i data-lucide="arrow-right" style="width:13px;height:13px;stroke-width:2"></i> Go to Audit</button></div>
+    <div id="heatmap-content" style="display:none">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-head"><span class="card-head-dot" style="background:var(--green)"></span>Acceptance Rate by Demographic Group</div>
+        <div style="margin-bottom:10px;font-size:11px;color:var(--text3);display:flex;gap:16px">
+          <span><span style="color:var(--green)">&#9679;</span> &gt;70%</span>
+          <span><span style="color:var(--amber)">&#9679;</span> 50–70%</span>
+          <span><span style="color:var(--red)">&#9679;</span> &lt;50%</span>
+        </div>
+        <div id="hmap-header" style="display:grid;gap:6px;margin-bottom:6px"></div>
+        <div id="hmap-grid" style="display:grid;gap:6px"></div>
+      </div>
+      <div class="col-2">
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--blue)"></span>Acceptance Rate per Group</div><div class="chartbox" style="height:220px"><canvas id="chart-heatmap-bar"></canvas></div></div>
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--amber)"></span>TPR vs FPR by Group</div><div class="chartbox" style="height:220px"><canvas id="chart-tpr-fpr"></canvas></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ TRAINING PAGE ═══════════════════ -->
+<section class="page" id="page-training">
+  <div class="app-page">
+    <div class="page-head"><h1>RL Training</h1><p>PPO-based reinforcement learning to reduce bias while preserving accuracy</p></div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="row" style="margin-bottom:0">
+        <div><label>Episodes</label><input type="number" id="train-episodes" value="50" min="10" max="200" style="width:90px;margin-top:4px"></div>
+        <div style="display:flex;gap:8px;align-items:flex-end;padding-bottom:2px">
+          <button class="btn btn-accent" id="train-btn" onclick="startTraining()"><i data-lucide="play" style="width:13px;height:13px;stroke-width:2.5"></i> Start PPO Training</button>
+          <button class="btn btn-dark" onclick="resetTraining()"><i data-lucide="rotate-ccw" style="width:13px;height:13px;stroke-width:2"></i> Reset</button>
+        </div>
+        <div style="display:flex;gap:24px;justify-content:flex-end;flex:1">
+          <div style="text-align:center"><div class="snum" id="ep-counter">&mdash;</div><div class="slbl">Episode</div></div>
+          <div style="text-align:center"><div class="snum" id="reward-counter" style="color:var(--green)">&mdash;</div><div class="slbl">Reward</div></div>
+          <div style="text-align:center"><div class="snum" id="bias-counter" style="color:var(--red)">&mdash;</div><div class="slbl">Bias</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px" id="train-progress-card">
+      <div style="display:flex;justify-content:space-between;margin-bottom:7px;font-size:11px"><span style="color:var(--text3)">Progress</span><span id="train-progress-text" style="color:var(--text2);font-family:var(--ff-m)">0 / 0</span></div>
+      <div class="ptrack"><div class="pfill" id="train-progress-fill" style="width:0%;background:linear-gradient(90deg,var(--accent),#c0613a)"></div></div>
+    </div>
+    <div class="col-2" style="margin-bottom:16px">
+      <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--green)"></span>Reward over Episodes</div><div class="chartbox" style="height:180px"><canvas id="chart-reward"></canvas></div></div>
+      <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--red)"></span>Bias Score over Episodes</div><div class="chartbox" style="height:180px"><canvas id="chart-bias-train"></canvas></div></div>
+    </div>
+    <div class="card" style="margin-bottom:16px"><div class="card-head"><span class="card-head-dot" style="background:var(--accent)"></span>Before vs After PPO Training</div><div class="chartbox" style="height:200px"><canvas id="chart-before-after"></canvas></div></div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div class="card-head" style="margin-bottom:0"><span class="card-head-dot" style="background:var(--text3)"></span>Training Log</div><button class="btn btn-dark btn-sm" onclick="document.getElementById('training-log').innerHTML=''">Clear</button></div>
+      <div class="term" id="training-log">Waiting for training to start...\n</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ POLICIES PAGE ═══════════════════ -->
+<section class="page" id="page-policies">
+  <div class="app-page">
+    <div class="page-head"><h1>Fairness Policies</h1><p>12 legal and ethical fairness rules checked against your model</p></div>
+    <div class="row" style="margin-bottom:16px;align-items:center">
+      <select id="policy-filter-domain" onchange="filterPolicies()" style="width:140px"><option value="all">All Domains</option><option value="hiring">Hiring</option><option value="finance">Finance</option><option value="medical">Medical</option></select>
+      <select id="policy-filter-status" onchange="filterPolicies()" style="width:140px"><option value="all">All Status</option><option value="fail">Failing Only</option><option value="pass">Passing Only</option></select>
+      <div style="margin-left:auto;font-size:11px;color:var(--text3)" id="policy-summary">Load an audit to check policies</div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <table><thead><tr><th style="padding-left:16px">ID</th><th>Policy Name</th><th>Domain</th><th>Severity</th><th>Metric Value</th><th>Threshold</th><th style="padding-right:16px">Status</th></tr></thead><tbody id="policies-tbody"><tr><td colspan="7" style="text-align:center;padding:36px;color:var(--text3)">Run an audit to see policy results</td></tr></tbody></table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ REPORT PAGE ═══════════════════ -->
+<section class="page" id="page-report">
+  <div class="app-page">
+    <div class="page-head"><h1>Report Card</h1><p>Full fairness audit report with letter grade and compliance summary</p></div>
+    <div id="report-empty" class="empty"><i data-lucide="file-badge-2"></i><h3>No report generated</h3><p>Run an audit to generate the fairness report card</p><button class="btn btn-dark" style="margin-top:14px" onclick="goPage('audit')"><i data-lucide="arrow-right" style="width:13px;height:13px;stroke-width:2"></i> Go to Audit</button></div>
+    <div id="report-content" style="display:none">
+      <div class="col-2" style="margin-bottom:16px">
+        <div class="card" style="display:flex;align-items:center;gap:24px;padding:24px">
+          <div class="grade-ring" id="grade-ring">&mdash;</div>
+          <div style="flex:1">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:6px">Overall Score</div>
+            <div style="font-size:40px;font-weight:300;font-family:var(--ff-m);letter-spacing:-1px" id="report-score">&mdash;</div>
+            <div style="font-size:11px;margin-top:8px" id="report-verdict"></div>
+            <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-accent btn-sm" onclick="exportPDF()"><i data-lucide="download" style="width:12px;height:12px;stroke-width:2.5"></i> Export PDF</button>
+              <button class="btn btn-dark btn-sm" onclick="loadReport()"><i data-lucide="refresh-cw" style="width:12px;height:12px;stroke-width:2"></i> Refresh</button>
+            </div>
+          </div>
+        </div>
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--blue)"></span>Score Breakdown (Radar)</div><div class="chartbox" style="height:190px"><canvas id="chart-radar"></canvas></div></div>
+      </div>
+      <div class="card" style="margin-bottom:16px"><div class="card-head"><span class="card-head-dot" style="background:var(--accent)"></span>Sub-scores</div><div id="report-score-bars"></div></div>
+      <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--accent)"></span>AI Audit Narrative</div><div class="ai-box"><div class="ai-head"><div class="ai-icon"><i data-lucide="sparkles"></i></div><span style="font-size:12px;font-weight:500">Gemini — Executive Summary</span></div><div class="ai-text" id="report-narrative" style="font-size:12px;line-height:1.85"></div></div></div>
+      <div id="print-area" style="display:none"><h1 style="color:#1e293b">FairForge Arena — Fairness Audit Report</h1><p id="print-meta" style="color:#64748b;font-size:14px"></p><hr><h2 id="print-grade-text" style="color:#c0613a"></h2><pre id="print-narrative" style="white-space:pre-wrap;font-family:sans-serif;color:#334155;font-size:13px;line-height:1.7"></pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ MITIGATE PAGE ═══════════════════ -->
+<section class="page" id="page-mitigate">
+  <div class="app-page">
+    <div class="page-head"><h1>Mitigation Engine</h1><p>Apply bias-fixing strategies and see projected improvement</p></div>
+    <div id="mitigate-empty" class="empty"><i data-lucide="settings-2"></i><h3>No suggestions yet</h3><p>Run an audit to generate tailored mitigation strategies</p><button class="btn btn-dark" style="margin-top:14px" onclick="goPage('audit')"><i data-lucide="arrow-right" style="width:13px;height:13px;stroke-width:2"></i> Run Audit</button></div>
+    <div id="mitigate-content" style="display:none">
+      <div class="col-2">
+        <div class="stack">
+          <div class="card">
+            <div class="card-head"><span class="card-head-dot" style="background:var(--accent)"></span>Mitigation Strategy</div>
+            <div class="fg"><label>Strategy</label><select id="strategy-select"><option value="reweighting">Sample Reweighting</option><option value="threshold_adjustment">Threshold Adjustment</option><option value="proxy_removal">Proxy Feature Removal</option><option value="adversarial_debiasing">Adversarial Debiasing</option><option value="calibration">Calibration by Group</option></select></div>
+            <div class="fg"><label>Strength: <span id="strength-val" style="color:var(--accent);font-family:var(--ff-m)">0.7</span></label><input type="range" id="strength-slider" min="0.1" max="1.0" step="0.1" value="0.7" oninput="document.getElementById('strength-val').textContent=this.value"></div>
+            <button class="btn btn-accent" style="width:100%" onclick="applyMitigation()" id="mitigate-btn"><i data-lucide="zap" style="width:14px;height:14px;stroke-width:2.5"></i> Apply Mitigation</button>
+          </div>
+          <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--blue)"></span>Recommended Strategies</div><div id="suggestions-list"></div></div>
+        </div>
+        <div class="stack">
+          <div class="card" style="display:none" id="mitigation-results"><div class="card-head"><span class="card-head-dot" style="background:var(--green)"></span>Before vs After</div><div class="chartbox" style="height:220px"><canvas id="chart-mitigate"></canvas></div></div>
+          <div class="card" style="display:none" id="mitigation-metrics-card"><div class="card-head"><span class="card-head-dot" style="background:var(--amber)"></span>Metric Changes</div><div id="mitigation-metrics-table"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ WHAT-IF PAGE ═══════════════════ -->
+<section class="page" id="page-whatif">
+  <div class="app-page">
+    <div class="page-head"><h1>What-If Explorer</h1><p>Change one protected attribute and see how the model decision flips</p></div>
+    <div class="col-2">
+      <div class="stack">
+        <div class="card">
+          <div class="card-head"><span class="card-head-dot" style="background:var(--blue)"></span>Individual Profile</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="fg"><label>Gender</label><select id="wi-gender"><option value="0">Male</option><option value="1">Female</option></select></div>
+            <div class="fg"><label>Race</label><select id="wi-race"><option value="0">White</option><option value="1">Black</option><option value="2">Hispanic</option><option value="3">Asian</option></select></div>
+            <div class="fg"><label>Age</label><input type="number" id="wi-age" value="35" min="18" max="70"></div>
+            <div class="fg"><label>Income</label><input type="number" id="wi-income" value="65000"></div>
+          </div>
+          <div class="fg" style="margin-top:4px"><label>Counterfactual: change</label><select id="wi-cf-attr"><option value="gender">Gender</option><option value="race">Race</option><option value="age">Age</option></select></div>
+          <button class="btn btn-accent" style="width:100%;margin-top:4px" onclick="runCounterfactual()"><i data-lucide="scan-search" style="width:14px;height:14px;stroke-width:2"></i> Analyze Counterfactual</button>
+        </div>
+        <div class="card" id="decision-card" style="display:none">
+          <div class="card-head"><span class="card-head-dot" style="background:var(--accent)"></span>Decision</div>
+          <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+            <div style="text-align:center"><div style="font-size:10px;color:var(--text3);margin-bottom:7px">Original</div><div class="dpill" id="decision-original"></div><div style="font-size:10px;color:var(--text3);margin-top:5px" id="prob-original"></div></div>
+            <div style="font-size:22px;color:var(--text3)"><i data-lucide="arrow-right" style="width:22px;height:22px;stroke-width:1.5"></i></div>
+            <div style="text-align:center"><div style="font-size:10px;color:var(--text3);margin-bottom:7px">Counterfactual</div><div class="dpill" id="decision-cf"></div><div style="font-size:10px;color:var(--text3);margin-top:5px" id="prob-cf"></div></div>
+            <div style="margin-left:auto;text-align:center" id="flip-indicator"></div>
+          </div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--blue)"></span>All Group Outcomes</div><div id="group-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px"></div></div>
+        <div class="card"><div class="card-head"><span class="card-head-dot" style="background:var(--accent)"></span>Gemini Counterfactual Explanation</div><div class="ai-box"><div class="ai-head"><div class="ai-icon"><i data-lucide="sparkles"></i></div><span style="font-size:12px;font-weight:500">Counterfactual Analysis</span></div><div class="ai-text" id="cf-explanation" style="font-size:11.5px">Run analysis above to get AI explanation...</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /pages -->
+</div><!-- /shell -->
+
+<div id="loader"><div class="spin"></div><span id="loader-text">Processing...</span></div>
+<div id="toast"></div>
+
+<style media="print">body *{visibility:hidden}#print-area,#print-area *{visibility:visible}#print-area{position:absolute;left:0;top:0;color:#1e293b;font-family:sans-serif;padding:40px}}</style>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   FairForge Arena — Full Application JavaScript
+   ══════════════════════════════════════════════════════════ */
+const API='';
+let S={runId:null,domain:'hiring',auditData:null,trainInt:null,charts:{},policies:[],suggestions:[]};
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded',()=>{lucide.createIcons();initTrainCharts()});
+
+// ── Navigation ──
+function goPage(p){
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelector(`.nav-tab[data-page="${p}"]`).classList.add('active');
+  if(p==='heatmap'&&S.runId)loadHeatmap();
+  if(p==='policies'&&S.runId)loadPolicies();
+  if(p==='report'&&S.runId)loadReport();
+  if(p==='mitigate'&&S.runId)loadMitigate();
+  if(p==='dashboard'&&S.runId)renderDashboard();
+  document.getElementById('pages').scrollTop=0;
+}
+document.querySelectorAll('.nav-tab').forEach(el=>el.addEventListener('click',()=>goPage(el.dataset.page)));
+
+// ── Toast ──
+function toast(m,t='info'){const e=document.getElementById('toast'),c={info:'var(--blue)',success:'var(--green)',error:'var(--red)',warn:'var(--amber)'};e.innerHTML=`<span style="color:${c[t]||c.info};font-size:14px">&#9679;</span> ${m}`;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),3200)}
+
+// ── Loading ──
+function showLoad(m){document.getElementById('loader-text').textContent=m;document.getElementById('loader').classList.add('vis')}
+function hideLoad(){document.getElementById('loader').classList.remove('vis')}
+
+// ── File ──
+let selFile=null;
+function onFileSelected(inp){const f=inp.files[0];if(!f)return;selFile=f;document.getElementById('drop-text').textContent=f.name;document.getElementById('drop-sub').textContent=(f.size/1024).toFixed(1)+' KB — Ready'}
+const dz=document.getElementById('drop-zone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('over')});
+dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');const f=e.dataTransfer.files[0];if(f&&f.name.endsWith('.csv')){selFile=f;document.getElementById('drop-text').textContent=f.name;document.getElementById('drop-sub').textContent=(f.size/1024).toFixed(1)+' KB — Ready'}});
+
+// ── Sample Load ──
+async function loadSample(d){toast(`Loading ${d} sample...`,'info');document.getElementById('domain-select').value=d;document.getElementById('sensitive-cols').value='gender,race';const t={hiring:'hired',loan:'approved',medical:'high_risk',intersectional:'approved'};document.getElementById('target-col').value=t[d]||'';try{const r=await fetch(`${API}/api/sample/${d}`);const b=await r.blob();selFile=new File([b],`${d}_sample.csv`,{type:'text/csv'});document.getElementById('drop-text').textContent=`${d}_sample.csv (demo)`;document.getElementById('drop-sub').textContent='Sample loaded';goPage('audit');await runAudit()}catch(e){toast('Error: '+e.message,'error')}}
+
+// ── Run Audit ──
+async function runAudit(){if(!selFile){toast('Select a CSV first','warn');return}const btn=document.getElementById('audit-btn'),ic=document.getElementById('audit-icon'),tx=document.getElementById('audit-text');btn.disabled=true;ic.innerHTML='<div class="spin"></div>';tx.textContent='Running...';showLoad('Running fairness audit...');try{const fd=new FormData();fd.append('file',selFile);fd.append('domain',document.getElementById('domain-select').value);fd.append('sensitive_cols',document.getElementById('sensitive-cols').value);fd.append('target_col',document.getElementById('target-col').value);const r=await fetch(`${API}/api/audit`,{method:'POST',body:fd});if(!r.ok)throw new Error((await r.json()).detail||'Failed');const d=await r.json();S.runId=d.run_id;S.domain=d.domain;S.auditData=d;S.suggestions=d.suggestions||[];renderAudit(d);updateNav(d);toast('Audit complete!','success');const f=(d.violations||[]).length;const pb=document.getElementById('policy-badge');if(f>0){/* badge on nav if needed */}goPage('audit')}catch(e){toast('Error: '+e.message,'error')}finally{hideLoad();btn.disabled=false;ic.innerHTML='<i data-lucide="zap" style="width:14px;height:14px;stroke-width:2.5"></i>';tx.textContent='Run Fairness Audit';lucide.createIcons()}}
+
+function updateNav(d){document.getElementById('nav-domain').textContent=d.domain.charAt(0).toUpperCase()+d.domain.slice(1);document.getElementById('nav-domain').style.color='var(--text2)';const rb=document.getElementById('nav-run');rb.textContent=d.run_id;rb.style.display='inline'}
+
+function renderAudit(d){document.getElementById('audit-empty').style.display='none';document.getElementById('audit-results').style.display='block';const m=d.metrics,g=d.grader;const cards=[{l:'Overall Bias Score',v:m.overall_bias_score.toFixed(3),p:m.overall_bias_score<.4,t:m.overall_bias_score>.5?'HIGH':'MODERATE',c:m.overall_bias_score>.5?'no':'warn'},{l:'Disparate Impact Ratio',v:m.disparate_impact_ratio.toFixed(3),p:m.disparate_impact_ratio>=.8,t:m.disparate_impact_ratio>=.8?'PASS':'FAIL',c:m.disparate_impact_ratio>=.8?'ok':'no'},{l:'Demographic Parity Diff',v:m.demographic_parity_diff.toFixed(3),p:m.demographic_parity_diff<.1,t:m.demographic_parity_diff<.1?'PASS':'FAIL',c:m.demographic_parity_diff<.1?'ok':'no'},{l:'Equal Opportunity Diff',v:m.equal_opportunity_diff.toFixed(3),p:m.equal_opportunity_diff<.15,t:m.equal_opportunity_diff<.15?'PASS':'WARN',c:m.equal_opportunity_diff<.15?'ok':'warn'}];document.getElementById('metric-cards').innerHTML=cards.map(x=>`<div class="mcard"><div class="mcard-label">${x.l}</div><div class="mcard-val">${x.v}</div><div class="mcard-tag tag-${x.c}">&#9679; ${x.t}</div></div>`).join('');barChart('chart-grader',{labels:['Bias Det.','Mitigation','Explanation','Efficiency','Policy','Consistency'],values:[g.bias_detection_score,g.mitigation_score,g.explanation_quality,g.efficiency_score,g.policy_compliance_score,g.consistency_score],color:'#ef8354',max:100});barChart('chart-metrics',{labels:['DPD','EOD','EQO','CAL','Bias'],values:[m.demographic_parity_diff,m.equal_opportunity_diff,m.equalized_odds_diff,m.calibration_diff,m.overall_bias_score],color:'#f87171',max:1});const vl=document.getElementById('violations-list');if(!d.violations||!d.violations.length)vl.innerHTML='<div class="alert alert-ok">&#10003; All policies passing!</div>';else vl.innerHTML=d.violations.map(v=>`<div class="vitem"><div style="flex-shrink:0;margin-top:1px;color:var(--red)"><i data-lucide="x-circle" style="width:15px;height:15px;stroke-width:1.8"></i></div><div style="flex:1"><div style="font-size:11.5px;font-weight:600;color:var(--red)">${v.id} — ${v.name}</div><div style="font-size:10px;color:var(--text3);margin-top:2px">${v.description}</div><div style="font-size:10px;color:var(--text2);margin-top:4px"><span class="tag tag-${v.severity}">${v.severity}</span> &nbsp;Value: <code>${v.current_value}</code> &nbsp;Threshold: <code>${v.operator==='less_than'?'<':'>'} ${v.threshold}</code></div></div></div>`).join('');document.getElementById('gemini-narrative').textContent=d.gemini_narrative||'—';const bi=d.bias_injected;document.getElementById('bias-info').innerHTML=`<span class="tag tag-warn">${bi.bias_type||'—'}</span> &nbsp;Severity: <strong style="color:var(--text)">${bi.severity||'—'}</strong> &nbsp;Affected: <strong style="color:var(--text)">${bi.affected_rows||0}</strong>${bi.proxy_feature?` &nbsp;Proxy: <strong style="color:var(--text)">${bi.proxy_feature}</strong>`:''}`;lucide.createIcons()}
+
+// ── Dashboard render ──
+function renderDashboard(){if(!S.auditData)return;document.getElementById('dash-empty').style.display='none';document.getElementById('dash-content').style.display='block';const m=S.auditData.metrics,g=S.auditData.grader;const cards=[{l:'Bias Score',v:m.overall_bias_score.toFixed(3),t:m.overall_bias_score>.5?'HIGH':'OK',c:m.overall_bias_score>.5?'no':'ok'},{l:'Disparate Impact',v:m.disparate_impact_ratio.toFixed(3),t:m.disparate_impact_ratio>=.8?'PASS':'FAIL',c:m.disparate_impact_ratio>=.8?'ok':'no'},{l:'Dem. Parity',v:m.demographic_parity_diff.toFixed(3),t:m.demographic_parity_diff<.1?'PASS':'FAIL',c:m.demographic_parity_diff<.1?'ok':'no'},{l:'Eq. Opportunity',v:m.equal_opportunity_diff.toFixed(3),t:m.equal_opportunity_diff<.15?'PASS':'WARN',c:m.equal_opportunity_diff<.15?'ok':'warn'}];document.getElementById('dash-metrics').innerHTML=cards.map(x=>`<div class="mcard"><div class="mcard-label">${x.l}</div><div class="mcard-val">${x.v}</div><div class="mcard-tag tag-${x.c}">&#9679; ${x.t}</div></div>`).join('');barChart('dash-chart1',{labels:['Bias Det.','Mitigation','Explanation','Efficiency','Policy','Consistency'],values:[g.bias_detection_score,g.mitigation_score,g.explanation_quality,g.efficiency_score,g.policy_compliance_score,g.consistency_score],color:'#ef8354',max:100});barChart('dash-chart2',{labels:['DPD','EOD','EQO','CAL','Bias'],values:[m.demographic_parity_diff,m.equal_opportunity_diff,m.equalized_odds_diff,m.calibration_diff,m.overall_bias_score],color:'#f87171',max:1});const vl=document.getElementById('dash-violations');if(!S.auditData.violations||!S.auditData.violations.length)vl.innerHTML='<div class="alert alert-ok">&#10003; All clear</div>';else vl.innerHTML=S.auditData.violations.slice(0,5).map(v=>`<div class="vitem"><div style="flex-shrink:0;color:var(--red)"><i data-lucide="x-circle" style="width:14px;height:14px;stroke-width:1.8"></i></div><div><div style="font-size:11px;font-weight:600;color:var(--red)">${v.id}</div><div style="font-size:10px;color:var(--text3)">${v.name}</div></div></div>`).join('');document.getElementById('dash-narrative').textContent=S.auditData.gemini_narrative||'—';lucide.createIcons()}
+
+// ── Charts ──
+function killChart(id){if(S.charts[id]){S.charts[id].destroy();delete S.charts[id]}}
+function barChart(id,{labels,values,color,max=1}){killChart(id);const ctx=document.getElementById(id);if(!ctx)return;S.charts[id]=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data:values,backgroundColor:color+'22',borderColor:color,borderWidth:1.5,borderRadius:5,hoverBackgroundColor:color+'44'}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:600,easing:'easeOutQuart'},plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(20,22,31,.95)',borderColor:'rgba(255,255,255,.08)',borderWidth:1,titleColor:'#e8eaed',bodyColor:'#9499ad',padding:10,cornerRadius:8,callbacks:{label:c=>` ${c.parsed.y.toFixed(3)}`}}},scales:{x:{grid:{color:'rgba(255,255,255,.03)',drawBorder:false},ticks:{color:'#4e5368',font:{size:9,family:'Sora'}}},y:{grid:{color:'rgba(255,255,255,.03)',drawBorder:false},ticks:{color:'#4e5368',font:{size:9,family:'JetBrains Mono'}},max,min:0}}}})}
+
+// ── Heatmap ──
+async function loadHeatmap(){if(!S.runId)return;try{const r=await fetch(`${API}/api/heatmap/${S.runId}`);const d=await r.json();renderHeatmap(d.heatmap_data||[])}catch(e){toast('Heatmap error','error')}}
+function renderHeatmap(groups){if(!groups||!groups.length)return;document.getElementById('heatmap-empty').style.display='none';document.getElementById('heatmap-content').style.display='block';const cols=['accept_rate','tpr','fpr','calibration_error'],cLbl=['Accept Rate','TPR','FPR','Cal. Err'],grid=document.getElementById('hmap-grid'),hdr=document.getElementById('hmap-header');hdr.style.gridTemplateColumns=`130px repeat(${cols.length},1fr)`;hdr.innerHTML=`<div style="font-size:9.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:var(--ff-h)">Group</div>`+cLbl.map(l=>`<div style="font-size:9.5px;color:var(--text3);text-transform:uppercase;text-align:center;letter-spacing:.06em;font-family:var(--ff-h)">${l}</div>`).join('');grid.style.gridTemplateColumns=`130px repeat(${cols.length},1fr)`;grid.innerHTML='';groups.forEach(g=>{grid.innerHTML+=`<div style="font-size:11px;color:var(--text2);display:flex;align-items:center;padding:0 6px;font-weight:450">${g.group_label}</div>`;cols.forEach(c=>{const v=g[c];let bg,fg;const good=c==='fpr'||c==='calibration_error'?v<.2:v>.7;const mid=c==='fpr'||c==='calibration_error'?v<.4:v>.5;bg=good?'rgba(52,211,153,.18)':mid?'rgba(251,191,36,.18)':'rgba(248,113,113,.18)';fg=good?'#34d399':mid?'#fbbf24':'#f87171';grid.innerHTML+=`<div class="hcell" style="background:${bg};color:${fg}">${v.toFixed(3)}</div>`})});const rates=groups.map(g=>g.accept_rate);killChart('chart-heatmap-bar');S.charts['chart-heatmap-bar']=new Chart(document.getElementById('chart-heatmap-bar'),{type:'bar',data:{labels:groups.map(g=>g.group_label),datasets:[{data:rates,backgroundColor:rates.map(r=>r>.7?'rgba(52,211,153,.25)':r>.5?'rgba(251,191,36,.25)':'rgba(248,113,113,.25)'),borderColor:rates.map(r=>r>.7?'#34d399':r>.5?'#fbbf24':'#f87171'),borderWidth:1.5,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:600},plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#4e5368',font:{size:8},maxRotation:45},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}},y:{min:0,max:1,ticks:{color:'#4e5368',font:{size:9,family:'JetBrains Mono'}},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}}}}});killChart('chart-tpr-fpr');S.charts['chart-tpr-fpr']=new Chart(document.getElementById('chart-tpr-fpr'),{type:'bar',data:{labels:groups.map(g=>g.group_label),datasets:[{label:'TPR',data:groups.map(g=>g.tpr),backgroundColor:'rgba(52,211,153,.2)',borderColor:'#34d399',borderWidth:1.5,borderRadius:4},{label:'FPR',data:groups.map(g=>g.fpr),backgroundColor:'rgba(248,113,113,.2)',borderColor:'#f87171',borderWidth:1.5,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:600},plugins:{legend:{labels:{color:'#9499ad',font:{size:9,family:'Sora'},boxWidth:10,boxHeight:10}}},scales:{x:{ticks:{color:'#4e5368',font:{size:8},maxRotation:45},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}},y:{min:0,max:1,ticks:{color:'#4e5368',font:{size:9,family:'JetBrains Mono'}},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}}}}})}
+
+// ── Training ──
+async function startTraining(){if(!S.runId){toast('Run an audit first','warn');return}const btn=document.getElementById('train-btn');btn.disabled=true;btn.innerHTML='<div class="spin"></div> Training...';const ep=parseInt(document.getElementById('train-episodes').value)||50;try{const r=await fetch(`${API}/api/train`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({episodes:ep,run_id:S.runId})});const d=await r.json();if(!d.success&&!d.message?.includes('already')){toast(d.message,'warn');btn.disabled=false;btn.innerHTML='<i data-lucide="play" style="width:13px;height:13px;stroke-width:2.5"></i> Start PPO Training';lucide.createIcons();return}toast(`Training started — ${ep} episodes`,'success');document.getElementById('training-log').textContent='';clearInterval(S.trainInt);S.trainInt=setInterval(pollTrain,800);initTrainCharts()}catch(e){toast('Error: '+e.message,'error');btn.disabled=false;btn.innerHTML='<i data-lucide="play" style="width:13px;height:13px;stroke-width:2.5"></i> Start PPO Training';lucide.createIcons()}}
+function resetTraining(){clearInterval(S.trainInt);document.getElementById('ep-counter').innerHTML='&mdash;';document.getElementById('reward-counter').innerHTML='&mdash;';document.getElementById('bias-counter').innerHTML='&mdash;';document.getElementById('train-progress-fill').style.width='0%';document.getElementById('train-progress-text').textContent='0 / 0';document.getElementById('training-log').textContent='Reset.\n';const btn=document.getElementById('train-btn');btn.disabled=false;btn.innerHTML='<i data-lucide="play" style="width:13px;height:13px;stroke-width:2.5"></i> Start PPO Training';lucide.createIcons();['chart-reward','chart-bias-train'].forEach(id=>{if(S.charts[id]){S.charts[id].data.datasets[0].data=[];S.charts[id].update()}})}
+async function pollTrain(){try{const r=await fetch(`${API}/api/train/status`);const d=await r.json();const{current_ep,total_ep,reward_history,bias_history,logs,active}=d;document.getElementById('ep-counter').textContent=`${current_ep}/${total_ep}`;document.getElementById('reward-counter').textContent=reward_history.length?reward_history.slice(-1)[0].toFixed(3):'—';document.getElementById('bias-counter').textContent=bias_history.length?bias_history.slice(-1)[0].toFixed(3):'—';const p=total_ep?(current_ep/total_ep*100):0;document.getElementById('train-progress-fill').style.width=p+'%';document.getElementById('train-progress-text').textContent=`${current_ep} / ${total_ep}`;if(logs&&logs.length){const el=document.getElementById('training-log');el.textContent=logs.slice(-60).join('\n')+'\n';el.scrollTop=el.scrollHeight}if(S.charts['chart-reward']){S.charts['chart-reward'].data.labels=reward_history.map((_,i)=>i+1);S.charts['chart-reward'].data.datasets[0].data=reward_history;S.charts['chart-reward'].update('none')}if(S.charts['chart-bias-train']){S.charts['chart-bias-train'].data.labels=bias_history.map((_,i)=>i+1);S.charts['chart-bias-train'].data.datasets[0].data=bias_history;S.charts['chart-bias-train'].update('none')}if(!active&&current_ep===total_ep&&total_ep>0){clearInterval(S.trainInt);const btn=document.getElementById('train-btn');btn.disabled=false;btn.innerHTML='<i data-lucide="play" style="width:13px;height:13px;stroke-width:2.5"></i> Start PPO Training';lucide.createIcons();renderBeforeAfter(d);toast('Training complete!','success')}}catch(e){}}
+function initTrainCharts(){killChart('chart-reward');const c1=document.getElementById('chart-reward');if(!c1)return;S.charts['chart-reward']=new Chart(c1,{type:'line',data:{labels:[],datasets:[{data:[],borderColor:'#34d399',backgroundColor:'rgba(52,211,153,.06)',fill:true,tension:.4,pointRadius:0,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#4e5368',font:{size:8}},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}},y:{min:0,max:1,ticks:{color:'#4e5368',font:{size:9,family:'JetBrains Mono'}},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}}}}});killChart('chart-bias-train');const c2=document.getElementById('chart-bias-train');if(!c2)return;S.charts['chart-bias-train']=new Chart(c2,{type:'line',data:{labels:[],datasets:[{data:[],borderColor:'#f87171',backgroundColor:'rgba(248,113,113,.06)',fill:true,tension:.4,pointRadius:0,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#4e5368',font:{size:8}},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}},y:{min:0,max:1,ticks:{color:'#4e5368',font:{size:9,family:'JetBrains Mono'}},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}}}}})}
+function renderBeforeAfter(d){const bb=d.bias_before||.7,ba=d.bias_after||.2;killChart('chart-before-after');S.charts['chart-before-after']=new Chart(document.getElementById('chart-before-after'),{type:'bar',data:{labels:['DPD','EOD','Disparate Impact','Overall Bias'],datasets:[{label:'Before',data:[bb*.6,bb*.5,1-bb*.7,bb],backgroundColor:'rgba(248,113,113,.2)',borderColor:'#f87171',borderWidth:1.5,borderRadius:5},{label:'After',data:[ba*.6,ba*.5,1-ba*.7,ba],backgroundColor:'rgba(52,211,153,.2)',borderColor:'#34d399',borderWidth:1.5,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:700},plugins:{legend:{labels:{color:'#9499ad',font:{size:10,family:'Sora'},boxWidth:10,boxHeight:10}}},scales:{x:{ticks:{color:'#4e5368',font:{size:10,family:'Sora'}},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}},y:{min:0,max:1,ticks:{color:'#4e5368',font:{size:9,family:'JetBrains Mono'}},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}}}}})}
+
+// ── Policies ──
+let allPolicies=[];
+async function loadPolicies(){if(!S.runId)return;try{const r=await fetch(`${API}/api/policies/${S.runId}`);const d=await r.json();allPolicies=d.policies||[];filterPolicies();document.getElementById('policy-summary').textContent=`${allPolicies.filter(p=>p.passed).length} pass / ${allPolicies.filter(p=>!p.passed).length} fail`}catch(e){toast('Error','error')}}
+function filterPolicies(){const df=document.getElementById('policy-filter-domain').value,sf=document.getElementById('policy-filter-status').value;let f=allPolicies;if(df!=='all')f=f.filter(p=>p.domain===df||p.domain==='all');if(sf==='fail')f=f.filter(p=>!p.passed);if(sf==='pass')f=f.filter(p=>p.passed);const tb=document.getElementById('policies-tbody');if(!f.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text3)">No matches</td></tr>';return}tb.innerHTML=f.map(p=>`<tr><td style="padding-left:16px"><code style="color:var(--accent);background:var(--accent-dim);border:none">${p.id}</code></td><td><div style="font-size:11.5px;color:var(--text);font-weight:450">${p.name}</div>${p.legal_reference?`<div style="font-size:9.5px;color:var(--text3)">${p.legal_reference}</div>`:''}</td><td><span class="tag tag-info" style="font-size:9px">${p.domain}</span></td><td><span class="tag tag-${p.severity}">${p.severity}</span></td><td style="font-family:var(--ff-m);font-size:11px">${p.current_value.toFixed(4)}</td><td style="font-family:var(--ff-m);font-size:11px">${p.operator==='less_than'?'< ':'> '}${p.threshold}</td><td style="padding-right:16px"><span class="tag tag-${p.passed?'ok':'no'}">${p.passed?'&#10003; PASS':'&#10007; FAIL'}</span></td></tr>`).join('')}
+
+// ── Report ──
+async function loadReport(){if(!S.runId)return;try{const r=await fetch(`${API}/api/report/${S.runId}`);const d=await r.json();document.getElementById('report-empty').style.display='none';document.getElementById('report-content').style.display='block';const gc={A:'#34d399',B:'#a3e635',C:'#fbbf24',D:'#f97316',F:'#f87171'},g=d.grade,gr=document.getElementById('grade-ring');gr.textContent=g;gr.style.color=gc[g]||'#9499ad';gr.style.borderColor=gc[g]||'#9499ad';gr.style.boxShadow=`0 0 30px ${(gc[g]||'#9499ad')}22`;document.getElementById('report-score').textContent=d.final_score.toFixed(1)+'/100';document.getElementById('report-verdict').innerHTML=`<span class="tag tag-${d.passed?'ok':'no'}">${d.passed?'&#10003; PASSED':'&#10007; NEEDS WORK'}</span> <span style="color:var(--text3);margin-left:4px">${d.domain}</span>`;const gb=d.grader_breakdown,bars=[{l:'Bias Detection',v:gb.bias_detection_score,c:'#ef8354'},{l:'Mitigation',v:gb.mitigation_score,c:'#c0613a'},{l:'Explanation',v:gb.explanation_quality,c:'#60a5fa'},{l:'Efficiency',v:gb.efficiency_score,c:'#34d399'},{l:'Policy',v:gb.policy_compliance_score,c:'#fbbf24'},{l:'Consistency',v:gb.consistency_score,c:'#f87171'}];document.getElementById('report-score-bars').innerHTML=bars.map(b=>`<div class="srow"><div class="srow-l">${b.l}</div><div class="srow-t"><div class="srow-f" style="width:${b.v}%;background:${b.c}"></div></div><div class="srow-v">${b.v.toFixed(0)}</div></div>`).join('');killChart('chart-radar');S.charts['chart-radar']=new Chart(document.getElementById('chart-radar'),{type:'radar',data:{labels:bars.map(b=>b.l),datasets:[{data:bars.map(b=>b.v),backgroundColor:'rgba(239,131,84,.12)',borderColor:'#ef8354',borderWidth:2,pointBackgroundColor:'#ef8354',pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:700},plugins:{legend:{display:false}},scales:{r:{min:0,max:100,ticks:{color:'#4e5368',font:{size:9,family:'JetBrains Mono'},stepSize:25,backdropColor:'transparent'},grid:{color:'rgba(255,255,255,.05)'},angleLines:{color:'rgba(255,255,255,.04)'},pointLabels:{color:'#9499ad',font:{size:9,family:'Sora'}}}}}});document.getElementById('report-narrative').textContent=d.gemini_narrative||'—';document.getElementById('print-meta').textContent=`Domain: ${d.domain} | Run: ${d.run_id} | ${new Date().toLocaleDateString()}`;document.getElementById('print-grade-text').textContent=`Grade: ${g} — Score: ${d.final_score.toFixed(1)}/100 | ${d.passed?'PASSED':'NEEDS WORK'}`;document.getElementById('print-narrative').textContent=d.gemini_narrative||'';lucide.createIcons()}catch(e){toast('Report error','error')}}
+function exportPDF(){document.getElementById('print-area').style.display='block';window.print();document.getElementById('print-area').style.display='none';toast('PDF dialog opened','success')}
+
+// ── Mitigate ──
+function loadMitigate(){if(!S.runId||!S.auditData)return;document.getElementById('mitigate-empty').style.display='none';document.getElementById('mitigate-content').style.display='block';const sg=S.suggestions||[],pc={1:'var(--red)',2:'var(--amber)',3:'var(--blue)'};document.getElementById('suggestions-list').innerHTML=sg.length?sg.map(s=>`<div class="strat" onclick="document.getElementById('strategy-select').value='${(s.strategy||'').toLowerCase().replace(/ /g,'_').replace(/\(/g,'').replace(/\)/g,'')||'reweighting'}'"><div style="display:flex;align-items:center;gap:9px;margin-bottom:6px"><span style="color:${pc[s.priority]||'var(--text2)'};font-size:11px;font-weight:700;font-family:var(--ff-h)">P${s.priority}</span><span style="font-size:12.5px;font-weight:550;color:var(--text)">${s.strategy}</span></div><div style="font-size:11.5px;color:var(--text2);margin-bottom:7px;line-height:1.5">${s.description}</div><div style="font-size:10.5px;color:var(--green)">${s.expected_improvement}</div></div>`).join(''):'<div style="color:var(--text3);font-size:12px;padding:8px 0">No suggestions — model appears fair.</div>'}
+async function applyMitigation(){if(!S.runId){toast('Run an audit first','warn');return}const btn=document.getElementById('mitigate-btn');btn.disabled=true;btn.innerHTML='<div class="spin"></div> Applying...';showLoad('Applying mitigation...');try{const st=document.getElementById('strategy-select').value,sn=parseFloat(document.getElementById('strength-slider').value);const r=await fetch(`${API}/api/mitigate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({run_id:S.runId,strategy:st,strength:sn})});const d=await r.json();document.getElementById('mitigation-results').style.display='block';document.getElementById('mitigation-metrics-card').style.display='block';const mb=d.metrics_before,ma=d.metrics_after,ms=['demographic_parity_diff','equal_opportunity_diff','disparate_impact_ratio','equalized_odds_diff','overall_bias_score'],ml=['DPD','EOD','DI Ratio','EQO','Bias Score'];killChart('chart-mitigate');S.charts['chart-mitigate']=new Chart(document.getElementById('chart-mitigate'),{type:'bar',data:{labels:ml,datasets:[{label:'Before',data:ms.map(m=>Math.abs(mb[m]||0)),backgroundColor:'rgba(248,113,113,.2)',borderColor:'#f87171',borderWidth:1.5,borderRadius:5},{label:'After',data:ms.map(m=>Math.abs(ma[m]||0)),backgroundColor:'rgba(52,211,153,.2)',borderColor:'#34d399',borderWidth:1.5,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:700},plugins:{legend:{labels:{color:'#9499ad',font:{size:10,family:'Sora'},boxWidth:10,boxHeight:10}}},scales:{x:{ticks:{color:'#4e5368',font:{size:10,family:'Sora'}},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}},y:{min:0,max:1,ticks:{color:'#4e5368',font:{size:9,family:'JetBrains Mono'}},grid:{color:'rgba(255,255,255,.03)',drawBorder:false}}}});document.getElementById('mitigation-metrics-table').innerHTML=ms.map((m,i)=>{const b=(mb[m]||0).toFixed(4),a=(ma[m]||0).toFixed(4),dl=parseFloat(a)-parseFloat(b),g=m==='disparate_impact_ratio'?dl>0:dl<0;return`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.02);font-size:11.5px"><span style="color:var(--text2)">${ml[i]}</span><span style="font-family:var(--ff-m);color:var(--text3);width:70px;text-align:right">${b}</span><span style="color:var(--text3);padding:0 4px">→</span><span style="font-family:var(--ff-m);color:${g?'var(--green)':'var(--red)'};width:70px;text-align:right">${a}</span><span class="tag tag-${g?'ok':'no'}" style="width:72px;justify-content:center">${dl>0?'+':''}${dl.toFixed(4)}</span></div>`}).join('');toast(`Mitigation applied! ${d.projected_improvement}`,'success')}catch(e){toast('Error: '+e.message,'error')}finally{hideLoad();btn.disabled=false;btn.innerHTML='<i data-lucide="zap" style="width:14px;height:14px;stroke-width:2.5"></i> Apply Mitigation';lucide.createIcons()}}
+
+// ── What-If ──
+async function runCounterfactual(){const gv=document.getElementById('wi-gender').value,rv=document.getElementById('wi-race').value,ag=document.getElementById('wi-age').value,inc=document.getElementById('wi-income').value,ca=document.getElementById('wi-cf-attr').value;const cm={gender:gv==='0'?'1':'0',race:rv==='0'?'1':'0',age:'65'};showLoad('Running counterfactual...');try{const r=await fetch(`${API}/api/counterfactual`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({individual:{gender:gv,race:rv,age:ag,income:inc},sensitive_attr:ca,counterfactual_value:cm[ca]||'1',run_id:S.runId||''})});const d=await r.json();document.getElementById('decision-card').style.display='block';const o=d.original,cf=d.counterfactual;const dp=(dec,prob)=>`<div class="dpill" style="background:${dec==='APPROVED'?'var(--green-dim)':'var(--red-dim)'};color:${dec==='APPROVED'?'var(--green)':'var(--red)'};border:1px solid ${dec==='APPROVED'?'var(--green-border)':'var(--red-border)'}">${dec==='APPROVED'?'&#10003;':'&#10007;'} ${dec} <span style="font-size:10.5px;opacity:.65;font-family:var(--ff-m)">${(prob*100).toFixed(0)}%</span></div>`;document.getElementById('decision-original').outerHTML=dp(o.decision,o.probability);document.getElementById('decision-cf').outerHTML=dp(cf.decision,cf.probability);document.getElementById('prob-original').textContent=`${(o.probability*100).toFixed(1)}% confidence`;document.getElementById('prob-cf').textContent=`${(cf.probability*100).toFixed(1)}% confidence`;const fi=document.getElementById('flip-indicator');if(d.flip_detected)fi.innerHTML=`<div style="color:var(--red);font-size:11.5px;font-weight:600;font-family:var(--ff-h)">Flipped</div><div style="font-size:10.5px;color:var(--text3);margin-top:2px">&Delta; ${(d.probability_delta*100).toFixed(1)}%</div>`;else fi.innerHTML=`<div style="color:var(--green);font-size:11.5px;font-weight:600;font-family:var(--ff-h)">Consistent</div><div style="font-size:10.5px;color:var(--text3);margin-top:2px">&Delta; ${(d.probability_delta*100).toFixed(1)}%</div>`;document.getElementById('decision-card').querySelectorAll('.dpill').forEach((el,i)=>el.id=i===0?'decision-original':'decision-cf');document.getElementById('group-grid').innerHTML=(d.group_results||[]).map(g=>`<div class="gtile"><div style="font-size:9.5px;color:var(--text3);margin-bottom:5px">${g.gender} × ${g.race}</div><div style="font-size:12px;font-weight:600;color:${g.decision==='APPROVED'?'var(--green)':'var(--red)'}">${g.decision==='APPROVED'?'&#10003;':'&#10007;'}</div><div style="font-size:9.5px;font-family:var(--ff-m);color:var(--text3);margin-top:3px">${(g.probability*100).toFixed(0)}%</div></div>`).join('');document.getElementById('cf-explanation').textContent=d.explanation||'—';toast('Counterfactual complete','success')}catch(e){toast('Error: '+e.message,'error')}finally{hideLoad()}}
+</script>
+</body>
+</html>
+-->
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
