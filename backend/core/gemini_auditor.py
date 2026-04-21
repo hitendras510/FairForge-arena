@@ -5,8 +5,9 @@ bias audit explanations and what-if counterfactuals
 import google.generativeai as genai
 import os
 from typing import Optional
-
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+api_key = os.environ.get("GEMINI_API_KEY")
+if api_key:
+    genai.configure(api_key=api_key)
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 def generate_audit_narrative(report_dict: dict, domain: str = "hiring") -> str:
