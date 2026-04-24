@@ -14,9 +14,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy all projects files (backend, frontend, openenv configs)
 COPY . .
 
-# Expose backend server port
-EXPOSE 8000
+# Allow Cloud Run to set the port, default to 8080
+ENV PORT=8080
+EXPOSE $PORT
 
-# Specify how to run the app
+# Specify how to run the app using the PORT environment variable
 ENV PYTHONPATH=/app/backend
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD sh -c "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT}"

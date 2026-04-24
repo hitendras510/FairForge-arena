@@ -1,5 +1,6 @@
 from fastapi import FastAPI, APIRouter, UploadFile, File, Form
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -22,7 +23,7 @@ load_dotenv(ROOT_DIR / '.env')
 
 mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 db_name = os.environ.get('DB_NAME', 'fairforge_arena')
-client = AsyncIOMotorClient(mongo_url)
+client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=500)
 db = client[db_name]
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -324,7 +325,7 @@ async def counterfactual(body: CounterfactualBody):
     for gi, gl in enumerate(genders):
         for ri, rl in enumerate(races):
             r2 = random.Random(hash((gl, rl)) & 0xFFFFFFFF)
-            p = max(0.1, min(0.95, 0.55 + (0.12 if gi == 0 else -0.12) + (0.08 - ri * 0.05) + r2.uniform(-0.05, 0.05)))
+            p = max(0.1, min(0.95, 0.65 + (0.05 if gi == 0 else -0.05) + (0.05 - ri * 0.03) + r2.uniform(-0.05, 0.05)))
             group_results.append({"gender": gl, "race": rl, "probability": round(p, 3), "decision": "APPROVED" if p >= 0.5 else "REJECTED"})
     explanation = (
         f"Flipping {body.sensitive_attr} causes the model's decision to {'FLIP' if flip else 'remain stable'} "
@@ -553,6 +554,7 @@ async def shadow_ai_scan(body: ShadowAIBody):
             "model_scores": raw_scores, "word_count": word_count,
             "indicators": indicators[:8], "structural": {"bullet_lines": bullet_lines, "avg_word_len": round(avg_word_len, 2)}}
 
+FRONTEND_DIR = ROOT_DIR.parent / 'frontend'
 
 app.include_router(api_router)
 app.add_middleware(
@@ -563,6 +565,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ====== Serve frontend HTML ======
+@app.get("/", response_class=HTMLResponse)
+async def serve_frontend():
+    idx = FRONTEND_DIR / 'index.html'
+    if idx.exists():
+        return FileResponse(str(idx), media_type='text/html')
+    return HTMLResponse('<h1>FairForge Arena</h1><p>Frontend not found. Make sure frontend/index.html exists.</p>')
+
+# Health-check aliases (browser was hitting /api/v1/health)
+@app.get("/api/v1/health")
+@app.get("/api/health")
+async def health_check():
+    return {"status": "ok", "service": "FairForge Arena API", "version": "3.1.0", "frontend": str(FRONTEND_DIR / 'index.html'), "frontend_exists": (FRONTEND_DIR / 'index.html').exists()}
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

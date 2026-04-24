@@ -238,9 +238,9 @@ transition:border-color .2s,box-shadow .2s
 }
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,.1)}
 select option{background:#0f1830;color:var(--text)}
-input[type="range"]{width:100%;-webkit-appearance:none;background:transparent;margin-top:6px}
+input[type="range"]{width:100%;-webkit-appearance:none;appearance:none;background:transparent;margin-top:6px}
 input[type="range"]::-webkit-slider-runnable-track{height:3px;background:var(--card2);border-radius:2px}
-input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--accent);border-radius:50%;margin-top:-5.5px;cursor:pointer;box-shadow:0 0 8px rgba(56,189,248,.4)}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;background:var(--accent);border-radius:50%;margin-top:-5.5px;cursor:pointer;box-shadow:0 0 8px rgba(56,189,248,.4)}
 
 /* Upload zone */
 .upload{
@@ -419,6 +419,24 @@ box-shadow:0 16px 50px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.03);
 display:flex;align-items:center;gap:9px
 }
 #toast.show{transform:translateY(0) scale(1);opacity:1}
+
+/* Dashboard quick-start */
+.qcard{
+padding:20px;border-radius:14px;border:1px solid var(--border2);cursor:pointer;
+transition:all .22s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;
+background:linear-gradient(145deg,var(--card),var(--card2))
+}
+.qcard:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.qcard-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.qcard-icon svg{width:20px;height:20px;stroke-width:2}
+.qcard h4{font-family:var(--ff-h);font-size:14px;font-weight:600;margin-bottom:6px;color:var(--text)}
+.qcard p{font-size:11.5px;color:var(--text3);line-height:1.6}
+.qcard-badge{position:absolute;top:14px;right:14px;font-size:9px;font-family:var(--ff-h);font-weight:700;padding:3px 8px;border-radius:999px;letter-spacing:.06em}
+.api-dot{width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s}
+.api-dot.online{background:var(--green);box-shadow:0 0 0 0 rgba(52,211,153,.4);animation:pulseGreen 2s infinite}
+.stat-pill{display:flex;flex-direction:column;align-items:center;padding:14px 20px;background:var(--card2);border:1px solid var(--border);border-radius:12px;min-width:80px}
+.stat-pill-val{font-family:var(--ff-h);font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--text)}
+.stat-pill-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-top:4px;font-family:var(--ff-h)}
 
 /* Dividers */
 .section-divider{border:none;border-top:1px solid var(--border);margin:0}
@@ -611,21 +629,81 @@ display:flex;align-items:center;gap:9px
     <!-- ═══ DASHBOARD ═══ -->
     <section class="page" id="page-dashboard">
       <div class="app-page">
-        <div style="padding:10px 0 24px">
-          <div class="home-section-label">Capabilities</div>
-          <h2 class="home-section-title" style="font-size:26px;margin-bottom:8px">Everything You Need to Prove Fairness</h2>
-          <p class="home-section-sub" style="margin-bottom:28px">A complete pipeline from data upload to compliance report, with AI explanations at every step.</p>
-          <div class="feature-grid">
-            <div class="feature-card" onclick="goPage('audit')"><div class="feature-icon" style="background:var(--accent-dim);color:var(--accent)"><i data-lucide="scan-search"></i></div><h3>Adversarial Audit</h3><p>Automatically injects realistic bias patterns and measures model reaction across 8+ fairness metrics.</p></div>
-            <div class="feature-card" onclick="goPage('heatmap')"><div class="feature-icon" style="background:var(--green-dim);color:var(--green)"><i data-lucide="grid-3x3"></i></div><h3>Bias Heatmap</h3><p>Visualize fairness scores across every demographic intersection in a single color-coded matrix.</p></div>
-            <div class="feature-card" onclick="goPage('training')"><div class="feature-icon" style="background:var(--blue-dim);color:var(--blue)"><i data-lucide="brain-circuit"></i></div><h3>RL Debiasing</h3><p>Train a PPO agent to adjust model thresholds in real-time, reducing bias while preserving accuracy.</p></div>
-            <div class="feature-card" onclick="goPage('policies')"><div class="feature-icon" style="background:var(--amber-dim);color:var(--amber)"><i data-lucide="shield-check"></i></div><h3>Policy Compliance</h3><p>Check against 12 fairness policies covering Title VII, ECOA, ADA, and emerging AI regulations.</p></div>
-            <div class="feature-card" onclick="goPage('mitigate')"><div class="feature-icon" style="background:var(--red-dim);color:var(--red)"><i data-lucide="settings-2"></i></div><h3>Mitigation Engine</h3><p>Apply reweighting, threshold adjustment, proxy removal, adversarial debiasing, and calibration.</p></div>
-            <div class="feature-card" onclick="goPage('whatif')"><div class="feature-icon" style="background:var(--purple-dim);color:var(--purple)"><i data-lucide="git-compare-arrows"></i></div><h3>Counterfactual XAI</h3><p>Change a single protected attribute and see how model decisions flip with Gemini-powered explanations.</p></div>
+
+        <!-- Status bar -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+          <div>
+            <h1 style="font-family:var(--ff-h);font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--text);margin-bottom:4px">Control Center</h1>
+            <p style="font-size:12px;color:var(--text3)">Run an audit below or jump straight to any feature — results sync across all pages.</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 16px">
+            <span class="api-dot" id="dash-api-dot"></span>
+            <span style="font-size:11px;font-family:var(--ff-h);color:var(--text3)" id="dash-api-label">Checking API…</span>
           </div>
         </div>
-        <div id="dash-content" style="display:none;margin-top:32px;padding-top:32px;border-top:1px solid var(--border)">
-          <div class="page-head"><h1>Audit Insights</h1><p>Fairness breakdown for run <span id="dash-run-id-display" style="font-family:var(--ff-m);font-size:11px;color:var(--accent)"></span></p></div>
+
+        <!-- Quick-launch domain cards -->
+        <div style="margin-bottom:28px">
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--ff-h);margin-bottom:12px">Quick Audit — pick a domain</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+            <div class="qcard" onclick="loadSample('hiring')" id="qcard-hiring">
+              <div class="qcard-badge" style="background:var(--accent-dim);color:var(--accent);border:1px solid var(--accent-border)">HIRING</div>
+              <div class="qcard-icon" style="background:var(--accent-dim);color:var(--accent)"><i data-lucide="briefcase"></i></div>
+              <h4>Hiring Model</h4>
+              <p>Resume screening bias — gender &amp; race disparities, Title VII compliance</p>
+            </div>
+            <div class="qcard" onclick="loadSample('loan')" id="qcard-loan">
+              <div class="qcard-badge" style="background:var(--green-dim);color:var(--green);border:1px solid var(--green-border)">FINANCE</div>
+              <div class="qcard-icon" style="background:var(--green-dim);color:var(--green)"><i data-lucide="landmark"></i></div>
+              <h4>Loan / Finance</h4>
+              <p>Credit scoring bias — racial proxy features, ECOA fair-lending rules</p>
+            </div>
+            <div class="qcard" onclick="loadSample('medical')" id="qcard-medical">
+              <div class="qcard-badge" style="background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-border)">MEDICAL</div>
+              <div class="qcard-icon" style="background:var(--amber-dim);color:var(--amber)"><i data-lucide="heart-pulse"></i></div>
+              <h4>Medical Triage</h4>
+              <p>Risk scoring bias — age/gender calibration, HHS §1557 requirements</p>
+            </div>
+            <div class="qcard" onclick="loadSample('intersectional')" id="qcard-intersect">
+              <div class="qcard-badge" style="background:var(--red-dim);color:var(--red);border:1px solid var(--red-border)">MULTI-AXIS</div>
+              <div class="qcard-icon" style="background:var(--red-dim);color:var(--red)"><i data-lucide="users"></i></div>
+              <h4>Intersectional</h4>
+              <p>Gender × Race × Age cross-axis bias — worst-affected subgroup detection</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature nav grid -->
+        <div style="margin-bottom:28px">
+          <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;font-family:var(--ff-h);margin-bottom:12px">Feature Modules</div>
+          <div class="feature-grid">
+            <div class="feature-card" onclick="goPage('audit')"><div class="feature-icon" style="background:var(--accent-dim);color:var(--accent)"><i data-lucide="scan-search"></i></div><h3>Adversarial Audit</h3><p>Upload CSV or use a template. Injects bias &amp; scores 8+ fairness metrics instantly.</p></div>
+            <div class="feature-card" onclick="goPage('heatmap')"><div class="feature-icon" style="background:var(--green-dim);color:var(--green)"><i data-lucide="grid-3x3"></i></div><h3>Bias Heatmap</h3><p>Color-coded demographic × metric matrix. Spot the worst-affected groups at a glance.</p></div>
+            <div class="feature-card" onclick="goPage('training')"><div class="feature-icon" style="background:var(--blue-dim);color:var(--blue)"><i data-lucide="brain-circuit"></i></div><h3>RL Training</h3><p>PPO agent debiases in real-time. Live reward &amp; bias curves, before/after comparison.</p></div>
+            <div class="feature-card" onclick="goPage('mitigate')"><div class="feature-icon" style="background:var(--red-dim);color:var(--red)"><i data-lucide="settings-2"></i></div><h3>Mitigation Engine</h3><p>5 strategies: reweighting, threshold adj., proxy removal, adversarial &amp; calibration.</p></div>
+            <div class="feature-card" onclick="goPage('whatif')"><div class="feature-icon" style="background:var(--purple-dim);color:var(--purple)"><i data-lucide="git-compare-arrows"></i></div><h3>What-If / XAI</h3><p>Flip one protected attribute — see if the decision changes. Gemini explanation included.</p></div>
+            <div class="feature-card" onclick="goPage('monitoring')"><div class="feature-icon" style="background:var(--accent-dim);color:var(--accent2)"><i data-lucide="activity"></i></div><h3>Drift Monitor</h3><p>Track bias drift over time. Simulate production drift &amp; receive automated alerts.</p></div>
+            <div class="feature-card" onclick="goPage('policies')"><div class="feature-icon" style="background:var(--amber-dim);color:var(--amber)"><i data-lucide="shield-check"></i></div><h3>Policy Compliance</h3><p>12 legal checks: Title VII, ECOA, ADA, EU AI Act. Pass/Fail with legal citations.</p></div>
+            <div class="feature-card" onclick="goPage('policyeditor')"><div class="feature-icon" style="background:var(--blue-dim);color:var(--blue)"><i data-lucide="file-code-2"></i></div><h3>Policy Editor</h3><p>Write custom fairness guardrails as code. YAML preview &amp; live evaluation.</p></div>
+            <div class="feature-card" onclick="goPage('trail')"><div class="feature-icon" style="background:var(--green-dim);color:var(--green)"><i data-lucide="shield-ellipsis"></i></div><h3>Audit Trail</h3><p>Cryptographic blockchain-style log. Verify integrity &amp; demo tamper detection.</p></div>
+            <div class="feature-card" onclick="goPage('report')"><div class="feature-icon" style="background:var(--amber-dim);color:var(--amber)"><i data-lucide="file-badge-2"></i></div><h3>Report Card</h3><p>A–F letter grade, radar chart breakdown, Gemini narrative &amp; PDF export.</p></div>
+            <div class="feature-card" onclick="goPage('benchmark')"><div class="feature-icon" style="background:var(--purple-dim);color:var(--purple)"><i data-lucide="trophy"></i></div><h3>Benchmark</h3><p>Compare GPT-4o, Claude, Gemini &amp; more on 50 standardised bias test prompts.</p></div>
+            <div class="feature-card" onclick="goPage('shadowai')"><div class="feature-icon" style="background:var(--red-dim);color:var(--red)"><i data-lucide="eye"></i></div><h3>Shadow AI</h3><p>Detect unsanctioned AI-generated content. Identifies Claude, GPT &amp; Gemini signatures.</p></div>
+          </div>
+        </div>
+
+        <!-- Live audit insights (visible only after audit) -->
+        <div id="dash-content" style="display:none;margin-top:8px;padding-top:28px;border-top:1px solid var(--border)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
+            <div>
+              <div style="font-family:var(--ff-h);font-size:16px;font-weight:700;color:var(--text)">Last Audit Results</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:3px">Run <span id="dash-run-id-display" style="font-family:var(--ff-m);color:var(--accent)"></span></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-dark btn-sm" onclick="goPage('report')"><i data-lucide="file-badge-2" style="width:12px;height:12px"></i>Full Report</button>
+              <button class="btn btn-accent btn-sm" onclick="goPage('mitigate')"><i data-lucide="settings-2" style="width:12px;height:12px"></i>Fix Bias</button>
+            </div>
+          </div>
           <div class="col-4" id="dash-metrics" style="margin-bottom:14px"></div>
           <div class="col-2" style="margin-bottom:14px">
             <div class="card"><div class="card-accent-line"></div><div class="card-head"><span class="card-head-dot" style="background:var(--accent)"></span>Score Breakdown</div><div class="chartbox" style="height:200px"><canvas id="dash-chart1"></canvas></div></div>
@@ -638,6 +716,7 @@ display:flex;align-items:center;gap:9px
             </div>
           </div>
         </div>
+
       </div>
     </section>
 
@@ -1046,14 +1125,35 @@ window.goPage=function(p){
   if(p==='policies'&&S.runId)loadPolicies();
   if(p==='report'&&S.runId)loadReport();
   if(p==='mitigate'&&S.runId)loadMitigate();
-  if(p==='dashboard')renderDashboard();
+  if(p==='dashboard'){renderDashboard();checkApiStatus();}
   if(p==='monitoring')loadDrift();
   if(p==='trail')loadTrail();
   if(p==='policyeditor')loadPolicyRules();
   document.getElementById('pages').scrollTop=0;
+  // Re-init lucide icons for any newly-visible content
+  setTimeout(()=>lucide.createIcons(),50);
 };
 
-document.addEventListener('DOMContentLoaded',()=>{lucide.createIcons()});
+document.addEventListener('DOMContentLoaded',()=>{
+  lucide.createIcons();
+  // Pre-warm: silently run a hiring audit so all pages have data on first visit
+  (async()=>{
+    try{
+      const fd=new FormData();
+      fd.append('domain','hiring');fd.append('sensitive_cols','gender,race');fd.append('target_col','hired');
+      fd.append('file',new File([new Blob(['demo'],{type:'text/csv'})],'hiring_sample.csv',{type:'text/csv'}));
+      const r=await fetch(`${API}/api/audit`,{method:'POST',body:fd});
+      if(!r.ok)return;
+      const d=await r.json();
+      S.runId=d.run_id;S.domain=d.domain;S.auditData=d;S.suggestions=d.suggestions||[];
+      updateNav(d);
+      // Update domain quick-card to show "loaded"
+      const qc=document.getElementById('qcard-hiring');
+      if(qc){const b=qc.querySelector('.qcard-badge');if(b)b.textContent='✓ LOADED';}
+    }catch(e){/* backend not running yet */}
+  })();
+  checkApiStatus();
+});
 
 // Mouse-tracking gradient on cards
 document.addEventListener('mousemove',e=>{
@@ -1127,19 +1227,42 @@ function renderAudit(d){
   lucide.createIcons();
 }
 
+async function checkApiStatus(){
+  const dot=document.getElementById('dash-api-dot');
+  const lbl=document.getElementById('dash-api-label');
+  if(!dot||!lbl)return;
+  try{
+    const r=await fetch(`${API}/api/`,{signal:AbortSignal.timeout(3000)});
+    if(r.ok){dot.classList.add('online');lbl.textContent='Backend Connected'}
+    else{dot.classList.remove('online');lbl.textContent='API Error '+r.status}
+  }catch(e){dot.classList.remove('online');lbl.textContent='Backend Offline — start uvicorn'}
+}
+
 function renderDashboard(){
-  if(!S.auditData){document.getElementById('dash-content').style.display='none';return}
-  document.getElementById('dash-content').style.display='block';
-  const rid=document.getElementById('dash-run-id-display');if(rid)rid.textContent=S.runId;
+  const dc=document.getElementById('dash-content');
+  if(!dc)return;
+  if(!S.auditData){dc.style.display='none';return}
+  dc.style.display='block';
+  const rid=document.getElementById('dash-run-id-display');
+  if(rid)rid.textContent=S.runId;
   const m=S.auditData.metrics,g=S.auditData.grader;
-  const cards=[{l:'Bias Score',v:m.overall_bias_score.toFixed(3),t:m.overall_bias_score>.5?'HIGH':'OK',c:m.overall_bias_score>.5?'no':'ok'},{l:'Disparate Impact',v:m.disparate_impact_ratio.toFixed(3),t:m.disparate_impact_ratio>=.8?'PASS':'FAIL',c:m.disparate_impact_ratio>=.8?'ok':'no'},{l:'Dem. Parity',v:m.demographic_parity_diff.toFixed(3),t:m.demographic_parity_diff<.1?'PASS':'FAIL',c:m.demographic_parity_diff<.1?'ok':'no'},{l:'Eq. Opportunity',v:m.equal_opportunity_diff.toFixed(3),t:m.equal_opportunity_diff<.15?'PASS':'WARN',c:m.equal_opportunity_diff<.15?'ok':'warn'}];
-  document.getElementById('dash-metrics').innerHTML=cards.map(x=>`<div class="mcard"><div class="mcard-label">${x.l}</div><div class="mcard-val">${x.v}</div><div class="mcard-tag tag-${x.c}">● ${x.t}</div></div>`).join('');
+  const cards=[
+    {l:'Bias Score',v:m.overall_bias_score.toFixed(3),t:m.overall_bias_score>.5?'HIGH':'OK',c:m.overall_bias_score>.5?'no':'ok',col:m.overall_bias_score>.5?'var(--red)':'var(--green)'},
+    {l:'Disparate Impact',v:m.disparate_impact_ratio.toFixed(3),t:m.disparate_impact_ratio>=.8?'PASS':'FAIL',c:m.disparate_impact_ratio>=.8?'ok':'no',col:m.disparate_impact_ratio>=.8?'var(--green)':'var(--red)'},
+    {l:'Dem. Parity Diff',v:m.demographic_parity_diff.toFixed(3),t:m.demographic_parity_diff<.1?'PASS':'FAIL',c:m.demographic_parity_diff<.1?'ok':'no',col:m.demographic_parity_diff<.1?'var(--green)':'var(--red)'},
+    {l:'Eq. Opportunity',v:m.equal_opportunity_diff.toFixed(3),t:m.equal_opportunity_diff<.15?'PASS':'WARN',c:m.equal_opportunity_diff<.15?'ok':'warn',col:m.equal_opportunity_diff<.15?'var(--green)':'var(--amber)'}
+  ];
+  const dm=document.getElementById('dash-metrics');
+  if(dm)dm.innerHTML=cards.map(x=>`<div class="mcard" style="color:${x.col}"><div class="mcard-glow" style="background:${x.col}"></div><div class="mcard-label">${x.l}</div><div class="mcard-val" style="color:var(--text)">${x.v}</div><div class="mcard-tag tag-${x.c}">● ${x.t}</div></div>`).join('');
   barChart('dash-chart1',{labels:['Bias Det.','Mitigation','Explanation','Efficiency','Policy','Consistency'],values:[g.bias_detection_score,g.mitigation_score,g.explanation_quality,g.efficiency_score,g.policy_compliance_score,g.consistency_score],color:'#38bdf8',max:100});
   barChart('dash-chart2',{labels:['DPD','EOD','EQO','CAL','Bias'],values:[m.demographic_parity_diff,m.equal_opportunity_diff,m.equalized_odds_diff,m.calibration_diff,m.overall_bias_score],color:'#fb7185',max:1});
   const vl=document.getElementById('dash-violations');
-  if(!S.auditData.violations||!S.auditData.violations.length)vl.innerHTML='<div class="alert alert-ok">✓ All clear</div>';
-  else vl.innerHTML=S.auditData.violations.slice(0,5).map(v=>`<div class="vitem"><div style="flex-shrink:0;color:var(--red)"><i data-lucide="x-circle" style="width:14px;height:14px"></i></div><div><div style="font-size:11px;font-weight:600;color:var(--red)">${v.id}</div><div style="font-size:10.5px;color:var(--text3);margin-top:2px">${v.name}</div></div></div>`).join('');
-  document.getElementById('dash-narrative').textContent=S.auditData.gemini_narrative||'—';
+  if(vl){
+    if(!S.auditData.violations||!S.auditData.violations.length)vl.innerHTML='<div class="alert alert-ok">✓ All clear</div>';
+    else vl.innerHTML=S.auditData.violations.slice(0,5).map(v=>`<div class="vitem"><div style="flex-shrink:0;color:var(--red)"><i data-lucide="x-circle" style="width:14px;height:14px"></i></div><div><div style="font-size:11px;font-weight:600;color:var(--red)">${v.id}</div><div style="font-size:10.5px;color:var(--text3);margin-top:2px">${v.name}</div></div></div>`).join('');
+  }
+  const dn=document.getElementById('dash-narrative');
+  if(dn)dn.textContent=S.auditData.gemini_narrative||'—';
   lucide.createIcons();
 }
 
@@ -1176,7 +1299,7 @@ async function loadDrift(){try{const r=await fetch(`${API}/api/drift/status`);co
 async function simulateDrift(){const btn=document.getElementById('drift-sim-btn');btn.disabled=true;btn.innerHTML='<div class="spin"></div> Simulating…';try{const r=await fetch(`${API}/api/drift/simulate`,{method:'POST'});const d=await r.json();renderDrift(d);toast('Drift simulation complete — alerts triggered!','warn')}catch(e){toast('Error','error')}finally{btn.disabled=false;btn.innerHTML='<i data-lucide="zap" style="width:13px;height:13px"></i> Simulate Drift';lucide.createIcons()}}
 async function resetDrift(){await fetch(`${API}/api/drift/reset`,{method:'POST'});document.getElementById('drift-injected-badge').style.display='none';document.getElementById('drift-alerts-card').style.display='none';await loadDrift();toast('Drift reset','success')}
 function renderDrift(d){if(d.injected)document.getElementById('drift-injected-badge').style.display='inline-flex';const bl=d.baseline;document.getElementById('drift-baseline-cards').innerHTML=`<div class="mcard"><div class="mcard-label">Baseline DI Ratio</div><div class="mcard-val">${bl.disparate_impact_ratio.toFixed(3)}</div><div class="mcard-tag tag-ok">● BASELINE</div></div><div class="mcard"><div class="mcard-label">Baseline Dem. Parity</div><div class="mcard-val">${bl.demographic_parity_diff.toFixed(3)}</div><div class="mcard-tag tag-ok">● BASELINE</div></div><div class="mcard"><div class="mcard-label">Baseline Bias Score</div><div class="mcard-val">${bl.overall_bias_score.toFixed(3)}</div><div class="mcard-tag tag-ok">● BASELINE</div></div>`;const h=d.history,labels=h.map(x=>x.day),diVals=h.map(x=>x.disparate_impact_ratio),biasVals=h.map(x=>x.overall_bias_score),alertDays=h.map(x=>x.alert);killChart('chart-drift-di');S.charts['chart-drift-di']=new Chart(document.getElementById('chart-drift-di'),{type:'line',data:{labels,datasets:[{label:'DI Ratio',data:diVals,borderColor:'#818cf8',backgroundColor:'rgba(129,140,248,.06)',fill:true,tension:.3,pointRadius:alertDays.map(a=>a?5:2),pointBackgroundColor:alertDays.map(a=>a?'#fb7185':'#818cf8'),borderWidth:2},{label:'5% Threshold',data:labels.map(()=>0.741),borderColor:'rgba(251,113,133,.4)',borderDash:[5,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8892a4',font:{size:9}}}},scales:{x:{ticks:{color:'#3d4a60',font:{size:8},maxRotation:45},grid:{color:'rgba(255,255,255,.025)'}},y:{min:.3,max:1.0,ticks:{color:'#3d4a60',font:{size:9,family:'DM Mono'}},grid:{color:'rgba(255,255,255,.025)'}}}}});killChart('chart-drift-bias');S.charts['chart-drift-bias']=new Chart(document.getElementById('chart-drift-bias'),{type:'line',data:{labels,datasets:[{label:'Bias Score',data:biasVals,borderColor:'#fb7185',backgroundColor:'rgba(251,113,133,.06)',fill:true,tension:.3,pointRadius:alertDays.map(a=>a?5:2),pointBackgroundColor:alertDays.map(a=>a?'#fbbf24':'#fb7185'),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#3d4a60',font:{size:8},maxRotation:45},grid:{color:'rgba(255,255,255,.025)'}},y:{min:0,max:1,ticks:{color:'#3d4a60',font:{size:9,family:'DM Mono'}},grid:{color:'rgba(255,255,255,.025)'}}}}});const alerts=d.alerts||[];if(alerts.length){document.getElementById('drift-alerts-card').style.display='block';document.getElementById('drift-alerts-list').innerHTML=alerts.map(a=>`<div class="vitem"><div style="color:${a.severity==='critical'?'var(--red)':'var(--amber)'};flex-shrink:0"><i data-lucide="alert-triangle" style="width:14px;height:14px"></i></div><div><div style="font-size:11.5px;font-weight:600;color:${a.severity==='critical'?'var(--red)':'var(--amber)'}">${a.day} — Fairness Alert</div><div style="font-size:10.5px;color:var(--text3);margin-top:2px">${a.message}</div></div></div>`).join('');lucide.createIcons()}renderDriftDistCharts()}
-function renderDriftDistCharts(){const trLabels=['<30k','30-50k','50-75k','75-100k','>100k'];const tr=[80,220,340,210,90];const pr=[110,230,280,180,60];killChart('chart-drift-dist1');S.charts['chart-drift-dist1']=new Chart(document.getElementById('chart-drift-dist1'),{type:'bar',data:{labels:trLabels,datasets:[{label:'Training',data:tr,backgroundColor:'rgba(129,140,248,.18)',borderColor:'#818cf8',borderWidth:1.5,borderRadius:4},{label:'Production',data:pr,backgroundColor:'rgba(251,113,133,.18)',borderColor:'#fb7185',borderWidth:1.5,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8892a4',font:{size:9}}},title:{display:true,text:'Income Distribution Shift',color:'#8892a4',font:{size:10}}},scales:{x:{ticks:{color:'#3d4a60',font:{size:8}},grid:{color:'rgba(255,255,255,.025)'}},y:{ticks:{color:'#3d4a60',font:{size:9,family:'DM Mono'}},grid:{color:'rgba(255,255,255,.025)'}}}}});const cr=['500-580','580-660','660-720','720-780','>780'];const tc=[60,140,300,280,150];const pc=[90,180,240,220,100];killChart('chart-drift-dist2');S.charts['chart-drift-dist2']=new Chart(document.getElementById('chart-drift-dist2'),{type:'bar',data:{labels:cr,datasets:[{label:'Training',data:tc,backgroundColor:'rgba(129,140,248,.18)',borderColor:'#818cf8',borderWidth:1.5,borderRadius:4},{label:'Production',data:pc,backgroundColor:'rgba(251,113,133,.18)',borderColor:'#fb7185',borderWidth:1.5,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8892a4',font:{size:9}}},title:{display:true,text:'Credit Score Distribution Shift',color:'#8892a4',font:{size:10}}},scales:{x:{ticks:{color:'#3d4a60',font:{size:8}},grid:{color:'rgba(255,255,255,.025)'}},y:{ticks:{color:'#3d4a60',font:{size:9,family:'DM Mono'}},grid:{color:'rgba(255,255,255,.025)'}}}}}}
+function renderDriftDistCharts(){const trLabels=['<30k','30-50k','50-75k','75-100k','>100k'];const tr=[80,220,340,210,90];const pr=[110,230,280,180,60];killChart('chart-drift-dist1');S.charts['chart-drift-dist1']=new Chart(document.getElementById('chart-drift-dist1'),{type:'bar',data:{labels:trLabels,datasets:[{label:'Training',data:tr,backgroundColor:'rgba(129,140,248,.18)',borderColor:'#818cf8',borderWidth:1.5,borderRadius:4},{label:'Production',data:pr,backgroundColor:'rgba(251,113,133,.18)',borderColor:'#fb7185',borderWidth:1.5,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8892a4',font:{size:9}}},title:{display:true,text:'Income Distribution Shift',color:'#8892a4',font:{size:10}}},scales:{x:{ticks:{color:'#3d4a60',font:{size:8}},grid:{color:'rgba(255,255,255,.025)'}},y:{ticks:{color:'#3d4a60',font:{size:9,family:'DM Mono'}},grid:{color:'rgba(255,255,255,.025)'}}}}});const cr=['500-580','580-660','660-720','720-780','>780'];const tc=[60,140,300,280,150];const pc=[90,180,240,220,100];killChart('chart-drift-dist2');S.charts['chart-drift-dist2']=new Chart(document.getElementById('chart-drift-dist2'),{type:'bar',data:{labels:cr,datasets:[{label:'Training',data:tc,backgroundColor:'rgba(129,140,248,.18)',borderColor:'#818cf8',borderWidth:1.5,borderRadius:4},{label:'Production',data:pc,backgroundColor:'rgba(251,113,133,.18)',borderColor:'#fb7185',borderWidth:1.5,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8892a4',font:{size:9}}},title:{display:true,text:'Credit Score Distribution Shift',color:'#8892a4',font:{size:10}}},scales:{x:{ticks:{color:'#3d4a60',font:{size:8}},grid:{color:'rgba(255,255,255,.025)'}},y:{ticks:{color:'#3d4a60',font:{size:9,family:'DM Mono'}},grid:{color:'rgba(255,255,255,.025)'}}}}});}
 
 async function loadTrail(){try{const r=await fetch(`${API}/api/trail`);const d=await r.json();document.getElementById('trail-count').textContent=`${d.count} entries`;const tb=document.getElementById('trail-tbody');if(!d.entries||!d.entries.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text3)">No audit events yet — run an audit first</td></tr>';return}tb.innerHTML=d.entries.map((e,i)=>`<tr><td style="padding-left:14px;font-family:var(--ff-m);font-size:10.5px;color:var(--text3)">#${i+1}</td><td><code style="font-size:10px">${e.trace_id.slice(0,8)}…</code></td><td><span class="tag ${e.event.startsWith('[TAMPERED]')?'tag-no':'tag-info'}" style="font-size:10px">${e.event}</span></td><td style="font-size:10.5px;color:var(--text3)">${new Date(e.timestamp).toLocaleTimeString()}</td><td style="font-size:10.5px;color:var(--text2)">${Object.entries(e.data||{}).slice(0,2).map(([k,v])=>`${k}: ${JSON.stringify(v)}`).join(', ')}</td><td style="padding-right:14px"><code style="font-size:9px;color:var(--text3)">${(e.chain_hash||'').slice(0,14)}…</code></td></tr>`).join('')}catch(e){toast('Trail error','error')}}
 async function verifyTrail(){const btn=document.getElementById('trail-verify-btn');btn.disabled=true;btn.innerHTML='<div class="spin"></div> Verifying…';try{const r=await fetch(`${API}/api/trail/verify`,{method:'POST'});const d=await r.json();const el=document.getElementById('trail-verify-result');el.style.display='block';const errHtml=d.errors&&d.errors.length?'<div style="margin-top:6px;font-size:11px;color:var(--red)">'+d.errors.join('<br>')+'</div>':'';el.innerHTML='<div class="'+(d.valid?'alert alert-ok':'vitem')+'" style="'+(d.valid?'':'border-left-color:var(--red)')+'">'+( d.valid?'✓':'✗')+' '+d.message+' <span style="color:var(--text3);font-size:11px;margin-left:8px">('+d.checked+' records checked)</span>'+errHtml+'</div>';toast(d.valid?'Chain intact!':'Tampering detected!',d.valid?'success':'error')}catch(e){toast('Error','error')}finally{btn.disabled=false;btn.innerHTML='<i data-lucide="shield-check" style="width:13px;height:13px"></i> Verify Integrity';lucide.createIcons()}}
@@ -1186,7 +1309,7 @@ const selectedModels=new Set();
 function toggleModel(el){const m=el.dataset.model;if(selectedModels.has(m)){selectedModels.delete(m);el.style.opacity='0.4'}else{selectedModels.add(m);el.style.opacity='1'}}
 async function runBenchmark(){if(!selectedModels.size){toast('Select at least one model','warn');return}const btn=document.getElementById('bench-btn');btn.disabled=true;btn.innerHTML='<div class="spin"></div> Running…';showLoad('Benchmarking models…');try{const r=await fetch(`${API}/api/benchmark`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({models:[...selectedModels],domain:document.getElementById('bench-domain').value})});const d=await r.json();renderBenchmark(d);toast('Benchmark complete','success')}catch(e){toast('Error','error')}finally{hideLoad();btn.disabled=false;btn.innerHTML='<i data-lucide="play" style="width:13px;height:13px"></i> Run Benchmark';lucide.createIcons()}}
 const BENCH_MODEL_COLORS={'gpt-4o':'#34d399','claude-3.5-sonnet':'#38bdf8','gemini-1.5-pro':'#818cf8','llama-3.1-70b':'#fbbf24','mistral-large':'#c084fc'};
-function renderBenchmark(d){document.getElementById('bench-results').style.display='block';const res=d.results;document.getElementById('bench-leaderboard').innerHTML=res.map(r=>`<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.03)"><div style="width:26px;height:26px;border-radius:8px;background:${BENCH_MODEL_COLORS[r.model]||'var(--accent)'}15;border:1px solid ${BENCH_MODEL_COLORS[r.model]||'var(--accent)'}30;display:flex;align-items:center;justify-content:center;font-family:var(--ff-h);font-weight:700;font-size:12px;color:${BENCH_MODEL_COLORS[r.model]||'var(--accent)'}">#${r.rank}</div><div style="flex:1;font-size:12.5px;font-weight:550;color:var(--text)">${r.model}</div><div style="width:180px"><div class="ptrack"><div class="pfill" style="width:${r.overall_fairness*100}%;background:${BENCH_MODEL_COLORS[r.model]||'var(--accent)'}"></div></div></div><div style="width:50px;text-align:right;font-family:var(--ff-m);font-size:12px;color:${BENCH_MODEL_COLORS[r.model]||'var(--accent)'}">${r.overall_fairness.toFixed(3)}</div></div>`).join('');killChart('chart-bench-overall');S.charts['chart-bench-overall']=new Chart(document.getElementById('chart-bench-overall'),{type:'bar',data:{labels:res.map(r=>r.model),datasets:[{data:res.map(r=>r.overall_fairness),backgroundColor:res.map(r=>(BENCH_MODEL_COLORS[r.model]||'#38bdf8')+'25'),borderColor:res.map(r=>BENCH_MODEL_COLORS[r.model]||'#38bdf8'),borderWidth:1.5,borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{min:0,max:1,ticks:{color:'#3d4a60',font:{size:9,family:'DM Mono'}},grid:{color:'rgba(255,255,255,.025)'}},y:{ticks:{color:'#8892a4',font:{size:9,family:'Outfit'}},grid:{color:'rgba(255,255,255,.025)'}}}}});killChart('chart-bench-dims');S.charts['chart-bench-dims']=new Chart(document.getElementById('chart-bench-dims'),{type:'bar',data:{labels:['Gender Bias','Racial Bias','Age Bias'],datasets:res.map(r=>({label:r.model,data:[r.gender_bias,r.racial_bias,r.age_bias],backgroundColor:(BENCH_MODEL_COLORS[r.model]||'#38bdf8')+'25',borderColor:BENCH_MODEL_COLORS[r.model]||'#38bdf8',borderWidth:1.5,borderRadius:4}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8892a4',font:{size:9,family:'Outfit'},boxWidth:10,boxHeight:10}}},scales:{x:{ticks:{color:'#3d4a60',font:{size:10}},grid:{color:'rgba(255,255,255,.025)'}},y:{min:0,max:1,ticks:{color:'#3d4a60',font:{size:9,family:'DM Mono'}},grid:{color:'rgba(255,255,255,.025)'}}}}}}
+function renderBenchmark(d){document.getElementById('bench-results').style.display='block';const res=d.results;document.getElementById('bench-leaderboard').innerHTML=res.map(r=>`<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.03)"><div style="width:26px;height:26px;border-radius:8px;background:${BENCH_MODEL_COLORS[r.model]||'var(--accent)'}15;border:1px solid ${BENCH_MODEL_COLORS[r.model]||'var(--accent)'}30;display:flex;align-items:center;justify-content:center;font-family:var(--ff-h);font-weight:700;font-size:12px;color:${BENCH_MODEL_COLORS[r.model]||'var(--accent)'}">#${r.rank}</div><div style="flex:1;font-size:12.5px;font-weight:550;color:var(--text)">${r.model}</div><div style="width:180px"><div class="ptrack"><div class="pfill" style="width:${r.overall_fairness*100}%;background:${BENCH_MODEL_COLORS[r.model]||'var(--accent)'}"></div></div></div><div style="width:50px;text-align:right;font-family:var(--ff-m);font-size:12px;color:${BENCH_MODEL_COLORS[r.model]||'var(--accent)'}">${r.overall_fairness.toFixed(3)}</div></div>`).join('');killChart('chart-bench-overall');S.charts['chart-bench-overall']=new Chart(document.getElementById('chart-bench-overall'),{type:'bar',data:{labels:res.map(r=>r.model),datasets:[{data:res.map(r=>r.overall_fairness),backgroundColor:res.map(r=>(BENCH_MODEL_COLORS[r.model]||'#38bdf8')+'25'),borderColor:res.map(r=>BENCH_MODEL_COLORS[r.model]||'#38bdf8'),borderWidth:1.5,borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{min:0,max:1,ticks:{color:'#3d4a60',font:{size:9,family:'DM Mono'}},grid:{color:'rgba(255,255,255,.025)'}},y:{ticks:{color:'#8892a4',font:{size:9,family:'Outfit'}},grid:{color:'rgba(255,255,255,.025)'}}}}});killChart('chart-bench-dims');S.charts['chart-bench-dims']=new Chart(document.getElementById('chart-bench-dims'),{type:'bar',data:{labels:['Gender Bias','Racial Bias','Age Bias'],datasets:res.map(r=>({label:r.model,data:[r.gender_bias,r.racial_bias,r.age_bias],backgroundColor:(BENCH_MODEL_COLORS[r.model]||'#38bdf8')+'25',borderColor:BENCH_MODEL_COLORS[r.model]||'#38bdf8',borderWidth:1.5,borderRadius:4}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8892a4',font:{size:9,family:'Outfit'},boxWidth:10,boxHeight:10}}},scales:{x:{ticks:{color:'#3d4a60',font:{size:10}},grid:{color:'rgba(255,255,255,.025)'}},y:{min:0,max:1,ticks:{color:'#3d4a60',font:{size:9,family:'DM Mono'}},grid:{color:'rgba(255,255,255,.025)'}}}}});}
 
 let localRules=[];
 async function loadPolicyRules(){try{const r=await fetch(`${API}/api/policy-rules`);const d=await r.json();localRules=d.rules;renderPolicyRules();if(S.runId)document.getElementById('policy-eval-btn').disabled=false}catch(e){}}
