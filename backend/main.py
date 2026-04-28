@@ -3,7 +3,6 @@ from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 import random
@@ -21,13 +20,20 @@ import re
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-db_name = os.environ.get('DB_NAME', 'fairforge_arena')
-client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=500)
-db = client[db_name]
-
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+# Make DB initialization non-fatal in serverless environments.
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+db_name = os.environ.get('DB_NAME', 'fairforge_arena')
+client = None
+db = None
+try:
+    from motor.motor_asyncio import AsyncIOMotorClient
+    client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=500)
+    db = client[db_name]
+except Exception as e:
+    logger.warning(f"mongo init failed; continuing without db: {e}")
 
 app = FastAPI(title="FairForge Arena API", version="3.1.0")
 api_router = APIRouter(prefix="/api")
@@ -581,7 +587,8 @@ async def health_check():
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    client.close()
+    if client is not None:
+        client.close()
 
 if __name__ == "__main__":
     import uvicorn
